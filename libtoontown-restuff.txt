@@ -1,0 +1,722 @@
+### Definitons ###
+
+#define DEG2RAD 0.01745329238474369
+#define RAD2DEG 57.2957763671875
+#define PI 3.1415927410125732
+#define HALF_PI 1.5707963705062866
+
+### DNAGroup (Class) ###
+
+void DNAGroup::DNAGroup(std::string name) : parent(nullptr) {
+    this->name = name;
+}
+
+void DNAGroup::add(PT(DNAGroup) group) {
+    children.push_back(group);
+}
+
+PT(DNAGroup) DNAGroup::at(size_t index) {
+    return children.at(index);
+}
+
+void DNAGroup::clear_parent() {
+    parent = nullptr;
+}
+
+size_t DNAGroup::get_num_children() {
+    return children.size();
+}
+
+PT(DNAGroup) DNAGroup::get_parent() {
+    return parent;
+}
+
+void DNAGroup::ls() {
+    write(std::cout, 0, 0);
+}
+
+// TODO
+void DNAGroup::remove(PT(DNAGroup) group) {
+
+}
+
+void DNAGroup::set_parent(PT(DNAGroup) parent) {
+    this->parent = parent;
+}
+
+NodePath &DNAGroup::top_level_traverse(NodePath &parent, DNAStorage *store, int editing) {
+    NodePath _np = parent.attach_new_node(name);
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->traverse(_np, store, editing);
+    }
+    
+    if (editing) {
+        PT(DNAGroup) PT_this = this;
+        PT(PandaNode) store_node = _np.node();
+        store->store_DNAGroup(store_node, PT_this);
+    }
+    return _np;
+}
+
+NodePath &DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing) {
+    NodePath _np = parent.attach_new_node(name);
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->traverse(_np, store, editing);
+    }
+    
+    if (editing) {
+        PT(DNAGroup) PT_this = this;
+        PT(PandaNode) store_node = _np.node();
+        store->store_DNAGroup(store_node, PT_this);
+    }
+    return _np;
+}
+
+void DNAGroup::write(std::ostream &out, DNAStorage *store, int indent_level) {
+    out = indent(out, indent_level);
+    out << "group ";
+    out << name << " [" << std::endl;
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->write(out, store, indent_level + 1);
+    }
+    out = indent(out, indent_level);
+    out << "]" << std::endl;
+}
+
+### DNANode (Class) ###
+
+void DNANode::DNANode(std::string name) : DNAGroup(name) {
+    pos = LVecBase3f(0.0, 0.0, 0.0);
+    hpr = LVecBase3f(0.0, 0.0, 0.0);
+    scale = LVecBase3f(1.0, 1.0, 1.0);
+}
+
+LVecBase3f &DNANode::get_hpr() {
+    return LVecBase3f(hpr);
+}
+
+LVecBase3f &DNANode::get_pos() {
+    return LVecBase3f(pos);
+}
+
+LVecBase3f &DNANode::get_scale() {
+    return LVecBase3f(scale);
+}
+
+void DNANode::set_hpr(const LVecBase3f &hpr) {
+    this->hpr = hpr;
+}
+
+void DNANode::set_pos(const LVecBase3f &pos) {
+    this->pos = pos;
+}
+
+void DNANode::set_scale(const LVecBase3f &scale) {
+    this->scale = scale;
+}
+
+NodePath &DNANode::traverse(NodePath &parent, DNAStorage *store, int editing) {
+    NodePath _np = parent.attach_new_node(name);
+    _np.set_pos_hpr_scale(pos, hpr, scale);
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->traverse(_np, store, editing);
+    }
+    
+    if (editing) {
+        PT(DNAGroup) PT_this = (DNAGroup *)this;
+        PT(PandaNode) store_node = _np.node();
+        store->store_DNAGroup(store_node, PT_this);
+    }
+    return _np;
+}
+
+void DNANode::write(std::ostream &out, DNAStorage *store, int indent_level) {
+    out = indent(out, indent_level);
+    out << "node ";
+    out << name << " [" << std::endl;
+    if (pos != LVecBase3f(0.0, 0.0, 0.0)) {
+        out = indent(out, indent_level + 1);
+        out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
+    }
+    if (hpr != LVecBase3f(0.0, 0.0, 0.0)) {
+        out = indent(out, indent_level + 1);
+        if (temp_hpr_fix) {
+            out << "nhpr [ ";
+        } else {
+            out << "hpr [ ";
+        }
+        out << hpr[0] << " " << hpr[1] << " " << hpr[2] << " ]" << std::endl;
+    }
+    if (scale != LVecBase3f(1.0, 1.0, 1.0)) {
+        out = indent(out, indent_level + 1);
+        out << "scale [ " << scale[0] << " " << scale[1] << " " << scale[2] << " ]" << std::endl;
+    }
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->write(out, store, indent_level + 1);
+    }
+    out = indent(out, indent_level);
+    out << "]" << std::endl;
+}
+
+### DNAProp (Class) ###
+
+void DNAProp::DNAProp(std::string name) : DNANode(name) {
+    color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
+}
+
+std::string DNAProp::get_code() {
+    return code;
+}
+
+LVector4f &DNAProp::get_color() {
+    return color;
+}
+
+void DNAProp::set_code(std::string code) {
+    this->code = code;
+}
+
+void DNAProp::set_color(const LVecBase4f &color) {
+    this->color = color;
+}
+
+NodePath &DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
+    NodePath _np;
+    
+    if (code == "DCS") {
+        PT(ModelNode) node = new ModelNode(m_name);
+        node->set_preserve_transform(ModelNode::PT_net);
+        _np = np.attach_new_node(node);
+    } else {
+        NodePath nodepath = store->find_node(code);
+        if (nodepath.is_empty())
+            return;
+        
+        _np = nodepath.copy_to(np);
+        
+        // This is my best guess for as to what it did. 
+        // The code is a mess in the decompiler.
+        if (nodepath->has_tag("DNARoot") {
+            std::string tag = nodepath->get_tag("DNARoot");
+            _np->set_tag(tag, "DNARoot");
+        }
+        if (nodepath->has_tag("DNACode") {
+            std::string tag = nodepath->get_tag("DNACode");
+            _np->set_tag(tag, "DNACode");
+        }
+        _np.node()->set_name(name); // Is it this or _np.set_name(name)?
+    }
+    _np.set_pos_hpr_scale(pos, hpr, scale);
+    _np.set_color_scale(color);
+
+    if (editing) {
+        PT(DNAGroup) PT_this = (DNAGroup *)this;
+        PT(PandaNode) store_node = _np.node();
+        store->store_DNAGroup(store_node, PT_this);
+    }
+    return _np;
+}
+
+void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level) {
+    out = indent(out, indent_level);
+    out << "prop ";
+    out << name << " [" << std::endl;
+    
+    // DNAProps always have a code.
+    out = indent(out, indent_level + 1);
+    out << "code [ " << code << " ]" << std::endl;
+    
+    // DNAProps always have a pos.
+    out = indent(out, indent_level + 1);
+    out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
+        
+    // DNAProps always have a hpr.
+    out = indent(out, indent_level + 1);
+    if (temp_hpr_fix) {
+        out << "nhpr [ ";
+    } else {
+        out << "hpr [ ";
+    }
+    out << hpr[0] << " " << hpr[1] << " " << hpr[2] << " ]" << std::endl;
+        
+    if (scale != LVecBase3f(1.0, 1.0, 1.0)) {
+        out = indent(out, indent_level + 1);
+        out << "scale [ " << scale[0] << " " << scale[1] << " " << scale[2] << " ]" << std::endl;
+    }
+    if (color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
+        out = indent(out, indent_level + 1);
+        out << "color [ " << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << " ]" << std::endl;
+    }
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->write(out, store, indent_level + 1);
+    }
+    out = indent(out, indent_level);
+    out << "]" << std::endl;
+}
+
+### DNASign (Class) ###
+
+void DNASign::DNASign(std::string name) : DNAProp(name) {
+
+}
+
+// TODO
+NodePath &DNASign::traverse(NodePath &parent, DNAStorage *store, int editing) {
+ 
+}
+
+void DNASign::write(std::ostream &out, DNAStorage *store, int indent_level) {
+    out = indent(out, indent_level);
+    out << "sign [" << std::endl;
+    if (code.size()) {
+        out = indent(out, indent_level + 1);
+        out << "code [ " << code << " ]" << std::endl;
+    }
+    if (color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
+        out = indent(out, indent_level + 1);
+        out << "color [ " << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << " ]" << std::endl;
+    }
+    if (pos != LVecBase3f(0.0, 0.0, 0.0)) {
+        out = indent(out, indent_level + 1);
+        out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
+    }
+    if (hpr != LVecBase3f(0.0, 0.0, 0.0)) {
+        out = indent(out, indent_level + 1);
+        if (temp_hpr_fix) {
+            out << "nhpr [ ";
+        } else {
+            out << "hpr [ ";
+        }
+        out << hpr[0] << " " << hpr[1] << " " << hpr[2] << " ]" << std::endl;
+    }
+    if (scale != LVecBase3f(1.0, 1.0, 1.0)) {
+        out = indent(out, indent_level + 1);
+        out << "scale [ " << scale[0] << " " << scale[1] << " " << scale[2] << " ]" << std::endl;
+    }
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->write(out, store, indent_level + 1);
+    }
+    out = indent(out, indent_level);
+    out << "]" << std::endl;
+}
+
+### DNASignBaseline (Class) ###
+
+void DNASignBaseline::DNASignBaseline(std::string name) : DNAProp(name) {
+    font = NULL;
+    floatBC = LVecBase3f(0.0, 0.0, 0.0);
+    floatC8 = 0.0;
+    floatCC = 0.0;
+    floatD0 = 0.0;
+    floatD4 = 1.0;
+    floatD8 = 1.0;
+    floatDC = 1.0;
+    counter = 0;
+    indent = 0.0;
+    kern = 0.0;
+    wiggle = 0.0;
+    stumble = 0.0;
+    stomp = 0.0;
+    floatF4 = 0.0;
+    is_space = 1;
+    width = 0.0;
+    height = 0.0;
+    float104 = 0.0;
+    angle = 0.0;
+}
+
+void DNASignBaseline::baseline_next_pos_hpr_scale(LVector3f &pos, LVector3f &hpr, LVector3f &scale, const LVector3f &size) {
+    if (width != 0.0 || height != 0.0) {
+        circle_next_pos_hpr_scale(pos, hpr, scale, size);
+    } else {
+        line_next_pos_hpr_scale(pos, hpr, scale, size);
+    }
+}
+
+void DNASignBaseline::center(LVector3f &pos, LVector3f &hpr) {
+    double current_rotation = 0.0;
+    
+    if (temp_hpr_fix) {
+        current_rotation = -this->hpr[2];
+    } else {
+        current_rotation = this->hpr[2];
+    }
+    float rotRad = current_rotation * DEG2RAD;
+    if ( 0.0 != width || 0.0 != height ) {
+        pos[0] = pos[0] - cos(rotRad + HALF_PI) * (width * 0.5);
+        pos[2] = pos[2] - sin(rotRad + HALF_PI) * (height * 0.5);
+        if (temp_hpr_fix) {
+            hpr[2] = hpr[2] + float104 * 0.5;
+        } else {
+            hpr[2] = hpr[2] - float104 * 0.5;
+        }
+    } else {
+        --counter;
+        double current_stumble = get_current_stumble();
+        ++counter;
+        double new_stumble = get_current_kern() + current_stumble;
+        pos[0] = pos[0] - ((floatF4 + new_stumble) * 0.5) * cos(rotRad);
+        pos[2] = pos[2] - ((floatF4 + new_stumble) * 0.5) * sin(rotRad);
+    }
+}
+
+// TODO: Figure out the not explictly defined references.
+void DNASignBaseline::circle_next_pos_hpr_scale(LVector3f &pos, LVector3f &hpr, LVector3f &scale, const LVector3f &size) {
+    double v17 = 0.0; 
+    LVector4f v38();
+    
+    scale = scale * this->scale;
+    double widthhf = width * 0.5
+    double heighthf = height * 0.5;
+    double pos_x = pos[0];
+    if (width >= 0.0) {
+        pos_x = -pos_x;
+    }
+    double new_pos_x = widthhf * PI;
+    new_pos_x = pos_x / new_pos_x * PI;
+    new_indent = indent;
+    if (width < 0.0) {
+        new_indent = -new_indent;
+    }
+    float v29 = angle * DEG2RAD;
+    new_pos_x = DEG2RAD * new_indent + new_pos_x;
+    new_pos_x = new_pos_x + v29 + HALF_PI;
+    double current_stomp = get_current_stomp();
+    stomped_pos_z = pos[2] + current_stomp;
+    if (width < 0.0) {
+        stomped_pos_z = -stomped_pos_z;
+    }
+    v39[0] = current_stomp;
+    new_pos_x = (stomped_pos_z + widthhf) * cos(new_pos_x);
+    new_pos_z = (stomped_pos_z + heighthf) * sin(new_pos_x);
+    pos[0] = new_pos_x;
+    pos[2] = new_pos_z;
+    double current_wiggle = get_current_wiggle();
+    if (temp_hpr_fix) {
+        v17 = hpr[2] - (angle + new_indent + current_wiggle);
+    } else {
+        v17 = hpr[2] + (angle + new_indent + current_wiggle);
+    }
+    hpr[2] = v17;
+    float pos_calc = sqrt(new_pos_z * new_pos_z + new_pos_x * new_pos_x);
+    if (width < 0.0) {
+        float104 = v29 * RAD2DEG;
+    }
+    v38[1] = scale[0] * size[0];
+    double v18 = pos_calc + pos_calc;
+    
+    // *(double *)((char *)&new_pos_x + 4) = v18; 
+    double unknown = v18;
+    
+    v19 = v38[1] / v18;
+    if ( v19 >= 1.0 )
+        v19 = 1.0;
+    v38[1] = v29;
+    float v30 = v29 - (asin(v19) + asin(v19));
+    if (width >= 0.0) {
+        float104 = RAD2DEG * v30;
+    }
+    double current_stumble = get_current_stumble;
+    v38[1] = angle;
+    double calc = kern - current_stumble;
+    v21 = asin(calc / unknown);
+    calc = v30 - (v21 + v21);
+    calc = calc * RAD2DEG;
+    angle = calc;
+    if (width >= 0.0) {
+        if (temp_hpr_fix) {
+            hpr[2] = hpr[2] - (calc - v38[1]) * 0.5;
+        } else {
+            hpr[2] = hpr[2] + (calc - v38[1]) * 0.5;
+        }
+    }
+    ++counter;
+}
+
+double DNASignBaseline::get_current_kern() {
+    return counter * kern;
+}
+
+double DNASignBaseline::get_current_stomp() {
+    double current_stomp = stomp;
+    if (!(counter & 1)) {
+        current_stomp = -current_stomp;
+    }
+    return current_stomp;
+}
+
+double DNASignBaseline::get_current_stumble() {
+    double current_stumble = stumble;
+    if (!(counter & 1)) {
+        current_stumble = -current_stumble;
+    }
+    return current_stumble;
+}
+
+double DNASignBaseline::get_current_wiggle() {
+    double current_wiggle = wiggle;
+    if (!(counter & 1)) {
+        current_wiggle = -current_wiggle;
+    }
+    return current_wiggle;
+}
+
+std::string DNASignBaseline::get_flags() {
+    return flags;
+}
+
+// TODO: Make sure this is correctly handled.
+TextFont *DNASignBaseline::get_font() {
+    return font;
+}
+
+double DNASignBaseline::get_height() {
+    return height;
+}
+
+double DNASignBaseline::get_indent() {
+    return indent;
+}
+
+double DNASignBaseline::get_kern() {
+    return kern;
+}
+
+double DNASignBaseline::get_stomp() {
+    return stomp;
+}
+
+double DNASignBaseline::get_stumble() {
+    return stumble;
+}
+
+double DNASignBaseline::get_width() {
+    return width;
+}
+
+double DNASignBaseline::get_wiggle() {
+    return wiggle;
+}
+
+void DNASignBaseline::inc_counter() {
+    ++counter;
+}
+
+bool DNASignBaseline::isFirstLetterOfWord(std::string letter) {
+    if (letter[0] == ' ') {
+        is_space = 1;
+        return 0;
+    }
+    bool is_not_space = is_space == 0;
+    is_space = 0;
+    if (is_not_space) {
+        return 0;
+    }
+    return 1;
+}
+
+void DNASignBaseline::line_next_pos_hpr_scale(LVector3f &pos, LVector3f &hpr, LVector3f &scale, const LVector3f &size) {
+    scale = scale * this->scale;
+    pos = pos + floatBC;
+    float current_stumble = get_current_stumble();
+    float current_kern = get_current_kern();
+    pos[0] = pos[0] + current_kern + current_stumble;
+    float current_stomp = get_current_stomp();
+    pos[2] = pos[2] + current_stomp;
+    floatBC[0] = floatBC[0] + (scale[0] * size[0]);
+    floatF4 = (scale[0] * size[0]) + floatF4;
+    float current_wiggle = get_current_wiggle();
+    if (temp_hpr_fix) {
+        hpr[2] = hpr[2] - current_wiggle;
+    } else {
+        hpr[2] = hpr[2] + current_wiggle;
+    }
+    // Originally both cases a seperate increment for counter.
+    // But since it increments no matter what, I moved it outside 
+    // for efficiency. 
+    ++counter;
+}
+
+void DNASignBaseline::reset() {
+    floatBC = LVecBase3f(0.0, 0.0, 0.0);
+    floatC8 = 0.0;
+    floatCC = 0.0;
+    floatD0 = 0.0;
+    floatD4 = 1.0;
+    floatD8 = 1.0;
+    floatDC = 1.0;
+    counter = 0;
+    is_space = 1;
+    floatF4 = 0.0;
+    float104 = 0.0;
+    angle = 0.0;
+}
+
+void DNASignBaseline::reset_counter() {
+    counter = 0;
+}
+
+void DNASignBaseline::set_flags(std::string flags) {
+    this->flags = flags;
+}
+
+// TODO: Make sure this is correctly handled.
+void DNASignBaseline::set_font(TextFont *font) {
+    this->font = font;
+}
+
+void DNASignBaseline::set_height(float height) {
+    this->height = height;
+}
+
+void DNASignBaseline::set_indent(float indent) {
+    this->indent = indent;
+}
+
+void DNASignBaseline::set_kern(float kern) {
+    this->kern = kern;
+}
+
+void DNASignBaseline::set_stomp(float stomp) {
+    this->stomp = stomp;
+}
+
+void DNASignBaseline::set_stumble(float stumble) {
+    this->stumble = stumble;
+}
+
+void DNASignBaseline::set_width(float width) {
+    this->width = width;
+}
+
+void DNASignBaseline::set_wiggle(float wiggle) {
+    this->wiggle = wiggle;
+}
+
+// TODO
+NodePath &DNASignBaseline::traverse(NodePath &parent, DNAStorage *store, int editing) {
+    //reset(); // Is this actually called?
+    NodePath np = parent.attach_new_node("baseline");
+    
+}
+
+void DNASignBaseline::write(std::ostream &out, DNAStorage *store, int indent_level) {
+    out = indent(out, indent_level);
+    out << "baseline [" << std::endl;
+    if (code.size()) {
+        out = indent(out, indent_level + 1);
+        out << "code [ " << code << " ]" << std::endl;
+    }
+    if (color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
+        out = indent(out, indent_level + 1);
+        out << "color [ " << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << " ]" << std::endl;
+    }
+    if (pos != LVecBase3f(0.0, 0.0, 0.0)) {
+        out = indent(out, indent_level + 1);
+        out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
+    }
+    if (hpr != LVecBase3f(0.0, 0.0, 0.0)) {
+        out = indent(out, indent_level + 1);
+        if (temp_hpr_fix) {
+            out << "nhpr [ ";
+        } else {
+            out << "hpr [ ";
+        }
+        out << hpr[0] << " " << hpr[1] << " " << hpr[2] << " ]" << std::endl;
+    }
+    if (scale != LVecBase3f(1.0, 1.0, 1.0)) {
+        out = indent(out, indent_level + 1);
+        out << "scale [ " << scale[0] << " " << scale[1] << " " << scale[2] << " ]" << std::endl;
+    }
+    if (this->indent != 0.0) {
+        out = indent(out, indent_level + 1);
+        out << "indent [ " << this->indent << " ]" << std::endl;
+    }
+    if (kern != 0.0) {
+        out = indent(out, indent_level + 1);
+        out << "kern [ " << kern << " ]" << std::endl;
+    }
+    if (wiggle != 0.0) {
+        out = indent(out, indent_level + 1);
+        out << "wiggle [ " << wiggle << " ]" << std::endl;
+    }
+    if (stumble != 0.0) {
+        out = indent(out, indent_level + 1);
+        out << "stumble [ " << stumble << " ]" << std::endl;
+    }
+    if (stomp != 0.0) {
+        out = indent(out, indent_level + 1);
+        out << "stomp [ " << stomp << " ]" << std::endl;
+    }
+    if (width != 0.0) {
+        out = indent(out, indent_level + 1);
+        out << "width [ " << width << " ]" << std::endl;
+    }
+    if (height != 0.0) {
+        out = indent(out, indent_level + 1);
+        out << "height [ " << height << " ]" << std::endl;
+    }
+    if (flags.size()) {
+        out = indent(out, indent_level + 1);
+        out << "flags [ " << flags << " ]" << std::endl;
+    }
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->write(out, store, indent_level + 1);
+    }
+    out = indent(out, indent_level);
+    out << "]" << std::endl;
+}
+
+### DNASignText (Class) ###
+
+void DNASignText::DNASignText(std::string name) : DNAProp(name) {
+    no_color = 1;
+}
+
+void DNASignText::set_letters(std::string letters) {
+    this->letters = letters;
+}
+
+// TODO
+NodePath &DNASignText::traverse(NodePath &parent, DNAStorage *store, int editing) {
+
+}
+
+void DNASignText::write(std::ostream &out, DNAStorage *store, int indent_level) {
+    out = indent(out, indent_level);
+    out << "text [" << std::endl;
+    if (code.size()) {
+        out = indent(out, indent_level + 1);
+        out << "code [ " << code << " ]" << std::endl;
+    }
+    if (color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
+        out = indent(out, indent_level + 1);
+        out << "color [ " << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << " ]" << std::endl;
+    }
+    if (pos != LVecBase3f(0.0, 0.0, 0.0)) {
+        out = indent(out, indent_level + 1);
+        out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
+    }
+    if (hpr != LVecBase3f(0.0, 0.0, 0.0)) {
+        out = indent(out, indent_level + 1);
+        if (temp_hpr_fix) {
+            out << "nhpr [ ";
+        } else {
+            out << "hpr [ ";
+        }
+        out << hpr[0] << " " << hpr[1] << " " << hpr[2] << " ]" << std::endl;
+    }
+    if (scale != LVecBase3f(1.0, 1.0, 1.0)) {
+        out = indent(out, indent_level + 1);
+        out << "scale [ " << scale[0] << " " << scale[1] << " " << scale[2] << " ]" << std::endl;
+    }
+    if (letters == "\"") {
+        out = indent(out, indent_level + 1);
+        out << "letters [ '\"' ]" << std::endl;
+    } else {
+        out = indent(out, indent_level + 1);
+        out << "letters [ " << letters << " ]" << std::endl; // Is embedded quotes needed?
+    }
+    out = indent(out, indent_level);
+    out << "]" << std::endl;
+}
