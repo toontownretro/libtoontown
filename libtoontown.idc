@@ -10464,19 +10464,61 @@ static ApplyStrucTInfos_6(void) {
 	SetType(get_member_id(id, 0x1), "char *");
 	id = get_struc_id("DNAGroup");
 	SetType(get_member_id(id, 0x0), "DNAGroup_TypedObject_VTable *");
+	SetType(get_member_id(id, 0x8), "DNAGroup_ReferenceCount_VTable *");
 	SetType(get_member_id(id, 0x14), "__string");
-	SetType(get_member_id(id, 0x38), "_DWORD");
-	SetType(get_member_id(id, 0x40), "_DWORD");
-	SetType(get_member_id(id, 0x44), "_DWORD");
-	SetType(get_member_id(id, 0x48), "_DWORD");
+	SetType(get_member_id(id, 0x30), "pvector__dnagroupalloc__");
+	SetType(get_member_id(id, 0x48), "DNAGroup *");
 	id = get_struc_id("DNAGroup_TypedObject_VTable");
 	SetType(get_member_id(id, 0x0), "void *");
 	SetType(get_member_id(id, 0x4), "void *");
-	SetType(get_member_id(id, 0x8), "void *");
-	SetType(get_member_id(id, 0xC), "void *");
+	SetType(get_member_id(id, 0x8), "void (__thiscall *)(void *, signed int)");
+	SetType(get_member_id(id, 0xC), "void (__thiscall *)(DNAGroup *, NodePath *, NodePath *, DNAStorage *, int)");
 	SetType(get_member_id(id, 0x10), "void *");
+	SetType(get_member_id(id, 0x14), "void *");
 	id = get_struc_id("DNAGroup_ReferenceCount_VTable");
 	SetType(get_member_id(id, 0x0), "void *");
+	SetType(get_member_id(id, 0x4), "void *");
+	id = get_struc_id("pallocvector_DNAGroup");
+	SetType(get_member_id(id, 0x0), "_Vector_alloc_DNAGroup");
+	id = get_struc_id("_Vector_alloc_DNAGroup");
+	SetType(get_member_id(id, 0x0), "_Compressed_pair_DNAGroup");
+	id = get_struc_id("_Compressed_pair_DNAGroup");
+	SetType(get_member_id(id, 0x0), "_Wrap_alloc_DNAGroup");
+	SetType(get_member_id(id, 0x4), "_Vector_val_DNAGroup");
+	id = get_struc_id("_Wrap_alloc_DNAGroup");
+	SetType(get_member_id(id, 0x0), "pallocator_array_DNAGroup");
+	id = get_struc_id("pallocator_array_DNAGroup");
+	SetType(get_member_id(id, 0x0), "TypeHandle");
+	id = get_struc_id("_Vector_val_DNAGroup");
+	SetType(get_member_id(id, 0x0), "DNAGroup *");
+	SetType(get_member_id(id, 0x4), "DNAGroup *");
+	SetType(get_member_id(id, 0x8), "DNAGroup *");
+	id = get_struc_id("DNAStorage");
+	SetType(get_member_id(id, 0x0), "int");
+	SetType(get_member_id(id, 0x1C0), "_DWORD");
+	id = get_struc_id("std::_Allocator_base__int__");
+	id = get_struc_id("std::_Allocator_base__std::_Aux_cont__");
+	id = get_struc_id("std::vector__intalloc__");
+	SetType(get_member_id(id, 0x0), "std::_Vector_val__intalloc");
+	SetType(get_member_id(id, 0xC), "int *");
+	SetType(get_member_id(id, 0x10), "int *");
+	SetType(get_member_id(id, 0x14), "int *");
+	id = get_struc_id("std::_Vector_val__intalloc");
+	SetType(get_member_id(id, 0x0), "std::_Container_base_aux_alloc_real__std::allocator_general__");
+	id = get_struc_id("std::_Container_base_aux_alloc_real__std::allocator_general__");
+	SetType(get_member_id(id, 0x0), "std::_Container_base_aux");
+	id = get_struc_id("std::allocator__std::_Aux_cont__");
+	id = get_struc_id("std::allocator_general");
+	id = get_struc_id("std::_Allocator_base_general");
+	id = get_struc_id("pvector__dnagroupalloc__");
+	SetType(get_member_id(id, 0x0), "std::vector__dnagroupalloc__");
+	id = get_struc_id("std::vector__dnagroupalloc__");
+	SetType(get_member_id(id, 0x0), "std::_Vector_val__dnagroupalloc");
+	SetType(get_member_id(id, 0xC), "DNAGroup *");
+	SetType(get_member_id(id, 0x10), "DNAGroup *");
+	SetType(get_member_id(id, 0x14), "DNAGroup *");
+	id = get_struc_id("std::_Vector_val__dnagroupalloc");
+	SetType(get_member_id(id, 0x0), "std::_Container_base_aux_alloc_real__std::allocator_general__");
 	return id;
 }
 
@@ -13688,6 +13730,24 @@ static Structures_4(id) {
 	id = add_struc(-1,"DNAGroup",0);
 	id = add_struc(-1,"DNAGroup_TypedObject_VTable",0);
 	id = add_struc(-1,"DNAGroup_ReferenceCount_VTable",0);
+	id = add_struc(-1,"pallocvector_DNAGroup",0);
+	id = add_struc(-1,"_Vector_alloc_DNAGroup",0);
+	id = add_struc(-1,"_Compressed_pair_DNAGroup",0);
+	id = add_struc(-1,"_Wrap_alloc_DNAGroup",0);
+	id = add_struc(-1,"pallocator_array_DNAGroup",0);
+	id = add_struc(-1,"_Vector_val_DNAGroup",0);
+	id = add_struc(-1,"DNAStorage",0);
+	id = add_struc(-1,"std::_Allocator_base__int__",0);
+	id = add_struc(-1,"std::_Allocator_base__std::_Aux_cont__",0);
+	id = add_struc(-1,"std::vector__intalloc__",0);
+	id = add_struc(-1,"std::_Vector_val__intalloc",0);
+	id = add_struc(-1,"std::_Container_base_aux_alloc_real__std::allocator_general__",0);
+	id = add_struc(-1,"std::allocator__std::_Aux_cont__",0);
+	id = add_struc(-1,"std::allocator_general",0);
+	id = add_struc(-1,"std::_Allocator_base_general",0);
+	id = add_struc(-1,"pvector__dnagroupalloc__",0);
+	id = add_struc(-1,"std::vector__dnagroupalloc__",0);
+	id = add_struc(-1,"std::_Vector_val__dnagroupalloc",0);
 	
 	id = get_struc_id("GUID");
 	mid = add_struc_member(id,"Data1",	0,	0x20000400,	-1,	4);
@@ -14414,6 +14474,12 @@ static Structures_4(id) {
 	mid = add_struc_member(id,"_Filebuffer",	0X3C,	0x000400,	-1,	28);
 	mid = add_struc_member(id,"gap58",	0X58,	0x000400,	-1,	52);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_5(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::basic_ifstream<unsigned short,std::char_traits<unsigned short> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::basic_istream<unsigned short,std::char_traits<unsigned short> >"),	60);
@@ -14433,12 +14499,6 @@ static Structures_4(id) {
 	mid = add_struc_member(id,"_Mystate",	0X8,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_Except",	0XC,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_Fmtfl",	0X10,	0x20000400,	-1,	4);
-	return id;
-}
-
-static Structures_5(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_Prec",	0X14,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_Wide",	0X18,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_Arr",	0X1C,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
@@ -14668,10 +14728,6 @@ static Structures_5(id) {
 	
 	id = get_struc_id("std::_Aux_cont");
 	mid = add_struc_member(id,"_Mycontainer",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
-	set_struc_align(id,2);
-	
-	id = get_struc_id("std::_Container_base_aux");
-	mid = add_struc_member(id,"_Myownedaux",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Iterator_base_aux");
@@ -15919,6 +15975,12 @@ static Structures_5(id) {
 	mid = add_struc_member(id,"Flink",	0,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"Blink",	0X4,	0x20000400,	-1,	4);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_6(id) {
+        auto mid;
+
 	
 	id = get_struc_id("_PEB_LDR_DATA");
 	mid = add_struc_member(id,"Length",	0,	0x20000400,	-1,	4);
@@ -15934,12 +15996,6 @@ static Structures_5(id) {
 	mid = add_struc_member(id,"s",	0,	0x60000400,	get_struc_id("$FAF74743FBE1C8632047CFB668F7028A"),	8);
 	mid = add_struc_member(id,"u",	0,	0x60000400,	get_struc_id("$FAF74743FBE1C8632047CFB668F7028A"),	8);
 	mid = add_struc_member(id,"QuadPart",	0,	0x30000400,	-1,	8);
-	return id;
-}
-
-static Structures_6(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"__s0",	0,	0x60000400,	get_struc_id("$FAF74743FBE1C8632047CFB668F7028A"),	8);
 	set_struc_align(id,3);
 	
@@ -17311,6 +17367,12 @@ static Structures_6(id) {
 	
 	id = get_struc_id("std::_Vector_val<std::_Simple_types<CInterval *> >");
 	mid = add_struc_member(id,"_Myfirst",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	return id;
+}
+
+static Structures_7(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_Mylast",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"_Myend",	0X8,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
@@ -17323,12 +17385,6 @@ static Structures_6(id) {
 	id = get_struc_id("std::_Vector_alloc<std::_Vec_base_types<CInterval *,pallocator_array<CInterval *> > >");
 	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_array<CInterval *> >,std::_Vector_val<std::_Simple_types<CInterval *> >,0>"),	16);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_7(id) {
-        auto mid;
-
 	
 	id = get_struc_id("std::vector<CInterval *,pallocator_array<CInterval *> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Vector_alloc<std::_Vec_base_types<CInterval *,pallocator_array<CInterval *> > >"),	16);
@@ -18009,13 +18065,13 @@ static Structures_7(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("TypedWritable");
-	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("TypedObject"),	4);
+	mid = add_struc_member(id,"baseclass",	0,	0x60000400,	get_struc_id("TypedObject"),	4);
 	mid = add_struc_member(id,"_bam_writers",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"_bam_modified",	0X8,	0x60000400,	get_struc_id("UpdateSeq"),	4);
 	set_struc_align(id,2);
 	
 	id = get_struc_id("TypedWritableReferenceCount");
-	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("TypedWritable"),	12);
+	mid = add_struc_member(id,"baseclass",	0,	0x60000400,	get_struc_id("TypedWritable"),	12);
 	mid = add_struc_member(id,"baseclass_c",	0XC,	0x60000400,	get_struc_id("ReferenceCount"),	12);
 	set_struc_align(id,2);
 	
@@ -18431,16 +18487,16 @@ static Structures_7(id) {
 	id = get_struc_id("std::_Compressed_pair<std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::_Compressed_pair<std::_Wrap_alloc<std::allocator<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *> > >,1>,1>");
 	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<std::allocator<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *> > >,1>"),	8);
 	set_struc_align(id,2);
-	
-	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,ConfigVariableCore *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *> >,0> >");
-	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::_Compressed_pair<std::_Wrap_alloc<std::allocator<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *> > >,1>,1>"),	8);
-	set_struc_align(id,2);
 	return id;
 }
 
 static Structures_8(id) {
         auto mid;
 
+	
+	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,ConfigVariableCore *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *> >,0> >");
+	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::_Compressed_pair<std::_Wrap_alloc<std::allocator<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *> > >,1>,1>"),	8);
+	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree<std::_Tmap_traits<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,ConfigVariableCore *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *> >,0> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,ConfigVariableCore *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConfigVariableCore *> >,0> >"),	8);
@@ -19238,7 +19294,7 @@ static Structures_8(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("PandaNode");
-	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("TypedWritableReferenceCount"),	24);
+	mid = add_struc_member(id,"baseclass",	0,	0x60000400,	get_struc_id("TypedWritableReferenceCount"),	24);
 	mid = add_struc_member(id,"gap18",	0X18,	0x000400,	-1,	4);
 	mid = add_struc_member(id,"baseclass_34",	0X34,	0x60000400,	get_struc_id("LinkedListNode"),	8);
 	mid = add_struc_member(id,"_paths",	0X3C,	0x60000400,	get_struc_id("pset<NodePathComponent *,pointer_hash>"),	12);
@@ -19607,6 +19663,12 @@ static Structures_8(id) {
 	id = get_struc_id("pvector<PointerTo<CullBin> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::vector<PointerTo<CullBin>,pallocator_array<PointerTo<CullBin> > >"),	16);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_9(id) {
+        auto mid;
+
 	
 	id = get_struc_id("CullResult");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("ReferenceCount"),	12);
@@ -19630,12 +19692,6 @@ static Structures_8(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("PointerToArray<PointerTo<AsyncTask> >");
-	return id;
-}
-
-static Structures_9(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("PointerToArrayBase<PointerTo<AsyncTask> >"),	4);
 	mid = add_struc_member(id,"_type_handle",	0X4,	0x60000400,	get_struc_id("TypeHandle"),	4);
 	set_struc_align(id,2);
@@ -20811,6 +20867,12 @@ static Structures_9(id) {
 	id = get_struc_id("pmap<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,pset<void (__cdecl*)(Event const *),std::less<void (__cdecl*)(Event const *)> >,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,pset<void (__cdecl*)(Event const *),std::less<void (__cdecl*)(Event const *)> >,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,pallocator_single<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,pset<void (__cdecl*)(Event const *),std::less<void (__cdecl*)(Event const *)> > > > >"),	12);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_10(id) {
+        auto mid;
+
 	
 	id = get_struc_id("pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,pset<std::pair<void (__cdecl*)(Event const *,void *),void *>,std::less<std::pair<void (__cdecl*)(Event const *,void *),void *> > > >,void *> >");
 	mid = add_struc_member(id,"_type_handle",	0,	0x60000400,	get_struc_id("TypeHandle"),	4);
@@ -20819,12 +20881,6 @@ static Structures_9(id) {
 	id = get_struc_id("std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,pset<std::pair<void (__cdecl*)(Event const *,void *),void *>,std::less<std::pair<void (__cdecl*)(Event const *,void *),void *> > > >,void *> > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,pset<std::pair<void (__cdecl*)(Event const *,void *),void *>,std::less<std::pair<void (__cdecl*)(Event const *,void *),void *> > > >,void *> >"),	4);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_10(id) {
-        auto mid;
-
 	
 	id = get_struc_id("std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,pset<std::pair<void (__cdecl*)(Event const *,void *),void *>,std::less<std::pair<void (__cdecl*)(Event const *,void *),void *> > > > > >");
 	mid = add_struc_member(id,"_Myhead",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
@@ -21706,6 +21762,12 @@ static Structures_10(id) {
 	id = get_struc_id("std::_Compressed_pair<std::less<InternalName const *>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<InternalName const * const,GeomVertexColumn *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<InternalName const * const,GeomVertexColumn *> > >,0>,1>");
 	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<InternalName const * const,GeomVertexColumn *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<InternalName const * const,GeomVertexColumn *> > >,0>"),	12);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_11(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<InternalName const *,GeomVertexColumn *,std::less<InternalName const *>,pallocator_single<std::pair<InternalName const * const,GeomVertexColumn *> >,0> >");
 	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::less<InternalName const *>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<InternalName const * const,GeomVertexColumn *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<InternalName const * const,GeomVertexColumn *> > >,0>,1>"),	12);
@@ -21714,12 +21776,6 @@ static Structures_10(id) {
 	id = get_struc_id("std::_Tree<std::_Tmap_traits<InternalName const *,GeomVertexColumn *,std::less<InternalName const *>,pallocator_single<std::pair<InternalName const * const,GeomVertexColumn *> >,0> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<InternalName const *,GeomVertexColumn *,std::less<InternalName const *>,pallocator_single<std::pair<InternalName const * const,GeomVertexColumn *> >,0> >"),	12);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_11(id) {
-        auto mid;
-
 	
 	id = get_struc_id("std::map<InternalName const *,GeomVertexColumn *,std::less<InternalName const *>,pallocator_single<std::pair<InternalName const * const,GeomVertexColumn *> > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree<std::_Tmap_traits<InternalName const *,GeomVertexColumn *,std::less<InternalName const *>,pallocator_single<std::pair<InternalName const * const,GeomVertexColumn *> >,0> >"),	12);
@@ -22701,6 +22757,12 @@ static Structures_11(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("NurbsBasisVector::Segment");
+	return id;
+}
+
+static Structures_12(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_vertex_index",	0,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_from",	0X4,	0x80000400,	-1,	4);
 	mid = add_struc_member(id,"_to",	0X8,	0x80000400,	-1,	4);
@@ -22723,12 +22785,6 @@ static Structures_11(id) {
 	
 	id = get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_array<NurbsBasisVector::Segment> >,std::_Vector_val<std::_Simple_types<NurbsBasisVector::Segment> >,0>");
 	mid = add_struc_member(id,"_Myval1",	0,	0x60000400,	get_struc_id("std::_Wrap_alloc<pallocator_array<NurbsBasisVector::Segment> >"),	4);
-	return id;
-}
-
-static Structures_12(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_Myval2",	0X4,	0x60000400,	get_struc_id("std::_Vector_val<std::_Simple_types<NurbsBasisVector::Segment> >"),	12);
 	set_struc_align(id,2);
 	
@@ -23876,6 +23932,12 @@ static Structures_12(id) {
 	id = get_struc_id("std::_Vector_val<std::_Simple_types<CopyOnWritePointerTo<GeomPrimitive> > >");
 	mid = add_struc_member(id,"_Myfirst",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"_Mylast",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	return id;
+}
+
+static Structures_13(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_Myend",	0X8,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
@@ -23889,12 +23951,6 @@ static Structures_12(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::vector<CopyOnWritePointerTo<GeomPrimitive>,pallocator_array<CopyOnWritePointerTo<GeomPrimitive> > >");
-	return id;
-}
-
-static Structures_13(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Vector_alloc<std::_Vec_base_types<CopyOnWritePointerTo<GeomPrimitive>,pallocator_array<CopyOnWritePointerTo<GeomPrimitive> > > >"),	16);
 	set_struc_align(id,2);
 	
@@ -25123,6 +25179,12 @@ static Structures_13(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<PreparedGraphicsObjects *,ShaderContext *,std::less<PreparedGraphicsObjects *>,pallocator_single<std::pair<PreparedGraphicsObjects * const,ShaderContext *> >,0> >");
+	return id;
+}
+
+static Structures_14(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::less<PreparedGraphicsObjects *>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<PreparedGraphicsObjects * const,ShaderContext *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<PreparedGraphicsObjects * const,ShaderContext *> > >,0>,1>"),	12);
 	set_struc_align(id,2);
 	
@@ -25131,12 +25193,6 @@ static Structures_13(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::map<PreparedGraphicsObjects *,ShaderContext *,std::less<PreparedGraphicsObjects *>,pallocator_single<std::pair<PreparedGraphicsObjects * const,ShaderContext *> > >");
-	return id;
-}
-
-static Structures_14(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree<std::_Tmap_traits<PreparedGraphicsObjects *,ShaderContext *,std::less<PreparedGraphicsObjects *>,pallocator_single<std::pair<PreparedGraphicsObjects * const,ShaderContext *> >,0> >"),	12);
 	set_struc_align(id,2);
 	
@@ -26405,6 +26461,12 @@ static Structures_14(id) {
 	
 	id = get_struc_id("std::_Tree_val<std::_Tree_simple_types<GeomVertexFormat *> >");
 	mid = add_struc_member(id,"_Myhead",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	return id;
+}
+
+static Structures_15(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_Mysize",	0X4,	0x20000400,	-1,	4);
 	set_struc_align(id,2);
 	
@@ -26418,12 +26480,6 @@ static Structures_14(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree_comp_alloc<std::_Tset_traits<GeomVertexFormat *,IndirectCompareTo<GeomVertexFormat>,pallocator_single<GeomVertexFormat *>,0> >");
-	return id;
-}
-
-static Structures_15(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<IndirectCompareTo<GeomVertexFormat>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<GeomVertexFormat *,void *> > >,std::_Tree_val<std::_Tree_simple_types<GeomVertexFormat *> >,0>,1>"),	12);
 	set_struc_align(id,2);
 	
@@ -27597,6 +27653,12 @@ static Structures_15(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Compressed_pair<std::less<ButtonHandle>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<ButtonHandle,void *> > >,std::_Tree_val<std::_Tree_simple_types<ButtonHandle> >,0>,1>");
+	return id;
+}
+
+static Structures_16(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<ButtonHandle,void *> > >,std::_Tree_val<std::_Tree_simple_types<ButtonHandle> >,0>"),	12);
 	set_struc_align(id,2);
 	
@@ -27611,12 +27673,6 @@ static Structures_15(id) {
 	id = get_struc_id("std::set<ButtonHandle,std::less<ButtonHandle>,pallocator_single<ButtonHandle> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree<std::_Tset_traits<ButtonHandle,std::less<ButtonHandle>,pallocator_single<ButtonHandle>,0> >"),	12);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_16(id) {
-        auto mid;
-
 	
 	id = get_struc_id("pset<ButtonHandle,std::less<ButtonHandle> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::set<ButtonHandle,std::less<ButtonHandle>,pallocator_single<ButtonHandle> >"),	12);
@@ -28756,6 +28812,12 @@ static Structures_16(id) {
 	mid = add_struc_member(id,"fields",	0X8,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"n_in_sequence",	0XC,	0x20000400,	-1,	4);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_17(id) {
+        auto mid;
+
 	
 	id = get_struc_id("PyStructSequence_Field");
 	mid = add_struc_member(id,"name",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
@@ -28786,12 +28848,6 @@ static Structures_16(id) {
 	id = get_struc_id("iso2022_designation");
 	mid = add_struc_member(id,"mark",	0,	0x000400,	-1,	1);
 	mid = add_struc_member(id,"plane",	0X1,	0x000400,	-1,	1);
-	return id;
-}
-
-static Structures_17(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"width",	0X2,	0x000400,	-1,	1);
 	mid = add_struc_member(id,"initializer",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"decoder",	0X8,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
@@ -30252,6 +30308,12 @@ static Structures_17(id) {
 	mid = add_struc_member(id,"st_gid",	0XC,	0x10000400,	-1,	2);
 	mid = add_struc_member(id,"st_rdev",	0X10,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"st_size",	0X14,	0x20000400,	-1,	4);
+	return id;
+}
+
+static Structures_18(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"st_atime",	0X18,	0x30000400,	-1,	8);
 	mid = add_struc_member(id,"st_mtime",	0X20,	0x30000400,	-1,	8);
 	mid = add_struc_member(id,"st_ctime",	0X28,	0x30000400,	-1,	8);
@@ -30281,12 +30343,6 @@ static Structures_17(id) {
 	
 	id = get_struc_id("$DE5CB272017C6F563917B345CF584275");
 	mid = add_struc_member(id,"targets",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
-	return id;
-}
-
-static Structures_18(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"value",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
@@ -30982,33 +31038,248 @@ static Structures_18(id) {
 	mid = add_struc_member(id,"second",	0X4,	0x000400,	-1,	1);
 	set_struc_align(id,2);
 	
+	id = get_struc_id("std::_Container_base_aux");
+	mid = add_struc_member(id,"_Myownedaux",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("std::_Container_base_aux_alloc_real__std::allocator_general__");
+	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Container_base_aux"),	4);
+	mid = add_struc_member(id,"gap4",	0X4,	0x000400,	-1,	4);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("std::_Vector_val__dnagroupalloc");
+	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Container_base_aux_alloc_real__std::allocator_general__"),	8);
+	mid = add_struc_member(id,"gap8",	0X8,	0x000400,	-1,	4);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("std::vector__dnagroupalloc__");
+	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Vector_val__dnagroupalloc"),	12);
+	mid = add_struc_member(id,"_Myfirst",	0XC,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"_Mylast",	0X10,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"_Myend",	0X14,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("pvector__dnagroupalloc__");
+	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::vector__dnagroupalloc__"),	24);
+	set_struc_align(id,2);
+	
 	id = get_struc_id("DNAGroup");
 	mid = add_struc_member(id,"typedObjectVTable",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"field_4",	0X4,	0x20000400,	-1,	4);
-	mid = add_struc_member(id,"referenceCountVTable",	0X8,	0x20000400,	-1,	4);
-	mid = add_struc_member(id,"field_C",	0XC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"referenceCountVTable",	0X8,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"num_children",	0XC,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"field_10",	0X10,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"name",	0X14,	0x60000400,	get_struc_id("__string"),	28);
-	mid = add_struc_member(id,"field_30",	0X30,	0x20000400,	-1,	4);
-	mid = add_struc_member(id,"field_34",	0X34,	0x20000400,	-1,	4);
-	mid = add_struc_member(id,"dword84",	0X38,	0x20000400,	-1,	4);
-	mid = add_struc_member(id,"dword86",	0X3C,	0x20000400,	-1,	4);
-	mid = add_struc_member(id,"dword88",	0X40,	0x20000400,	-1,	4);
-	mid = add_struc_member(id,"dword90",	0X44,	0x20000400,	-1,	4);
-	mid = add_struc_member(id,"dword100",	0X48,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"children",	0X30,	0x60000400,	get_struc_id("pvector__dnagroupalloc__"),	24);
+	mid = add_struc_member(id,"parent",	0X48,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
 	id = get_struc_id("DNAGroup_TypedObject_VTable");
-	mid = add_struc_member(id,"get_type",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
-	mid = add_struc_member(id,"force_init_type",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
-	mid = add_struc_member(id,"traverse",	0X8,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
-	mid = add_struc_member(id,"write",	0XC,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
-	mid = add_struc_member(id,"make_copy",	0X10,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"vector_destructor",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"get_type",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"force_init_type",	0X8,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"traverse",	0XC,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"write",	0X10,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"make_copy",	0X14,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
 	id = get_struc_id("DNAGroup_ReferenceCount_VTable");
-	mid = add_struc_member(id,"unref",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"j_vector_destructor",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"unref",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
+	
+	id = get_struc_id("pallocator_array_DNAGroup");
+	mid = add_struc_member(id,"_type_handle",	0,	0x60000400,	get_struc_id("TypeHandle"),	4);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("_Wrap_alloc_DNAGroup");
+	mid = add_struc_member(id,"baseclass",	0,	0x60000400,	get_struc_id("pallocator_array_DNAGroup"),	4);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("_Vector_val_DNAGroup");
+	mid = add_struc_member(id,"_Myfirst",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"_Mylast",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"_Myend",	0X8,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("_Compressed_pair_DNAGroup");
+	mid = add_struc_member(id,"_Myval1",	0,	0x60000400,	get_struc_id("_Wrap_alloc_DNAGroup"),	4);
+	mid = add_struc_member(id,"_Myval2",	0X4,	0x60000400,	get_struc_id("_Vector_val_DNAGroup"),	12);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("_Vector_alloc_DNAGroup");
+	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("_Compressed_pair_DNAGroup"),	16);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("pallocvector_DNAGroup");
+	mid = add_struc_member(id,"baseclass",	0,	0x60000400,	get_struc_id("_Vector_alloc_DNAGroup"),	16);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("DNAStorage");
+	mid = add_struc_member(id,"field_0",	0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_4",	0X4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_8",	0X8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_C",	0XC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_10",	0X10,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_14",	0X14,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_18",	0X18,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1C",	0X1C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_20",	0X20,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_24",	0X24,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_28",	0X28,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_2C",	0X2C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_30",	0X30,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_34",	0X34,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_38",	0X38,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_3C",	0X3C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_40",	0X40,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_44",	0X44,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_48",	0X48,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_4C",	0X4C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_50",	0X50,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_54",	0X54,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_58",	0X58,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_5C",	0X5C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_60",	0X60,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_64",	0X64,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_68",	0X68,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_6C",	0X6C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_70",	0X70,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_74",	0X74,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_78",	0X78,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_7C",	0X7C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_80",	0X80,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_84",	0X84,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_88",	0X88,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_8C",	0X8C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_90",	0X90,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_94",	0X94,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_98",	0X98,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_9C",	0X9C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_A0",	0XA0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_A4",	0XA4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_A8",	0XA8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_AC",	0XAC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_B0",	0XB0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_B4",	0XB4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_B8",	0XB8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_BC",	0XBC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_C0",	0XC0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_C4",	0XC4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_C8",	0XC8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_CC",	0XCC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_D0",	0XD0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_D4",	0XD4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_D8",	0XD8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_DC",	0XDC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_E0",	0XE0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_E4",	0XE4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_E8",	0XE8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_EC",	0XEC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_F0",	0XF0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_F4",	0XF4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_F8",	0XF8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_FC",	0XFC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_100",	0X100,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_104",	0X104,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_108",	0X108,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_10C",	0X10C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_110",	0X110,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_114",	0X114,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_118",	0X118,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_11C",	0X11C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_120",	0X120,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_124",	0X124,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_128",	0X128,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_12C",	0X12C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_130",	0X130,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_134",	0X134,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_138",	0X138,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_13C",	0X13C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_140",	0X140,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_144",	0X144,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_148",	0X148,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_14C",	0X14C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_150",	0X150,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_154",	0X154,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_158",	0X158,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_15C",	0X15C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_160",	0X160,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_164",	0X164,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_168",	0X168,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_16C",	0X16C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_170",	0X170,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_174",	0X174,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_178",	0X178,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_17C",	0X17C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_180",	0X180,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_184",	0X184,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_188",	0X188,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_18C",	0X18C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_190",	0X190,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_194",	0X194,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_198",	0X198,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_19C",	0X19C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1A0",	0X1A0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1A4",	0X1A4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1A8",	0X1A8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1AC",	0X1AC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1B0",	0X1B0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1B4",	0X1B4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1B8",	0X1B8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1BC",	0X1BC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"dword1C0",	0X1C0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1C4",	0X1C4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1C8",	0X1C8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1CC",	0X1CC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1D0",	0X1D0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1D4",	0X1D4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1D8",	0X1D8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1DC",	0X1DC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1E0",	0X1E0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1E4",	0X1E4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1E8",	0X1E8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1EC",	0X1EC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1F0",	0X1F0,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1F4",	0X1F4,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1F8",	0X1F8,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_1FC",	0X1FC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_200",	0X200,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_204",	0X204,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_208",	0X208,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_20C",	0X20C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_210",	0X210,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_214",	0X214,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"dword218",	0X218,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_21C",	0X21C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_220",	0X220,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_224",	0X224,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_228",	0X228,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"field_22C",	0X22C,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"dword230",	0X230,	0x20000400,	-1,	4);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("std::_Allocator_base__int__");
+	
+	id = get_struc_id("std::_Allocator_base__std::_Aux_cont__");
+	
+	id = get_struc_id("std::_Vector_val__intalloc");
+	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Container_base_aux_alloc_real__std::allocator_general__"),	8);
+	mid = add_struc_member(id,"gap8",	0X8,	0x000400,	-1,	4);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("std::vector__intalloc__");
+	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Vector_val__intalloc"),	12);
+	mid = add_struc_member(id,"_Myfirst",	0XC,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"_Mylast",	0X10,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"_Myend",	0X14,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("std::allocator__std::_Aux_cont__");
+	
+	id = get_struc_id("std::allocator_general");
+	
+	id = get_struc_id("std::_Allocator_base_general");
 	return id;
 }
 
