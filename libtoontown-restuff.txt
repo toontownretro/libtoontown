@@ -5,6 +5,50 @@
 #define PI 3.1415927410125732
 #define HALF_PI 1.5707963705062866
 
+### DNABattleCell (Class) ###
+
+void DNABattleCell::DNABattleCell(float width, float height, LPoint3f pos) {
+    float14 = 0.0;
+    dword10 = 0;
+    this->width = width;
+    this->height = height;
+    this->pos = pos;
+}
+
+double DNABattleCell::get_height() {
+    return height;
+}
+
+LPoint3f DNABattleCell::get_pos() {
+    return pos;
+}
+
+double DNABattleCell::get_width() {
+    return width;
+}
+
+void DNABattleCell::set_pos(LPoint3f pos) {
+    this->pos = pos;
+}
+
+void DNABattleCell::set_width_height(float width, float height) {
+    this->width = width;
+    this->height = height;
+}
+
+void DNABattleCell::output(std::ostream &out) {
+    out << "Width: " << width << " Height: " << height << " Pos: " << pos[0] << " " << pos[1] << " " << pos[2];
+}
+
+NodePath &DNABattleCell::traverse(NodePath &parent, DNAStorage *store, int editing) {
+    return parent;
+}
+
+void DNABattleCell::write(std::ostream &out, DNAStorage *store, int indent_level) {
+    out = indent(out, indent_level);
+    out << "battle_cell [ " width << " " << height << " " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
+}
+
 ### DNAGroup (Class) ###
 
 void DNAGroup::DNAGroup(std::string name) : parent(nullptr) {
@@ -91,15 +135,15 @@ void DNANode::DNANode(std::string name) : DNAGroup(name) {
     scale = LVecBase3f(1.0, 1.0, 1.0);
 }
 
-LVecBase3f &DNANode::get_hpr() {
+LVecBase3f DNANode::get_hpr() {
     return LVecBase3f(hpr);
 }
 
-LVecBase3f &DNANode::get_pos() {
+LVecBase3f DNANode::get_pos() {
     return LVecBase3f(pos);
 }
 
-LVecBase3f &DNANode::get_scale() {
+LVecBase3f DNANode::get_scale() {
     return LVecBase3f(scale);
 }
 
@@ -168,7 +212,7 @@ std::string DNAProp::get_code() {
     return code;
 }
 
-LVector4f &DNAProp::get_color() {
+LVector4f DNAProp::get_color() {
     return color;
 }
 
