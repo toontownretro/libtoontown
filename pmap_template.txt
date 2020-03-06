@@ -1,0 +1,84 @@
+
+struct __cppobj pmap_int_DNASuitPoint_allocint_ : std::map_int_DNASuitPoint_allocint_
+{
+};
+
+struct __cppobj std::map_int_DNASuitPoint_allocint_ : std::Map_Tree_int_DNASuitPoint
+{
+};
+
+struct __cppobj std::Map_Tree_int_DNASuitPoint : std::Map_Tree_val
+{
+  std::Map_Tree_nod_int_DNASuitPoint::_Node *_Myhead;
+  unsigned int _Mysize;
+};
+
+struct __cppobj __declspec(align(4)) std::Map_Tree_nod_int_DNASuitPoint::_Node
+{
+  std::Map_Tree_nod_int_DNASuitPoint::_Node *_Left;
+  std::Map_Tree_nod_int_DNASuitPoint::_Node *_Parent;
+  std::Map_Tree_nod_int_DNASuitPoint::_Node *_Right;
+  std::pair_int_DNASuitPoint _Myval;
+  char _Color;
+  char _Isnil;
+};
+
+struct __cppobj __declspec(align(4)) std::Map_Tree_val : std::_Map_Tree_ptr
+{
+  std::allocator_std::general _Alval;
+};
+
+struct __cppobj __declspec(align(4)) std::_Map_Tree_ptr : std::Map_Tree_nod
+{
+  std::allocator_std::general _Alptr;
+};
+
+
+struct __cppobj __declspec(align(4)) std::Map_Tree_nod : std::Map_Tmap_Traits
+{
+  std::allocator_std::general _Alnod;
+};
+
+struct __cppobj __declspec(align(4)) std::Map_Tmap_Traits : std::map_Container_base_aux_alloc_real
+{
+  std::less_general_ comp;
+};
+
+struct __cppobj __declspec(align(4)) std::map_Container_base_aux_alloc_real : std::_Container_base_aux
+{
+   std::allocator_std::general _Alaux;
+};
+
+const struct __cppobj std::_Container_base_aux
+{
+  std::_Aux_cont *_Myownedaux;
+};
+
+struct __cppobj std::_Aux_cont
+{
+  std::_Container_base_aux *_Mycontainer;
+};
+
+
+struct __cppobj std::less_general_ : std::binary_function_general
+{
+};
+
+struct __cppobj std::binary_function_general
+{
+};
+
+
+struct __cppobj std::pair_int_DNASuitPoint
+{
+  int first;
+  DNASuitPoint *second;
+};
+
+struct __cppobj std::allocator_std::general : std::_Allocator_base
+{
+};
+
+struct __cppobj std::_Allocator_base
+{
+};

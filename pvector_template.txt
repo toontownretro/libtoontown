@@ -1,0 +1,49 @@
+
+struct pvector__dnabattlecellalloc__ : std::vector__dnabattlecellalloc__ {
+}
+
+struct __cppobj std::vector__dnabattlecellalloc__ : std::_Vector_val__dnabattlecellalloc
+{
+  DNABattleCell *_Myfirst;
+  DNABattleCell *_Mylast;
+  DNABattleCell *_Myend;
+};
+
+struct __cppobj __declspec(align(4)) std::_Vector_val__dnabattlecellalloc : std::_Container_base_aux_alloc_real__std::allocator_general__
+{
+  std::allocator_general _Alval;
+};
+
+struct __cppobj __declspec(align(4)) std::_Container_base_aux_alloc_real__std::allocator_general__ : std::_Container_base_aux
+{
+  std::allocator__std::_Aux_cont__ _Alaux;
+};
+
+const struct __cppobj std::_Container_base_aux
+{
+  std::_Aux_cont *_Myownedaux;
+};
+
+
+struct __cppobj std::allocator_general : std::_Allocator_base_general
+{
+};
+
+struct __cppobj std::_Allocator_base_general
+{
+};
+
+
+struct __cppobj std::allocator__std::_Aux_cont__ : std::_Allocator_base__std::_Aux_cont__
+{
+};
+
+struct __cppobj std::_Allocator_base__std::_Aux_cont__
+{
+};
+
+
+struct __cppobj std::_Aux_cont
+{
+  std::_Container_base_aux *_Mycontainer;
+};
