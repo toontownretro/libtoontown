@@ -1,0 +1,26 @@
+build*/
+built*/
+
+# Python / Compiled / Optimized
+*.py[cod]
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Eclipse IDE
+.project
+.pydevproject
+
+# Mac directory info
+.DS_Store
+
+# libtoontown
+*.dna
+*.pdna
+
+# Interrogate DB files
+*.in
+src/*_igate.cxx
+src/*_module.cxx
