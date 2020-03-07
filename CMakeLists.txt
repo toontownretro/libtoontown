@@ -37,6 +37,12 @@ set(BASE_FILES
 set(COMPONENTS_FILES
     src/components/DNABattleCell.cxx
     src/components/DNABattleCell.h
+    src/components/DNAGroup.cxx
+    src/components/DNAGroup.h
+    src/components/DNANode.cxx
+    src/components/DNANode.h
+    src/components/DNAProp.cxx
+    src/components/DNAProp.h
     src/components/DNAStorage.cxx
     src/components/DNAStorage.h
     src/components/DNASuitEdge.cxx

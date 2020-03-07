@@ -21,7 +21,7 @@ class EXPCL_DNA DNABattleCell : public TypedReferenceCount {
         void set_width_height(float width, float height);
         
         void output(std::ostream &out);
-        virtual NodePath &traverse(NodePath &parent, DNAStorage *store, int editing = 0);
+        virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing = 0);
         virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0);
 
     private:

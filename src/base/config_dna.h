@@ -6,6 +6,7 @@
 
 #include <pandabase.h>
 #include <notifyCategoryProxy.h>
+#include <config_linmath.h>
 
 #pragma warning (disable : 4273)
 #pragma warning (disable : 4275)

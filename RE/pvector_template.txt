@@ -1,15 +1,15 @@
 
-struct pvector__intalloc__ : std::vector__intalloc__ {
+struct pvector__stringalloc__ : std::vector__stringalloc__ {
 }
 
-struct __cppobj std::vector__intalloc__ : std::_Vector_val__intalloc
+struct __cppobj std::vector__stringalloc__ : std::_Vector_val__stringalloc
 {
-  int _Myfirst;
-  int _Mylast;
-  int _Myend;
+  __string *_Myfirst;
+  __string *_Mylast;
+  __string *_Myend;
 };
 
-struct __cppobj __declspec(align(4)) std::_Vector_val__intalloc : std::_Container_base_aux_alloc_real__std::allocator_general__
+struct __cppobj __declspec(align(4)) std::_Vector_val__stringalloc : std::_Container_base_aux_alloc_real__std::allocator_general__
 {
   std::allocator_general _Alval;
 };

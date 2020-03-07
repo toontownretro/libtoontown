@@ -44,7 +44,7 @@ void DNABattleCell::output(std::ostream &out) {
     out << "Width: " << width << " Height: " << height << " Pos: " << pos[0] << " " << pos[1] << " " << pos[2];
 }
 
-NodePath &DNABattleCell::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
+NodePath DNABattleCell::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
     return parent;
 }
 
@@ -55,8 +55,13 @@ void DNABattleCell::write(std::ostream &out, DNAStorage *store, int indent_level
 
 ### DNAGroup (Class) ###
 
-DNAGroup::DNAGroup(std::string name) : parent(nullptr) {
-    this->name = name;
+DNAGroup::DNAGroup(std::string initial_name) {
+    name = initial_name;
+}
+
+DNAGroup::DNAGroup(const DNAGroup &group) {
+    name = group.name;
+    children = group.children;
 }
 
 DNAGroup::~DNAGroup() {
@@ -76,6 +81,10 @@ void DNAGroup::clear_parent() {
     parent = nullptr;
 }
 
+PT(DNAGroup) DNAGroup::current() {
+    return children.back();
+}
+
 size_t DNAGroup::get_num_children() {
     return children.size();
 }
@@ -88,16 +97,21 @@ void DNAGroup::ls() {
     write(std::cout, 0, 0);
 }
 
-// TODO
 void DNAGroup::remove(PT(DNAGroup) group) {
-
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        if (*it == group) {
+            children.erase(it);
+            return;
+        }
+    }
+    dna_cat.warning() << "DNAGroup: group not found in map" << std::endl;
 }
 
 void DNAGroup::set_parent(PT(DNAGroup) parent) {
     this->parent = parent;
 }
 
-NodePath &DNAGroup::top_level_traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
+NodePath DNAGroup::top_level_traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
     NodePath _np = parent.attach_new_node(name);
     for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
         (*it)->traverse(_np, store, editing);
@@ -111,7 +125,7 @@ NodePath &DNAGroup::top_level_traverse(NodePath &parent, DNAStorage *store, int 
     return _np;
 }
 
-NodePath &DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
+NodePath DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
     NodePath _np = parent.attach_new_node(name);
     for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
         (*it)->traverse(_np, store, editing);
@@ -138,22 +152,32 @@ void DNAGroup::write(std::ostream &out, DNAStorage *store, int indent_level = 0)
 
 ### DNANode (Class) ###
 
-void DNANode::DNANode(std::string name) : DNAGroup(name) {
+DNANode::DNANode(std::string initial_name) : DNAGroup(initial_name) {
     pos = LVecBase3f(0.0, 0.0, 0.0);
     hpr = LVecBase3f(0.0, 0.0, 0.0);
     scale = LVecBase3f(1.0, 1.0, 1.0);
 }
 
+DNANode::DNANode(const DNANode &node) : DNAGroup(node) {
+    pos = node.pos;
+    hpr = node.hpr;
+    scale = node.scale;
+}
+
+DNANode::~DNANode() {
+
+}
+
 LVecBase3f DNANode::get_hpr() {
-    return LVecBase3f(hpr);
+    return hpr;
 }
 
 LVecBase3f DNANode::get_pos() {
-    return LVecBase3f(pos);
+    return pos;
 }
 
 LVecBase3f DNANode::get_scale() {
-    return LVecBase3f(scale);
+    return scale;
 }
 
 void DNANode::set_hpr(const LVecBase3f &hpr) {
@@ -168,7 +192,7 @@ void DNANode::set_scale(const LVecBase3f &scale) {
     this->scale = scale;
 }
 
-NodePath &DNANode::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
+NodePath DNANode::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
     NodePath _np = parent.attach_new_node(name);
     _np.set_pos_hpr_scale(pos, hpr, scale);
     for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
@@ -213,8 +237,16 @@ void DNANode::write(std::ostream &out, DNAStorage *store, int indent_level = 0) 
 
 ### DNAProp (Class) ###
 
-void DNAProp::DNAProp(std::string name) : DNANode(name) {
+DNAProp::DNAProp(std::string initial_name) : DNANode(initial_name) {
     color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
+}
+
+DNAProp::DNAProp(const DNAProp &prop) : DNANode(prop) {
+    color = prop.color;
+}
+
+DNAProp::~DNAProp() {
+
 }
 
 std::string DNAProp::get_code() {
@@ -233,29 +265,30 @@ void DNAProp::set_color(const LVecBase4f &color) {
     this->color = color;
 }
 
-NodePath &DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
+NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
     NodePath _np;
-    
+
     if (code == "DCS") {
-        PT(ModelNode) node = new ModelNode(m_name);
+        PT(ModelNode) node = new ModelNode(name);
         node->set_preserve_transform(ModelNode::PT_net);
-        _np = np.attach_new_node(node);
+        _np = parent.attach_new_node(node);
     } else {
         NodePath nodepath = store->find_node(code);
-        if (nodepath.is_empty())
-            return;
-        
-        _np = nodepath.copy_to(np);
-        
+        if (nodepath.is_empty()) {
+            return NodePath();
+        }
+
+        _np = nodepath.copy_to(parent);
+
         // This is my best guess for as to what it did. 
         // The code is a mess in the decompiler.
-        if (nodepath->has_tag("DNARoot") {
-            std::string tag = nodepath->get_tag("DNARoot");
-            _np->set_tag(tag, "DNARoot");
+        if (nodepath.has_tag("DNARoot")) {
+            std::string tag = nodepath.get_tag("DNARoot");
+            _np.set_tag(tag, "DNARoot");
         }
-        if (nodepath->has_tag("DNACode") {
-            std::string tag = nodepath->get_tag("DNACode");
-            _np->set_tag(tag, "DNACode");
+        if (nodepath.has_tag("DNACode")) {
+            std::string tag = nodepath.get_tag("DNACode");
+            _np.set_tag(tag, "DNACode");
         }
         _np.node()->set_name(name); // Is it this or _np.set_name(name)?
     }
@@ -263,7 +296,7 @@ NodePath &DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing = 0
     _np.set_color_scale(color);
 
     if (editing) {
-        PT(DNAGroup) PT_this = (DNAGroup *)this;
+        PT(DNAGroup) PT_this = (DNAGroup*)this;
         PT(PandaNode) store_node = _np.node();
         store->store_DNAGroup(store_node, PT_this);
     }
@@ -309,12 +342,12 @@ void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level = 0) 
 
 ### DNASign (Class) ###
 
-void DNASign::DNASign(std::string name) : DNAProp(name) {
+void DNASign::DNASign(std::string initial_name) : DNAProp(initial_name) {
 
 }
 
 // TODO
-NodePath &DNASign::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
+NodePath DNASign::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
  
 }
 
@@ -355,7 +388,7 @@ void DNASign::write(std::ostream &out, DNAStorage *store, int indent_level = 0) 
 
 ### DNASignBaseline (Class) ###
 
-void DNASignBaseline::DNASignBaseline(std::string name) : DNAProp(name) {
+void DNASignBaseline::DNASignBaseline(std::string initial_name) : DNAProp(initial_name) {
     font = NULL;
     floatBC = LVecBase3f(0.0, 0.0, 0.0);
     floatC8 = 0.0;
@@ -647,7 +680,7 @@ void DNASignBaseline::set_wiggle(float wiggle) {
 }
 
 // TODO
-NodePath &DNASignBaseline::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
+NodePath DNASignBaseline::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
     //reset(); // Is this actually called?
     NodePath np = parent.attach_new_node("baseline");
     
@@ -722,7 +755,7 @@ void DNASignBaseline::write(std::ostream &out, DNAStorage *store, int indent_lev
 
 ### DNASignText (Class) ###
 
-void DNASignText::DNASignText(std::string name) : DNAProp(name) {
+void DNASignText::DNASignText(std::string initial_name) : DNAProp(initial_name) {
     no_color = 1;
 }
 
@@ -731,7 +764,7 @@ void DNASignText::set_letters(std::string letters) {
 }
 
 // TODO
-NodePath &DNASignText::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
+NodePath DNASignText::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
 
 }
 

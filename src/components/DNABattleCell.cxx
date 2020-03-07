@@ -37,7 +37,7 @@ void DNABattleCell::output(std::ostream &out) {
     out << "Width: " << width << " Height: " << height << " Pos: " << pos[0] << " " << pos[1] << " " << pos[2];
 }
 
-NodePath &DNABattleCell::traverse(NodePath &parent, DNAStorage *store, int editing) {
+NodePath DNABattleCell::traverse(NodePath &parent, DNAStorage *store, int editing) {
     return parent;
 }
 

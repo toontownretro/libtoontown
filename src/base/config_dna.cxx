@@ -1,6 +1,9 @@
 #include "config_dna.h"
 
 #include "DNABattleCell.h"
+#include "DNAGroup.h"
+#include "DNANode.h"
+#include "DNAProp.h"
 #include "DNASuitEdge.h"
 #include "DNASuitPath.h"
 #include "DNASuitPoint.h"
@@ -23,6 +26,9 @@ void init_libtoontown() {
     initialized = true;
     
     DNABattleCell::init_type();
+    DNAGroup::init_type();
+    DNANode::init_type();
+    DNAProp::init_type();
     DNASuitEdge::init_type();
     DNASuitPath::init_type();
     DNASuitPoint::init_type();

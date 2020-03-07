@@ -2,9 +2,13 @@
 
 #include "config_dna.h"
 
-#include "pandabase.h"
-#include "datagramIterator.h"
-#include "luse.h"
+#include <pandabase.h>
+#include <datagramIterator.h>
+#include <luse.h>
+
+#ifndef temp_hpr_fix
+#define temp_hpr_fix true
+#endif
                                 
 #define TYPE_HANDLE(NAME, PARENT) public: \
                                     static TypeHandle get_class_type() { return _type_handle; }; \
