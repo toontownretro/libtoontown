@@ -1,15 +1,15 @@
 
-struct pvector__dnabattlecellalloc__ : std::vector__dnabattlecellalloc__ {
+struct pvector__intalloc__ : std::vector__intalloc__ {
 }
 
-struct __cppobj std::vector__dnabattlecellalloc__ : std::_Vector_val__dnabattlecellalloc
+struct __cppobj std::vector__intalloc__ : std::_Vector_val__intalloc
 {
-  DNABattleCell *_Myfirst;
-  DNABattleCell *_Mylast;
-  DNABattleCell *_Myend;
+  int _Myfirst;
+  int _Mylast;
+  int _Myend;
 };
 
-struct __cppobj __declspec(align(4)) std::_Vector_val__dnabattlecellalloc : std::_Container_base_aux_alloc_real__std::allocator_general__
+struct __cppobj __declspec(align(4)) std::_Vector_val__intalloc : std::_Container_base_aux_alloc_real__std::allocator_general__
 {
   std::allocator_general _Alval;
 };

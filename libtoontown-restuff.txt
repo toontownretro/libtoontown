@@ -44,7 +44,7 @@ NodePath &DNABattleCell::traverse(NodePath &parent, DNAStorage *store, int editi
     return parent;
 }
 
-void DNABattleCell::write(std::ostream &out, DNAStorage *store, int indent_level) {
+void DNABattleCell::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     out = indent(out, indent_level);
     out << "battle_cell [ " width << " " << height << " " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
 }
@@ -116,7 +116,7 @@ NodePath &DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing) {
     return _np;
 }
 
-void DNAGroup::write(std::ostream &out, DNAStorage *store, int indent_level) {
+void DNAGroup::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     out = indent(out, indent_level);
     out << "group ";
     out << name << " [" << std::endl;
@@ -174,7 +174,7 @@ NodePath &DNANode::traverse(NodePath &parent, DNAStorage *store, int editing) {
     return _np;
 }
 
-void DNANode::write(std::ostream &out, DNAStorage *store, int indent_level) {
+void DNANode::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     out = indent(out, indent_level);
     out << "node ";
     out << name << " [" << std::endl;
@@ -261,7 +261,7 @@ NodePath &DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
     return _np;
 }
 
-void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level) {
+void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     out = indent(out, indent_level);
     out << "prop ";
     out << name << " [" << std::endl;
@@ -309,7 +309,7 @@ NodePath &DNASign::traverse(NodePath &parent, DNAStorage *store, int editing) {
  
 }
 
-void DNASign::write(std::ostream &out, DNAStorage *store, int indent_level) {
+void DNASign::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     out = indent(out, indent_level);
     out << "sign [" << std::endl;
     if (code.size()) {
@@ -644,7 +644,7 @@ NodePath &DNASignBaseline::traverse(NodePath &parent, DNAStorage *store, int edi
     
 }
 
-void DNASignBaseline::write(std::ostream &out, DNAStorage *store, int indent_level) {
+void DNASignBaseline::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     out = indent(out, indent_level);
     out << "baseline [" << std::endl;
     if (code.size()) {
@@ -726,7 +726,7 @@ NodePath &DNASignText::traverse(NodePath &parent, DNAStorage *store, int editing
 
 }
 
-void DNASignText::write(std::ostream &out, DNAStorage *store, int indent_level) {
+void DNASignText::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     out = indent(out, indent_level);
     out << "text [" << std::endl;
     if (code.size()) {
@@ -763,4 +763,217 @@ void DNASignText::write(std::ostream &out, DNAStorage *store, int indent_level) 
     }
     out = indent(out, indent_level);
     out << "]" << std::endl;
+}
+
+### DNASuitEdge (Class) ###
+
+void DNASuitEdge::DNASuitEdge(PT(DNASuitPoint) start_point, PT(DNASuitPoint) end_point, std::string zone_id) {
+    this->start_point = start_point;
+    this->end_point = end_point;
+    this->zone_id = zone_id;
+}
+
+PT(DNASuitPoint) DNASuitEdge::get_end_point() {
+    return end_point;
+}
+
+PT(DNASuitPoint) DNASuitEdge::get_start_point() {
+    return start_point;
+}
+
+std::string DNASuitEdge::get_zone_id() {
+    return zone_id;
+}
+
+bool DNASuitEdge::operator==(const DNASuitEdge &other) {
+    return start_point == other.start_point && end_point == other.end_point;
+}
+
+void DNASuitEdge::output(std::ostream &out) {
+    out << "<" << start_point->index << " " << end_point->index << " zone " << zone_id << ">";
+}
+
+void DNASuitEdge::set_zone_id(std::string zone_id) {
+    this->zone_id = zone_id;
+}
+
+void DNASuitEdge::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
+    out = indent(out, indent_level);
+    out << "suit_edge [ " << start_point->index << " " << end_point->index << " ]" << std::endl;
+}
+
+### DNASuitPath (Class) ###
+
+void DNASuitPath::DNASuitPath() {
+}
+
+void DNASuitPath::DNASuitPath(int reserve_length) {
+    points.reserve(reserve_length);
+}
+
+void DNASuitPath::DNASuitPath(const DNASuitPath &other) {
+    copy(other);
+}
+
+void DNASuitPath::add_point(int point) {
+    points.push_back(point);
+}
+
+void DNASuitPath::copy(const DNASuitPath &path) {
+    points.clear();
+    for(pvector<int>::size_type i = 0; i != path.points.size(); i++) {
+        points.push_back(path.points[i]);
+    }
+}
+
+int DNASuitPath::get_num_points() {
+    return points.size();
+}
+
+int DNASuitPath::get_point_index(int i) {
+    return points[i];
+}
+
+void DNASuitPath::output(std::ostream &out) {
+    out << "Path: [ ";
+    for(pvector<int>::size_type i = 0; i != points.size(); i++) {
+        out << points[i] << " ";
+    }
+    out << "]";
+}
+
+void DNASuitPath::reverse_path() {
+    /*
+    // This is the accurate implementation of the psuedocode. 
+    // It is unnecessary however.
+    pvector<int>::iterator begin = points.begin();
+    for(pvector<int>::iterator it = points.end(); begin < it; ++begin; --it) {
+        int point = *begin;
+        *begin = *it;
+        *it = point;
+    }
+    */
+    
+    std::reverse(points.begin(), points.end());
+}
+
+### DNASuitPoint (Class) ###
+
+enum DNASuitPointType {
+    STREET_POINT = 0,
+    FRONT_DOOR_POINT = 1,
+    SIDE_DOOR_POINT = 2,
+    COGHQ_IN_POINT = 3,
+    COGHQ_OUT_POINT = 4,
+}
+
+void DNASuitPoint::DNASuitPoint(int index, DNASuitPointType type, LPoint3f pos, int lb_index = -1) {
+    this->index = index;
+    this->type = type;
+    this->pos = pos;
+    this->graph_id = 0;
+    this->lb_index = lb_index;
+}
+
+int DNASuitPoint::get_graph_id() {
+    return graph_id;
+}
+
+int DNASuitPoint::get_index() {
+    return index;
+}
+
+int DNASuitPoint::get_landmark_building_index() {
+    return lb_index;
+}
+
+DNASuitPointType DNASuitPoint::get_point_type() {
+    return type;
+}
+
+LPoint3f DNASuitPoint::get_pos() {
+    return pos;
+}
+
+bool DNASuitPoint::is_terminal() {
+    return type - 1 <= 1;
+}
+
+void DNASuitPoint::output(std::ostream &out) {
+    out << "<" << index << ", ";
+    switch (type) {
+        case DNASuitPointType::STREET_POINT:
+          out << "STREET_POINT";
+          break;
+        case DNASuitPointType::FRONT_DOOR_POINT:
+          out << "FRONT_DOOR_POINT";
+          break;
+        case DNASuitPointType::SIDE_DOOR_POINT:
+          out << "SIDE_DOOR_POINT";
+          break;
+        case DNASuitPointType::COGHQ_IN_POINT:
+          out << "COGHQ_IN_POINT";
+          break;
+        case DNASuitPointType::COGHQ_OUT_POINT:
+          out << "COGHQ_OUT_POINT";
+          break;
+        default:
+          out << "**invalid**";
+          break;
+    }
+    out << ", " << pos[0] << " " pos[1] << " " << pos[2];
+    if (lb_index >= 0) {
+        out << ", " << lb_index;
+    }
+    out << ">";
+}
+
+void DNASuitPoint::set_graph_id(int graph_id) {
+    this->graph_id = graph_id;
+}
+
+void DNASuitPoint::set_index(int index) {
+    this->index = index;
+}
+
+void DNASuitPoint::set_landmark_building_index(int lb_index) {
+    this->lb_index = lb_index;
+}
+
+void DNASuitPoint::set_point_type(DNASuitPointType type) {
+    this->type = type;
+}
+
+void DNASuitPoint::set_pos(const LPoint3f &pos) {
+    this->pos = pos;
+}
+
+void DNASuitPoint::write(std::ostream &out, int indent_level = 0) {
+    out = indent(out, indent_level);
+    out << "store_suit_point [ " << index << ", ";
+    switch (type) {
+        case DNASuitPointType::STREET_POINT:
+          out << "STREET_POINT";
+          break;
+        case DNASuitPointType::FRONT_DOOR_POINT:
+          out << "FRONT_DOOR_POINT";
+          break;
+        case DNASuitPointType::SIDE_DOOR_POINT:
+          out << "SIDE_DOOR_POINT";
+          break;
+        case DNASuitPointType::COGHQ_IN_POINT:
+          out << "COGHQ_IN_POINT";
+          break;
+        case DNASuitPointType::COGHQ_OUT_POINT:
+          out << "COGHQ_OUT_POINT";
+          break;
+        default:
+          out << "**invalid**";
+          break;
+    }
+    out << ", " << pos[0] << " " << pos[1] << " " << pos[2];
+    if (lb_index >= 0) {
+        out << ", " << lb_index;
+    }
+    out << " ]" << std::endl;
 }
