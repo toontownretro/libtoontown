@@ -51,6 +51,8 @@ set(COMPONENTS_FILES
     src/components/DNASuitPath.h
     src/components/DNASuitPoint.cxx
     src/components/DNASuitPoint.h
+    src/components/DNAVisGroup.cxx
+    src/components/DNAVisGroup.h
 )
 
 set(IGATE_FILES

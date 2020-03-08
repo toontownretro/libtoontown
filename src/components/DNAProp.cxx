@@ -25,7 +25,7 @@ LVector4f DNAProp::get_color() {
     return color;
 }
 
-void DNAProp::set_code(std::string code) {
+void DNAProp::set_code(std::string &code) {
     this->code = code;
 }
 

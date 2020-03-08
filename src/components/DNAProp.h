@@ -21,11 +21,12 @@ class EXPCL_DNA DNAProp : public DNANode {
 
 		LVector4f get_color();
 
-		void set_code(std::string code);
-		void set_color(const LVecBase4f& color);
+		void set_code(std::string &code);
+		void set_color(const LVecBase4f &color);
 
 	public:
 		virtual NodePath traverse(NodePath& parent, DNAStorage* store, int editing = 0);
+
 		virtual void write(std::ostream& out, DNAStorage* store, int indent_level = 0);
 
 	protected:

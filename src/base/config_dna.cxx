@@ -7,6 +7,7 @@
 #include "DNASuitEdge.h"
 #include "DNASuitPath.h"
 #include "DNASuitPoint.h"
+#include "DNAVisGroup.h"
 
 #include <pandabase.h>
 #include <dconfig.h>
@@ -32,4 +33,5 @@ void init_libtoontown() {
     DNASuitEdge::init_type();
     DNASuitPath::init_type();
     DNASuitPoint::init_type();
+    DNAVisGroup::init_type();
 }

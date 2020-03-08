@@ -1,24 +1,24 @@
 
-struct __cppobj pmap_int_DNASuitPoint_allocint_ : std::map_int_DNASuitPoint_allocint_
+struct __cppobj pmap_int_LMatrix4f_allocint_ : std::map_int_LMatrix4f_allocint_
 {
 };
 
-struct __cppobj std::map_int_DNASuitPoint_allocint_ : std::Map_Tree_int_DNASuitPoint
+struct __cppobj std::map_int_LMatrix4f_allocint_ : std::Map_Tree_int_LMatrix4f
 {
 };
 
-struct __cppobj std::Map_Tree_int_DNASuitPoint : std::Map_Tree_val
+struct __cppobj std::Map_Tree_int_LMatrix4f : std::Map_Tree_val
 {
-  std::Map_Tree_nod_int_DNASuitPoint::_Node *_Myhead;
+  std::Map_Tree_nod_int_LMatrix4f::_Node *_Myhead;
   unsigned int _Mysize;
 };
 
-struct __cppobj __declspec(align(4)) std::Map_Tree_nod_int_DNASuitPoint::_Node
+struct __cppobj __declspec(align(4)) std::Map_Tree_nod_int_LMatrix4f::_Node
 {
-  std::Map_Tree_nod_int_DNASuitPoint::_Node *_Left;
-  std::Map_Tree_nod_int_DNASuitPoint::_Node *_Parent;
-  std::Map_Tree_nod_int_DNASuitPoint::_Node *_Right;
-  std::pair_int_DNASuitPoint _Myval;
+  std::Map_Tree_nod_int_LMatrix4f::_Node *_Left;
+  std::Map_Tree_nod_int_LMatrix4f::_Node *_Parent;
+  std::Map_Tree_nod_int_LMatrix4f::_Node *_Right;
+  std::pair_int_LMatrix4f _Myval;
   char _Color;
   char _Isnil;
 };
@@ -69,10 +69,10 @@ struct __cppobj std::binary_function_general
 };
 
 
-struct __cppobj std::pair_int_DNASuitPoint
+struct __cppobj std::pair_int_LMatrix4f
 {
   int first;
-  DNASuitPoint *second;
+  LMatrix4f *second;
 };
 
 struct __cppobj std::allocator_std::general : std::_Allocator_base
