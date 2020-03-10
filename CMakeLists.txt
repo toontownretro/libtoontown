@@ -44,6 +44,8 @@ set(BASE_FILES
 )
 
 set(COMPONENTS_FILES
+    src/components/DNAAnimProp.cxx
+    src/components/DNAAnimProp.h
     src/components/DNABattleCell.cxx
     src/components/DNABattleCell.h
     src/components/DNAGroup.cxx

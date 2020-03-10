@@ -5,6 +5,97 @@
 #define PI 3.1415927410125732
 #define HALF_PI 1.5707963705062866
 
+### DNAAnimProp (Class) ###
+
+DNAAnimProp::DNAAnimProp(std::string initial_name) : DNAProp(initial_name) {
+
+}
+
+DNAAnimProp::DNAAnimProp(const DNAAnimProp &anim_prop) : DNAProp(anim_prop) {
+    anim = anim_prop.anim;
+}
+
+std::string DNAAnimProp::get_anim() {
+    return anim;
+}
+
+void DNAAnimProp::set_anim(std::string &anim) {
+    this->anim = anim;
+}
+
+NodePath DNAAnimProp::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
+    NodePath _np;
+
+    if (code == "DCS") {
+        PT(ModelNode) node = new ModelNode(name);
+        node->set_preserve_transform(ModelNode::PT_net);
+        _np = parent.attach_new_node(node);
+    } else {
+        NodePath nodepath = store->find_node(code);
+        if (nodepath.is_empty()) {
+            return NodePath();
+        }
+
+        _np = nodepath.copy_to(parent);
+
+        if (nodepath.has_tag("DNARoot")) {
+            std::string tag = nodepath.get_tag("DNARoot");
+            _np.set_tag("DNARoot", tag);
+        }
+        if (nodepath.has_tag("DNACode")) {
+            std::string tag = nodepath.get_tag("DNACode");
+            _np.set_tag("DNACode", tag);
+        }
+        _np.node()->set_name(name); // Is it this or _np.set_name(name)?
+    }
+    _np.set_tag("DNAAnim", anim);
+    _np.set_pos_hpr_scale(pos, hpr, scale);
+    _np.set_color_scale(color);
+
+    if (editing) {
+        PT(DNAGroup) PT_this = (DNAGroup*)this;
+        PT(PandaNode) store_node = _np.node();
+        store->store_DNAGroup(store_node, PT_this);
+    }
+    return _np;
+}
+
+void DNAAnimProp::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
+    indent(out, indent_level);
+    out << "anim_prop \"" << name << "\" [" << std::endl;
+    indent(out, indent_level + 1);
+    out << "code [ \"" << code << "\" ]" << std::endl;
+    indent(out, indent_level + 1);
+    out << "anim [ \"" << anim << "\" ]" << std::endl;
+    
+    // Animated Props always have a position.
+    indent(out, indent_level + 1);
+    out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
+    
+    // Animated Props always have a hpr.
+    indent(out, indent_level + 1);
+    if (temp_hpr_fix) {
+        out << "nhpr [ ";
+    } else {
+        out << "hpr [ ";
+    }
+    out << hpr[0] << " " << hpr[1] << " " << hpr[2] << " ]" << std::endl;
+        
+    if (scale != LVecBase3f(1.0, 1.0, 1.0)) {
+        indent(out, indent_level + 1);
+        out << "scale [ " << scale[0] << " " << scale[1] << " " << scale[2] << " ]" << std::endl;
+    }
+    if (color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
+        indent(out, indent_level + 1);
+        out << "color [ " << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << " ]" << std::endl;
+    }
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->write(out, store, indent_level + 1);
+    }
+    indent(out, indent_level);
+    out << "]" << std::endl;
+}
+
 ### DNABattleCell (Class) ###
 
 DNABattleCell::DNABattleCell(float width, float height, LPoint3f pos) {
@@ -141,13 +232,32 @@ NodePath DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing = 0
 
 void DNAGroup::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     indent(out, indent_level);
-    out << "group ";
-    out << name << " [" << std::endl;
+    out << "group \"" << name << "\" [" << std::endl;
     for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
         (*it)->write(out, store, indent_level + 1);
     }
     indent(out, indent_level);
     out << "]" << std::endl;
+}
+
+### DNALoader (Class) ###
+
+DNALoader::DNALoader() {
+    data = new DNAData("loader_data");
+    root = NodePath("dna");
+}
+
+NodePath DNALoader::build_graph(DNAStorage *store, int editing) {
+    NodePath traversed_path = data->top_level_traverse(root, store, editing);
+    if (!traversed_path.node()) {
+        dna_cat.debug() << "DNA File contained no geometry, returning empty node" << std::endl;
+        return NodePath();
+    }
+    return traversed_path;
+}
+
+PT(DNAData) DNALoader::get_data() {
+    return data;
 }
 
 ### DNANode (Class) ###
@@ -209,8 +319,7 @@ NodePath DNANode::traverse(NodePath &parent, DNAStorage *store, int editing = 0)
 
 void DNANode::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     indent(out, indent_level);
-    out << "node ";
-    out << name << " [" << std::endl;
+    out << "node \"" << name << "\" [" << std::endl;
     if (pos != LVecBase3f(0.0, 0.0, 0.0)) {
         indent(out, indent_level + 1);
         out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
@@ -284,11 +393,11 @@ NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing = 0)
         // The code is a mess in the decompiler.
         if (nodepath.has_tag("DNARoot")) {
             std::string tag = nodepath.get_tag("DNARoot");
-            _np.set_tag(tag, "DNARoot");
+            _np.set_tag("DNARoot", tag);
         }
         if (nodepath.has_tag("DNACode")) {
             std::string tag = nodepath.get_tag("DNACode");
-            _np.set_tag(tag, "DNACode");
+            _np.set_tag("DNACode", tag);
         }
         _np.node()->set_name(name); // Is it this or _np.set_name(name)?
     }
@@ -305,12 +414,11 @@ NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing = 0)
 
 void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
     indent(out, indent_level);
-    out << "prop ";
-    out << name << " [" << std::endl;
+    out << "prop \"" << name << "\" [" << std::endl;
     
     // DNAProps always have a code.
     indent(out, indent_level + 1);
-    out << "code [ " << code << " ]" << std::endl;
+    out << "code [ \"" << code << "\" ]" << std::endl;
     
     // DNAProps always have a pos.
     indent(out, indent_level + 1);
@@ -356,7 +464,7 @@ void DNASign::write(std::ostream &out, DNAStorage *store, int indent_level = 0) 
     out << "sign [" << std::endl;
     if (code.size()) {
         indent(out, indent_level + 1);
-        out << "code [ " << code << " ]" << std::endl;
+        out << "code [ \"" << code << "\" ]" << std::endl;
     }
     if (color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
         indent(out, indent_level + 1);
@@ -691,7 +799,7 @@ void DNASignBaseline::write(std::ostream &out, DNAStorage *store, int indent_lev
     out << "baseline [" << std::endl;
     if (code.size()) {
         indent(out, indent_level + 1);
-        out << "code [ " << code << " ]" << std::endl;
+        out << "code [ \"" << code << "\" ]" << std::endl;
     }
     if (color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
         indent(out, indent_level + 1);
@@ -744,7 +852,7 @@ void DNASignBaseline::write(std::ostream &out, DNAStorage *store, int indent_lev
     }
     if (flags.size()) {
         indent(out, indent_level + 1);
-        out << "flags [ " << flags << " ]" << std::endl;
+        out << "flags [ \"" << flags << "\" ]" << std::endl;
     }
     for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
         (*it)->write(out, store, indent_level + 1);
@@ -773,7 +881,7 @@ void DNASignText::write(std::ostream &out, DNAStorage *store, int indent_level =
     out << "text [" << std::endl;
     if (code.size()) {
         indent(out, indent_level + 1);
-        out << "code [ " << code << " ]" << std::endl;
+        out << "code [ \"" << code << "\" ]" << std::endl;
     }
     if (color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
         indent(out, indent_level + 1);
@@ -801,7 +909,7 @@ void DNASignText::write(std::ostream &out, DNAStorage *store, int indent_level =
         out << "letters [ '\"' ]" << std::endl;
     } else {
         indent(out, indent_level + 1);
-        out << "letters [ " << letters << " ]" << std::endl; // Is embedded quotes needed?
+        out << "letters [ \"" << letters << "\" ]" << std::endl;
     }
     indent(out, indent_level);
     out << "]" << std::endl;
@@ -1137,9 +1245,9 @@ void DNAVisGroup::write(std::ostream &out, DNAStorage *store, int indent_level) 
     indent(out, indent_level);
     out << "visgroup " << name << " [" << std::endl;
     indent(out, indent_level + 1);
-    out << "vis [ ";
+    out << "vis [ \"";
     for (pvector<std::string>::iterator it = visibles.begin(); it != visibles.end(); ++it) {
-        out << *it << " ";
+        out << *it << "\" ";
     }
     out << "]" << std::endl;
     for (pvector<PT(DNASuitEdge)>::iterator it = suit_edges.begin(); it != suit_edges.end(); ++it) {
