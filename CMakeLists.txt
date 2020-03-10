@@ -1,9 +1,19 @@
 cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)
 project(libtoontown)
 
-find_package(PythonLibs)
-if(NOT PYTHONLIBS_FOUND)
-    message(FATAL_ERROR "Python libs not found.")
+SET(BUILD_STATIC_LIB OFF CACHE BOOL "If true, will build a static lib")
+
+set(Python_USE_STATIC_LIBS ${BUILD_STATIC_LIB})
+
+set(PYTHON_VERSION "" CACHE STRING "Optional user-selected Python version")
+if(PYTHON_VERSION)
+  find_package(Python ${PYTHON_VERSION} EXACT COMPONENTS Interpreter Development REQUIRED)
+else()
+  find_package(Python COMPONENTS Interpreter Development REQUIRED)
+endif()
+
+if(NOT Python_FOUND)
+    message(FATAL_ERROR "Python not found.")
 endif()
 
 find_package(PythonInterp)
@@ -22,9 +32,8 @@ if(APPLE)
     SET(PANDA_DIR "/Developer/Panda3D" CACHE STRING "Panda3D directory.")
 endif()
 if(WIN32)
-    SET(PANDA_DIR "C:/Panda3D-1.11.0" CACHE STRING "Panda3D directory.")
+    SET(PANDA_DIR "C:/Panda3D-1.11.0-x64-astron" CACHE STRING "Panda3D directory.")
 endif()
-SET(BUILD_STATIC_LIB OFF CACHE BOOL "If true, will build a static lib")
 execute_process(COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}")
 
 ### Define core components ###
@@ -64,7 +73,7 @@ set(IGATE_FILES
 include_directories(src/base)
 include_directories(src/components)
 include_directories(${PANDA_DIR}/include)
-include_directories(${PYTHON_INCLUDE_DIR})
+include_directories(${Python_INCLUDE_DIRS})
 include_directories(/usr/include/eigen3)
 link_directories(${PANDA_DIR}/lib)
 
@@ -136,7 +145,7 @@ if(NOT BUILD_STATIC_LIB)
             ${IGATE_FILES}
         )
         SET_TARGET_PROPERTIES(libtoontown PROPERTIES SUFFIX ".pyd")
-        target_link_libraries(libtoontown ${PANDA_LIBS} ${PYTHON_LIBRARY})
+        target_link_libraries(libtoontown ${PANDA_LIBS} ${Python_LIBRARIES})
         add_custom_command(TARGET libtoontown
                            PRE_BUILD
                            COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}"
@@ -148,7 +157,7 @@ if(NOT BUILD_STATIC_LIB)
             ${COMPONENTS_FILES}
             ${IGATE_FILES}
         )
-        target_link_libraries(toontown ${PANDA_LIBS} ${PYTHON_LIBRARY})
+        target_link_libraries(toontown ${PANDA_LIBS} ${Python_LIBRARIES})
         add_custom_command(TARGET toontown
                            PRE_BUILD
                            COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}"

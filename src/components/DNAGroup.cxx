@@ -88,8 +88,8 @@ NodePath DNAGroup::traverse(NodePath& parent, DNAStorage *store, int editing) {
 
 void DNAGroup::write(std::ostream& out, DNAStorage* store, int indent_level) {
     indent(out, indent_level);
-    out << "group ";
-    out << name << " [" << std::endl;
+    out << "group \"";
+    out << name << "\" [" << std::endl;
     for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
         (*it)->write(out, store, indent_level + 1);
     }

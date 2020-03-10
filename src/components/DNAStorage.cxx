@@ -8,6 +8,16 @@ DNAStorage::~DNAStorage() {
 
 }
 
+PT(TextFont) DNAStorage::find_font(std::string &dna_string) {
+	for (pmap<std::string, PT(TextFont)>::iterator it = Code2FontMap.begin(); it != Code2FontMap.end(); ++it) {
+		if (it->first.compare(dna_string) == 0) {
+			return it->second;
+		}
+	}
+	dna_cat.error() << "font: " << dna_string << " not found in map" << std::endl;
+	return nullptr;
+}
+
 NodePath DNAStorage::find_node(std::string &dna_string) {
 	// Search all the maps a code can be present in and give us the node we may want.
 	for (pmap<std::string, NodePath>::iterator it = Code2NodeMap.begin(); it != Code2NodeMap.end(); ++it) {
@@ -31,8 +41,67 @@ NodePath DNAStorage::find_node(std::string &dna_string) {
 	return NodePath();
 }
 
+PT(Texture) DNAStorage::find_texture(std::string &dna_string) {
+	for (pmap<std::string, PT(Texture)>::iterator it = Code2TextureMap.begin(); it != Code2TextureMap.end(); ++it) {
+		if (it->first.compare(dna_string) == 0) {
+			return it->second;
+		}
+	}
+	dna_cat.error() << "texture: " << dna_string << " not found in map" << std::endl;
+	return nullptr;
+}
+
+int DNAStorage::get_highest_suit_point_index() {
+	int top_index = -1;
+	for (pvector<PT(DNASuitPoint)>::iterator it = SuitPoints.begin(); it != SuitPoints.end(); ++it) {
+		if ((*it)->get_index() > top_index) {
+			top_index = (*it)->get_index();
+		}
+	}
+	return top_index;
+}
+
 void DNAStorage::reset_DNAGroups() {
 	Node2GroupMap.clear();
+}
+
+void DNAStorage::reset_DNAVisGroups() {
+	Node2VisGroupMap.clear();
+}
+
+void DNAStorage::reset_DNAVisGroupsAI() {
+	VisGroupsAI.clear();
+}
+
+void DNAStorage::reset_battle_cells() {
+	BattleCells.clear();
+}
+
+void DNAStorage::reset_block_article() {
+	Block2ArticleMap.clear();
+}
+
+void DNAStorage::reset_block_door_pos_hprs() {
+	Block2DoorPosHprMap.clear();
+}
+
+void DNAStorage::reset_block_numbers() {
+	Block2NumberMap.clear();
+}
+
+void DNAStorage::reset_block_sign_transforms() {
+	Block2TransformMap.clear();
+}
+
+void DNAStorage::reset_block_title() {
+	Block2TitleMap.clear();
+}
+
+void DNAStorage::reset_hood() {
+	reset_hood_nodes();
+	reset_place_nodes();
+	reset_suit_points();
+	reset_battle_cells();
 }
 
 void DNAStorage::reset_hood_nodes() {
@@ -45,6 +114,16 @@ void DNAStorage::reset_nodes() {
 
 void DNAStorage::reset_place_nodes() {
 	Code2PlaceNodeMap.clear();
+}
+
+void DNAStorage::reset_suit_points() {
+	SuitPoints.clear();
+	Index2SuitPointMap.clear();
+	StartPoint2SuitEdgeMap.clear();
+}
+
+void DNAStorage::reset_textures() {
+	Code2TextureMap.clear();
 }
 
 void DNAStorage::store_DNAGroup(PT(PandaNode) node, PT(DNAGroup) group) {
@@ -146,6 +225,31 @@ void DNAStorage::store_place_node(std::string &code_string, NodePath &node, std:
 		path.set_tag("DNARoot", code_category);
 	}
 	Code2PlaceNodeMap[code_string] = path;
+}
+
+void DNAStorage::store_suit_point(DNASuitPoint::DNASuitPointType type, LPoint3f pos) {
+	// This is honestly my best guess.
+	for (pvector<PT(DNASuitPoint)>::iterator it = SuitPoints.begin(); it != SuitPoints.end(); ++it) {
+		DNASuitPoint *point = *it;
+		if (!point) {
+			// Added by me for security.
+			continue;
+		}
+		LPoint3f point_pos = point->get_pos();
+		LPoint3f pos_diff = point_pos - pos;
+		constexpr double check_pos = 0.8999999761581420898;
+		if (pos_diff[0] < check_pos && pos_diff[0] > -check_pos && pos_diff[1] < check_pos && pos_diff[1] > -check_pos && pos_diff[2] < check_pos && pos_diff[2] > -check_pos) {
+			return;
+		}
+	}
+	int new_index = get_highest_suit_point_index() + 1;
+	PT(DNASuitPoint) new_suit_point = new DNASuitPoint(new_index, type, pos);
+	store_suit_point(new_suit_point);
+}
+
+void DNAStorage::store_suit_point(PT(DNASuitPoint) point) {
+	SuitPoints.push_back(point);
+	Index2SuitPointMap[point->get_index()] = point;
 }
 
 void DNAStorage::store_texture(std::string &code_string, PT(Texture) texture) {

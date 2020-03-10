@@ -60,8 +60,8 @@ NodePath DNANode::traverse(NodePath &parent, DNAStorage *store, int editing) {
 
 void DNANode::write(std::ostream &out, DNAStorage *store, int indent_level) {
     indent(out, indent_level);
-    out << "node ";
-    out << name << " [" << std::endl;
+    out << "node \"";
+    out << name << "\" [" << std::endl;
     if (pos != LVecBase3f(0.0, 0.0, 0.0)) {
         indent(out, indent_level + 1);
         out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;

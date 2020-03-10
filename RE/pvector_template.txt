@@ -1,12 +1,12 @@
 
-struct pvector__DNABattleCellalloc__ : std::vector__DNABattleCellalloc__ {
+struct pvector__DNASuitPointalloc__ : std::vector__DNASuitPointalloc__ {
 }
 
-struct __cppobj std::vector__DNABattleCellalloc__ : std::_Vector_val_general
+struct __cppobj std::vector__DNASuitPointalloc__ : std::_Vector_val_general
 {
-  DNABattleCell *_Myfirst;
-  DNABattleCell *_Mylast;
-  DNABattleCell *_Myend;
+  DNASuitPoint **_Myfirst;
+  DNASuitPoint **_Mylast;
+  DNASuitPoint **_Myend;
 };
 
 struct __cppobj __declspec(align(4)) std::_Vector_val_general : std::_Container_base_aux_alloc_real__std::allocator_general__

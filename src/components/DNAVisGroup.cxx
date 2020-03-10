@@ -103,11 +103,11 @@ NodePath DNAVisGroup::traverse(NodePath &parent, DNAStorage *store, int editing)
 
 void DNAVisGroup::write(std::ostream &out, DNAStorage *store, int indent_level) {
     indent(out, indent_level);
-    out << "visgroup " << name << " [" << std::endl;
+    out << "visgroup \"" << name << "\" [" << std::endl;
     indent(out, indent_level + 1);
     out << "vis [ ";
     for (pvector<std::string>::iterator it = visibles.begin(); it != visibles.end(); ++it) {
-        out << *it << " ";
+        out << "\"" << *it << "\" ";
     }
     out << "]" << std::endl;
     for (pvector<PT(DNASuitEdge)>::iterator it = suit_edges.begin(); it != suit_edges.end(); ++it) {

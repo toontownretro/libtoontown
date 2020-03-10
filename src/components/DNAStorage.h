@@ -20,12 +20,29 @@ class EXPCL_DNA DNAStorage {
         DNAStorage();
         ~DNAStorage();
 
+        PT(TextFont) find_font(std::string &dna_string);
+
         NodePath find_node(std::string &dna_string);
 
+        PT(Texture) find_texture(std::string &dna_string);
+
+        int get_highest_suit_point_index();
+
         void reset_DNAGroups();
+        void reset_DNAVisGroups();
+        void reset_DNAVisGroupsAI();
+        void reset_battle_cells();
+        void reset_block_article();
+        void reset_block_door_pos_hprs();
+        void reset_block_numbers();
+        void reset_block_sign_transforms();
+        void reset_block_title();
+        void reset_hood();
         void reset_hood_nodes();
         void reset_nodes();
         void reset_place_nodes();
+        void reset_suit_points();
+        void reset_textures();
         void store_DNAGroup(PT(PandaNode) node, PT(DNAGroup) group);
         void store_DNAVisGroup(PT(PandaNode) node, PT(DNAVisGroup) group);
         void store_battle_cell(PT(DNABattleCell) cell);
@@ -40,6 +57,8 @@ class EXPCL_DNA DNAStorage {
         void store_hood_node(std::string &code_string, NodePath &node, std::string &code_category);
         void store_node(std::string &code_string, NodePath &node, std::string &code_category);
         void store_place_node(std::string &code_string, NodePath &node, std::string &code_category);
+        void store_suit_point(DNASuitPoint::DNASuitPointType type, LPoint3f pos);
+        void store_suit_point(PT(DNASuitPoint) point);
         void store_texture(std::string &code_string, PT(Texture) texture);
 
     private:
@@ -57,7 +76,9 @@ class EXPCL_DNA DNAStorage {
         pmap<std::string, NodePath> Code2PlaceNodeMap;
         pmap<PT(PandaNode), PT(DNAGroup)> Node2GroupMap;
         pmap<PT(PandaNode), PT(DNAVisGroup)> Node2VisGroupMap;
+        pvector<PT(DNASuitPoint)> SuitPoints;
         pmap<int, PT(DNASuitPoint)> Index2SuitPointMap;
+        pmap<PT(DNASuitPoint), PT(DNASuitEdge)> StartPoint2SuitEdgeMap;
         pvector<PT(DNABattleCell)> BattleCells;
         pvector<PT(DNAVisGroup)> VisGroupsAI;
 };

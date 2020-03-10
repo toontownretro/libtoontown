@@ -73,12 +73,12 @@ NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
 
 void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level) {
     indent(out, indent_level);
-    out << "prop ";
-    out << name << " [" << std::endl;
+    out << "prop \"";
+    out << name << "\" [" << std::endl;
 
     // DNAProps always have a code.
     indent(out, indent_level + 1);
-    out << "code [ " << code << " ]" << std::endl;
+    out << "code [ \"" << code << "\" ]" << std::endl;
 
     // DNAProps always have a pos.
     indent(out, indent_level + 1);
