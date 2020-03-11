@@ -51,6 +51,60 @@ PT(Texture) DNAStorage::find_texture(std::string &dna_string) {
 	return nullptr;
 }
 
+std::string DNAStorage::get_article_from_block_number(int block_number) {
+	if (Block2ArticleMap.find(block_number) == Block2ArticleMap.end()) {
+		dna_cat.error() << "block number: " << block_number << " not found in article map" << std::endl;
+		return "";
+	}
+	return Block2ArticleMap[block_number];
+}
+
+int DNAStorage::get_block(std::string &name) {
+	return atoi((name.substr(2, name.find(':', 0) - 2)).c_str());
+}
+
+std::string DNAStorage::get_block_building_type(int block_number) {
+	if (Block2BuildingTypeMap.find(block_number) == Block2BuildingTypeMap.end()) {
+		dna_cat.debug() << "block number: " << block_number << " not found in building type map" << std::endl;
+		return "";
+	}
+	return Block2BuildingTypeMap[block_number];
+}
+
+int DNAStorage::get_block_number_at(unsigned int index) {
+	pmap<int, int>::iterator index_it = Block2NumberMap.begin();
+	std::advance(index_it, (int)index);
+	for (pmap<int, int>::iterator it = Block2NumberMap.begin(); it != Block2NumberMap.end(); it++) {
+		if (it == Block2NumberMap.end()) {
+			dna_cat.error() << "DNAStorage::get_block_number_at index not found, returning 0" << std::endl;
+			return 0;
+		} else if (it == index_it) {
+			return it->second;
+		}
+	}
+}
+
+PosHpr DNAStorage::get_door_pos_hpr_block_at(unsigned int index) {
+	pmap<int, PosHpr>::iterator index_it = Block2DoorPosHprMap.begin();
+	std::advance(index_it, (int)index);
+	for (pmap<int, PosHpr>::iterator it = Block2DoorPosHprMap.begin(); it != Block2DoorPosHprMap.end(); it++) {
+		if (it == Block2DoorPosHprMap.end()) {
+			dna_cat.error() << "DNAStorage::get_door_pos_hpr_block_at index not found, returning 0" << std::endl;
+			return PosHpr();
+		} else if (it == index_it) {
+			return it->second;
+		}
+	}
+}
+
+PosHpr DNAStorage::get_door_pos_hpr_from_block_number(int block_number) {
+	if (Block2DoorPosHprMap.find(block_number) == Block2DoorPosHprMap.end()) {
+		dna_cat.error() << "block number: " << block_number << " not found in map" << std::endl;
+		return PosHpr();
+	}
+	return Block2DoorPosHprMap[block_number];
+}
+
 int DNAStorage::get_highest_suit_point_index() {
 	int top_index = -1;
 	for (pvector<PT(DNASuitPoint)>::iterator it = SuitPoints.begin(); it != SuitPoints.end(); ++it) {
@@ -59,6 +113,14 @@ int DNAStorage::get_highest_suit_point_index() {
 		}
 	}
 	return top_index;
+}
+
+std::string DNAStorage::get_title_from_block_number(int block_number) {
+	if (Block2TitleMap.find(block_number) == Block2TitleMap.end()) {
+		dna_cat.error() << "block number: " << block_number << " not found in title map" << std::endl;
+		return "";
+	}
+	return Block2TitleMap[block_number];
 }
 
 void DNAStorage::reset_DNAGroups() {
@@ -139,33 +201,35 @@ void DNAStorage::store_battle_cell(PT(DNABattleCell) cell) {
 }
 
 void DNAStorage::store_block_article(std::string &block, std::string &article) {
-	Block2ArticleMap[atoi(block.c_str())] = article;
+	Block2ArticleMap[get_block(block)] = article;
 }
 
 void DNAStorage::store_block_building_type(std::string &block, std::string &type) {
-	std::string true_block = block.substr(2, block.find(':', 0) - 2);
+	int true_block = get_block(block);
 
 	// In libtoontown, .debug() and .spam() return a null Notify stream for both dna_cat and pets_cat.
 	// This means that this notify out has to be either of those options.
 	dna_cat.debug() << "block: " << block << " blocknum: " << true_block << " type: " << type << std::endl;
-	Block2BuildingTypeMap[atoi(true_block.c_str())] = type;
+	Block2BuildingTypeMap[true_block] = type;
 }
 
 void DNAStorage::store_block_door_pos_hpr(std::string &block, const LPoint3f &pos, const LPoint3f &hpr) {
-	Block2DoorPosHprMap[atoi(block.c_str())] = std::make_pair(pos, hpr);
+	PosHpr pos_hpr;
+	pos_hpr.pos = pos;
+	pos_hpr.hpr = hpr;
+	Block2DoorPosHprMap[get_block(block)] = pos_hpr;
 }
 
 void DNAStorage::store_block_number(std::string &block, std::string &zone_id) {
-	std::string true_block = block.substr(2, block.find(':', 0) - 2);
-	Block2NumberMap[atoi(true_block.c_str())] = atoi(zone_id.c_str());
+	Block2NumberMap[get_block(block)] = atoi(zone_id.c_str());
 }
 
 void DNAStorage::store_block_sign_transform(std::string &block, const LMatrix4f &mat) {
-	Block2TransformMap[atoi(block.c_str())] = mat;
+	Block2TransformMap[get_block(block)] = mat;
 }
 
 void DNAStorage::store_block_title(std::string &block, std::string &title) {
-	Block2TitleMap[atoi(block.c_str())] = title;
+	Block2TitleMap[get_block(block)] = title;
 }
 
 void DNAStorage::store_catalog_string(std::string &catalog_string, std::string &dna_string) {

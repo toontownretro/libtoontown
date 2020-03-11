@@ -26,7 +26,16 @@ class EXPCL_DNA DNAStorage {
 
         PT(Texture) find_texture(std::string &dna_string);
 
+        int get_block(std::string &name);
+        int get_block_number_at(unsigned int index);
         int get_highest_suit_point_index();
+
+        std::string get_article_from_block_number(int block_number);
+        std::string get_block_building_type(int block_number);
+        std::string get_title_from_block_number(int block_number);
+
+        PosHpr get_door_pos_hpr_block_at(unsigned int index);
+        PosHpr get_door_pos_hpr_from_block_number(int block_number);
 
         void reset_DNAGroups();
         void reset_DNAVisGroups();
@@ -68,7 +77,7 @@ class EXPCL_DNA DNAStorage {
         pmap<std::string, PT(TextFont)> Code2FontMap;
         pmap<std::string, NodePath> Code2HoodNodeMap;
         pmap<int, int> Block2NumberMap;
-        pmap<int, std::pair<LPoint3f, LPoint3f>> Block2DoorPosHprMap;
+        pmap<int, PosHpr> Block2DoorPosHprMap;
         pmap<int, LMatrix4f> Block2TransformMap;
         pmap<int, std::string> Block2TitleMap;
         pmap<int, std::string> Block2ArticleMap;

@@ -9,6 +9,11 @@
 #ifndef temp_hpr_fix
 #define temp_hpr_fix true
 #endif
+
+struct PosHpr {
+    LPoint3f pos;
+    LPoint3f hpr;
+};
                                 
 #define TYPE_HANDLE(NAME, PARENT) public: \
                                     static TypeHandle get_class_type() { return _type_handle; }; \

@@ -50,6 +50,8 @@ set(COMPONENTS_FILES
     src/components/DNABattleCell.h
     src/components/DNAGroup.cxx
     src/components/DNAGroup.h
+    src/components/DNALandmarkBuilding.cxx
+    src/components/DNALandmarkBuilding.h
     src/components/DNANode.cxx
     src/components/DNANode.h
     src/components/DNAProp.cxx
