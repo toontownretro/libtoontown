@@ -59,8 +59,8 @@ std::string DNAStorage::get_article_from_block_number(int block_number) {
 	return Block2ArticleMap[block_number];
 }
 
-int DNAStorage::get_block(std::string &name) {
-	return atoi((name.substr(2, name.find(':', 0) - 2)).c_str());
+std::string DNAStorage::get_block(std::string &name) {
+	return name.substr(2, name.find(':', 0) - 2);
 }
 
 std::string DNAStorage::get_block_building_type(int block_number) {
@@ -77,11 +77,12 @@ int DNAStorage::get_block_number_at(unsigned int index) {
 	for (pmap<int, int>::iterator it = Block2NumberMap.begin(); it != Block2NumberMap.end(); it++) {
 		if (it == Block2NumberMap.end()) {
 			dna_cat.error() << "DNAStorage::get_block_number_at index not found, returning 0" << std::endl;
-			return 0;
+			break;
 		} else if (it == index_it) {
 			return it->second;
 		}
 	}
+	return 0;
 }
 
 PosHpr DNAStorage::get_door_pos_hpr_block_at(unsigned int index) {
@@ -90,11 +91,12 @@ PosHpr DNAStorage::get_door_pos_hpr_block_at(unsigned int index) {
 	for (pmap<int, PosHpr>::iterator it = Block2DoorPosHprMap.begin(); it != Block2DoorPosHprMap.end(); it++) {
 		if (it == Block2DoorPosHprMap.end()) {
 			dna_cat.error() << "DNAStorage::get_door_pos_hpr_block_at index not found, returning 0" << std::endl;
-			return PosHpr();
+			break;
 		} else if (it == index_it) {
 			return it->second;
 		}
 	}
+	return PosHpr();
 }
 
 PosHpr DNAStorage::get_door_pos_hpr_from_block_number(int block_number) {
@@ -201,11 +203,11 @@ void DNAStorage::store_battle_cell(PT(DNABattleCell) cell) {
 }
 
 void DNAStorage::store_block_article(std::string &block, std::string &article) {
-	Block2ArticleMap[get_block(block)] = article;
+	Block2ArticleMap[atoi(get_block(block).c_str())] = article;
 }
 
 void DNAStorage::store_block_building_type(std::string &block, std::string &type) {
-	int true_block = get_block(block);
+	int true_block = atoi(get_block(block).c_str());
 
 	// In libtoontown, .debug() and .spam() return a null Notify stream for both dna_cat and pets_cat.
 	// This means that this notify out has to be either of those options.
@@ -217,19 +219,19 @@ void DNAStorage::store_block_door_pos_hpr(std::string &block, const LPoint3f &po
 	PosHpr pos_hpr;
 	pos_hpr.pos = pos;
 	pos_hpr.hpr = hpr;
-	Block2DoorPosHprMap[get_block(block)] = pos_hpr;
+	Block2DoorPosHprMap[atoi(get_block(block).c_str())] = pos_hpr;
 }
 
 void DNAStorage::store_block_number(std::string &block, std::string &zone_id) {
-	Block2NumberMap[get_block(block)] = atoi(zone_id.c_str());
+	Block2NumberMap[atoi(get_block(block).c_str())] = atoi(zone_id.c_str());
 }
 
 void DNAStorage::store_block_sign_transform(std::string &block, const LMatrix4f &mat) {
-	Block2TransformMap[get_block(block)] = mat;
+	Block2TransformMap[atoi(get_block(block).c_str())] = mat;
 }
 
 void DNAStorage::store_block_title(std::string &block, std::string &title) {
-	Block2TitleMap[get_block(block)] = title;
+	Block2TitleMap[atoi(get_block(block).c_str())] = title;
 }
 
 void DNAStorage::store_catalog_string(std::string &catalog_string, std::string &dna_string) {

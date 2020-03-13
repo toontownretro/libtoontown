@@ -26,7 +26,7 @@ class EXPCL_DNA DNAStorage {
 
         PT(Texture) find_texture(std::string &dna_string);
 
-        int get_block(std::string &name);
+        std::string get_block(std::string &name);
         int get_block_number_at(unsigned int index);
         int get_highest_suit_point_index();
 

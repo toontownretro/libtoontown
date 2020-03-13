@@ -12,7 +12,7 @@ class DNAStorage;
 class EXPCL_DNA DNAGroup : public TypedReferenceCount {
     PUBLISHED:
         DNAGroup(std::string initial_name);
-        DNAGroup(const DNAGroup& group);
+        DNAGroup(const DNAGroup &group);
         ~DNAGroup();
 
         void add(PT(DNAGroup) group);

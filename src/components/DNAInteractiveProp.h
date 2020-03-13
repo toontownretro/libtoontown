@@ -2,7 +2,7 @@
 
 #include "dnabase.h"
 
-#include "DNAProp.h"
+#include "DNAAnimProp.h"
 
 #include <string>
 #include <luse.h>
@@ -13,15 +13,15 @@
 
 class DNAStorage;
 
-class EXPCL_DNA DNAAnimProp : public DNAProp {
+class EXPCL_DNA DNAInteractiveProp : public DNAAnimProp {
 	PUBLISHED:
-		DNAAnimProp(std::string initial_name);
-		DNAAnimProp(const DNAAnimProp& anim_prop);
-		~DNAAnimProp();
+		DNAInteractiveProp(std::string initial_name);
+		DNAInteractiveProp(const DNAInteractiveProp &interactive_prop);
+		~DNAInteractiveProp();
 
-		std::string get_anim();
+		int get_cell_id();
 
-		void set_anim(std::string &anim);
+		void set_cell_id(int cell_id);
 
 	public:
 		virtual NodePath traverse(NodePath& parent, DNAStorage* store, int editing = 0);
@@ -29,7 +29,7 @@ class EXPCL_DNA DNAAnimProp : public DNAProp {
 		virtual void write(std::ostream& out, DNAStorage* store, int indent_level = 0);
 
 	protected:
-		std::string anim;
+		int cell_id;
 
-	TYPE_HANDLE(DNAAnimProp, DNAProp);
+	TYPE_HANDLE(DNAInteractiveProp, DNAAnimProp);
 };

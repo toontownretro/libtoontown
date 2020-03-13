@@ -48,8 +48,12 @@ set(COMPONENTS_FILES
     src/components/DNAAnimProp.h
     src/components/DNABattleCell.cxx
     src/components/DNABattleCell.h
+    src/components/DNADoor.cxx
+    src/components/DNADoor.h
     src/components/DNAGroup.cxx
     src/components/DNAGroup.h
+    src/components/DNAInteractiveProp.cxx
+    src/components/DNAInteractiveProp.h
     src/components/DNALandmarkBuilding.cxx
     src/components/DNALandmarkBuilding.h
     src/components/DNANode.cxx

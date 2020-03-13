@@ -1,7 +1,11 @@
 #include "config_dna.h"
 
+#include "DNAAnimProp.h"
 #include "DNABattleCell.h"
+#include "DNADoor.h"
 #include "DNAGroup.h"
+#include "DNAInteractiveProp.h"
+#include "DNALandmarkBuilding.h"
 #include "DNANode.h"
 #include "DNAProp.h"
 #include "DNASuitEdge.h"
@@ -21,13 +25,18 @@ ConfigureFn(config_dna) {
 
 void init_libtoontown() {
     static bool initialized = false;
-    if (initialized)
+    if (initialized) {
         return;
+    }
 
     initialized = true;
     
+    DNAAnimProp::init_type();
     DNABattleCell::init_type();
+    DNADoor::init_type();
     DNAGroup::init_type();
+    DNAInteractiveProp::init_type();
+    DNALandmarkBuilding::init_type();
     DNANode::init_type();
     DNAProp::init_type();
     DNASuitEdge::init_type();

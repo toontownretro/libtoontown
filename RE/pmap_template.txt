@@ -1,24 +1,24 @@
 
-struct __cppobj pmap_DNASuitPoint_DNASuitEdge_allocDNASuitPoint_ : std::map_DNASuitPoint_DNASuitEdge_allocDNASuitPoint_
+struct __cppobj pmap_int_PosHpr_allocint_ : std::map_int_PosHpr_allocint_
 {
 };
 
-struct __cppobj std::map_DNASuitPoint_DNASuitEdge_allocDNASuitPoint_ : std::Map_Tree_DNASuitPoint_DNASuitEdge
+struct __cppobj std::map_int_PosHpr_allocint_ : std::Map_Tree_int_PosHpr
 {
 };
 
-struct __cppobj std::Map_Tree_DNASuitPoint_DNASuitEdge : std::Map_Tree_val
+struct __cppobj std::Map_Tree_int_PosHpr : std::Map_Tree_val
 {
-  std::Map_Tree_nod_DNASuitPoint_DNASuitEdge::_Node *_Myhead;
+  std::Map_Tree_nod_int_PosHpr::_Node *_Myhead;
   unsigned int _Mysize;
 };
 
-struct __cppobj __declspec(align(4)) std::Map_Tree_nod_DNASuitPoint_DNASuitEdge::_Node
+struct __cppobj __declspec(align(4)) std::Map_Tree_nod_int_PosHpr::_Node
 {
-  std::Map_Tree_nod_DNASuitPoint_DNASuitEdge::_Node *_Left;
-  std::Map_Tree_nod_DNASuitPoint_DNASuitEdge::_Node *_Parent;
-  std::Map_Tree_nod_DNASuitPoint_DNASuitEdge::_Node *_Right;
-  std::pair_DNASuitPoint_DNASuitEdge _Myval;
+  std::Map_Tree_nod_int_PosHpr::_Node *_Left;
+  std::Map_Tree_nod_int_PosHpr::_Node *_Parent;
+  std::Map_Tree_nod_int_PosHpr::_Node *_Right;
+  std::pair_int_PosHpr _Myval;
   char _Color;
   char _Isnil;
 };
@@ -69,10 +69,10 @@ struct __cppobj std::binary_function_general
 };
 
 
-struct __cppobj std::pair_DNASuitPoint_DNASuitEdge
+struct __cppobj std::pair_int_PosHpr
 {
-  DNASuitPoint **first;
-  DNASuitEdge **second;
+  int **first;
+  PosHpr **second;
 };
 
 struct __cppobj std::allocator_std::general : std::_Allocator_base

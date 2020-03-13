@@ -7,7 +7,7 @@ DNAGroup::DNAGroup(std::string initial_name) {
     name = initial_name;
 }
 
-DNAGroup::DNAGroup(const DNAGroup& group) {
+DNAGroup::DNAGroup(const DNAGroup &group) {
     name = group.name;
     children = group.children;
 }
@@ -58,7 +58,7 @@ void DNAGroup::set_parent(PT(DNAGroup) parent) {
     this->parent = parent;
 }
 
-NodePath DNAGroup::top_level_traverse(NodePath& parent, DNAStorage* store, int editing) {
+NodePath DNAGroup::top_level_traverse(NodePath &parent, DNAStorage *store, int editing) {
     NodePath _np = parent.attach_new_node(name);
     for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
         (*it)->traverse(_np, store, editing);
@@ -72,7 +72,7 @@ NodePath DNAGroup::top_level_traverse(NodePath& parent, DNAStorage* store, int e
     return _np;
 }
 
-NodePath DNAGroup::traverse(NodePath& parent, DNAStorage *store, int editing) {
+NodePath DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing) {
     NodePath _np = parent.attach_new_node(name);
     for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
         (*it)->traverse(_np, store, editing);
@@ -86,7 +86,7 @@ NodePath DNAGroup::traverse(NodePath& parent, DNAStorage *store, int editing) {
     return _np;
 }
 
-void DNAGroup::write(std::ostream& out, DNAStorage* store, int indent_level) {
+void DNAGroup::write(std::ostream &out, DNAStorage *store, int indent_level) {
     indent(out, indent_level);
     out << "group \"" << name << "\" [" << std::endl;
     for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {

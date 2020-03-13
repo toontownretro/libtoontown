@@ -71,7 +71,7 @@ NodePath DNALandmarkBuilding::traverse(NodePath &parent, DNAStorage *store, int 
     _np = _np.copy_to(parent);
     _np.set_name(name);
     _np.set_pos_hpr_scale(get_pos(), get_hpr(), get_scale());
-    int block_number = store->get_block(name);
+    int block_number = atoi(store->get_block(name).c_str());
     title = store->get_title_from_block_number(block_number);
     article = store->get_article_from_block_number(block_number);
     if (!building_type.size()) {
