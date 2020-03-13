@@ -3,6 +3,7 @@
 #include "DNAAnimProp.h"
 #include "DNABattleCell.h"
 #include "DNADoor.h"
+#include "DNAFlatDoor.h"
 #include "DNAGroup.h"
 #include "DNAInteractiveProp.h"
 #include "DNALandmarkBuilding.h"
@@ -34,6 +35,7 @@ void init_libtoontown() {
     DNAAnimProp::init_type();
     DNABattleCell::init_type();
     DNADoor::init_type();
+    DNAFlatDoor::init_type();
     DNAGroup::init_type();
     DNAInteractiveProp::init_type();
     DNALandmarkBuilding::init_type();

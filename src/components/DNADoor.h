@@ -27,6 +27,7 @@ class EXPCL_DNA DNADoor : public DNAGroup {
 
 	public:
 		virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing = 0);
+
 		virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0);
 
 	protected:

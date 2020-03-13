@@ -50,6 +50,8 @@ set(COMPONENTS_FILES
     src/components/DNABattleCell.h
     src/components/DNADoor.cxx
     src/components/DNADoor.h
+    src/components/DNAFlatDoor.cxx
+    src/components/DNAFlatDoor.h
     src/components/DNAGroup.cxx
     src/components/DNAGroup.h
     src/components/DNAInteractiveProp.cxx

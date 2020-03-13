@@ -4,7 +4,7 @@
 
 #include <luse.h>
 #include <typedReferenceCount.h>
-#include <pvector.h>
+#include <vector_int.h>
 
 class EXPCL_DNA DNASuitPath : public TypedReferenceCount {
     PUBLISHED:
@@ -23,7 +23,7 @@ class EXPCL_DNA DNASuitPath : public TypedReferenceCount {
         void reverse_path();
 
     private:
-        pvector<int> points;
+        vector_int points;
 
     TYPE_HANDLE(DNASuitPath, TypedReferenceCount);
 };
