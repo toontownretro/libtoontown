@@ -5,7 +5,7 @@
 #include <luse.h>
 #include <typedReferenceCount.h>
 
-class EXPCL_DNA DNASuitPoint : public TypedReferenceCount {
+class EXPCL_TOONTOWN DNASuitPoint : public TypedReferenceCount {
     public:
         enum DNASuitPointType {
             STREET_POINT = 0,

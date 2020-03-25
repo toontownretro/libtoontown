@@ -268,6 +268,10 @@ DNAFlatDoor::DNAFlatDoor(const DNAFlatDoor &door) : DNADoor(door) {
     
 }
 
+DNAFlatDoor::~DNAFlatDoor() {
+
+}
+
 NodePath DNAFlatDoor::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
     NodePath node = store->find_node(code);
     node = node.copy_to(parent);
@@ -787,7 +791,11 @@ NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing = 0)
     }
     _np.set_pos_hpr_scale(pos, hpr, scale);
     _np.set_color_scale(color);
-
+    
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->traverse(_np, store, editing);
+    }
+    
     if (editing) {
         PT(DNAGroup) PT_this = (DNAGroup*)this;
         PT(PandaNode) store_node = _np.node();
@@ -834,7 +842,11 @@ void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level = 0) 
 
 ### DNASign (Class) ###
 
-void DNASign::DNASign(std::string initial_name) : DNAProp(initial_name) {
+DNASign::DNASign(std::string initial_name) : DNAProp(initial_name) {
+
+}
+
+DNASign::DNASign(const DNASign &Sign) : DNAProp(Sign) {
 
 }
 
@@ -880,15 +892,11 @@ void DNASign::write(std::ostream &out, DNAStorage *store, int indent_level = 0) 
 
 ### DNASignBaseline (Class) ###
 
-void DNASignBaseline::DNASignBaseline(std::string initial_name) : DNAProp(initial_name) {
+void DNASignBaseline::DNASignBaseline(std::string initial_name) : DNANode(initial_name) {
     font = NULL;
-    floatBC = LVecBase3f(0.0, 0.0, 0.0);
-    floatC8 = 0.0;
-    floatCC = 0.0;
-    floatD0 = 0.0;
-    floatD4 = 1.0;
-    floatD8 = 1.0;
-    floatDC = 1.0;
+    pos2 = LVecBase3f(0.0, 0.0, 0.0);
+    hpr2 = LVecBase3f(0.0, 0.0, 0.0);
+    scale2 = LVecBase3f(1.0, 1.0, 1.0);
     counter = 0;
     indent = 0.0;
     kern = 0.0;
@@ -1043,7 +1051,6 @@ std::string DNASignBaseline::get_flags() {
     return flags;
 }
 
-// TODO: Make sure this is correctly handled.
 TextFont *DNASignBaseline::get_font() {
     return font;
 }
@@ -1116,13 +1123,6 @@ void DNASignBaseline::line_next_pos_hpr_scale(LVector3f &pos, LVector3f &hpr, LV
 }
 
 void DNASignBaseline::reset() {
-    floatBC = LVecBase3f(0.0, 0.0, 0.0);
-    floatC8 = 0.0;
-    floatCC = 0.0;
-    floatD0 = 0.0;
-    floatD4 = 1.0;
-    floatD8 = 1.0;
-    floatDC = 1.0;
     counter = 0;
     is_space = 1;
     floatF4 = 0.0;
@@ -1138,7 +1138,6 @@ void DNASignBaseline::set_flags(std::string flags) {
     this->flags = flags;
 }
 
-// TODO: Make sure this is correctly handled.
 void DNASignBaseline::set_font(TextFont *font) {
     this->font = font;
 }
@@ -1171,11 +1170,37 @@ void DNASignBaseline::set_wiggle(float wiggle) {
     this->wiggle = wiggle;
 }
 
-// TODO
 NodePath DNASignBaseline::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
-    //reset(); // Is this actually called?
+    reset();
     NodePath np = parent.attach_new_node("baseline");
+    if (code.size()) {
+        PT(TextFont) found_font = store->find_font(code);
+        if (!found_font) {
+            dna_cat.error() << "unable to find baseline font " << code << std::endl;
+            return;
+        }
+        font = found_font;
+    }
+    np.set_color(color);
     
+    if (width < 0.0 || height < 0.0) {
+        for (pvector<PT(DNAGroup)>::iterator it = children.end(); it != children.begin(); --it) {
+            (*it)->traverse(np, store, editing);
+        }
+    } else {
+        for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+            (*it)->traverse(np, store, editing);
+        }
+    }
+    center(pos, hpr);
+    np.set_pos_hpr_scale(pos, hpr, LVecBase3f(1.0, 1.0, 1.0));
+    
+    if (editing) {
+        PT(DNAGroup) PT_this = (DNAGroup*)this;
+        PT(PandaNode) store_node = np.node();
+        store->store_DNAGroup(store_node, PT_this);
+    }
+    return np;
 }
 
 void DNASignBaseline::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {
@@ -1645,4 +1670,165 @@ void DNAVisGroup::write(std::ostream &out, DNAStorage *store, int indent_level) 
     }
     indent(out, indent_level);
     out << "]" << std::endl;
+}
+
+### SuitLeg (Class) ###
+
+enum Type {
+    WalkFromStreet = 0x0,
+    WalkToStreet = 0x1,
+    Walk = 0x2,
+    FromSky = 0x3,
+    ToSky = 0x4,
+    FromSuitBuilding = 0x5,
+    ToSuitBuilding = 0x6,
+    ToToonBuilding = 0x7,
+    FromCogHQ = 0x8,
+    ToCogHQ = 0x9,
+    Off = 0xA,
+};
+
+SuitLeg::SuitLeg(SuitLeg::Type type, double start_time, double leg_time, int zone_id, int block_number, const DNASuitPoint *point_a, const DNASuitPoint *point_b) {
+    this->start_time = start_time;
+    this->zone_id = zone_id;
+    this->leg_time = leg_time;
+    this->type = type;
+    this->block_number = block_number;
+    this->point_a = point_a->index;
+    this->point_b = point_b->index;
+    pos_a = point_a->get_pos();
+    pos_b = point_b->get_pos();
+}
+
+SuitLeg::~SuitLeg() {
+
+}
+
+void SuitLeg::operator=(SuitLeg &other) {
+    type = other.type;
+    start_time = other.start_time;
+    leg_time = other.leg_time;
+    zone_id = other.zone_id;
+    block_number = other.block_number;
+    point_a = other.point_a;
+    point_b = other.point_b;
+    pos_a = other.pos_a;
+    pos_b = other.pos_b;
+}
+
+int SuitLeg::get_block_number() {
+    return block_number;
+}
+
+double SuitLeg::get_leg_time() {
+    return leg_time;
+}
+
+int SuitLeg::get_point_a() {
+    return point_a;
+}
+
+int SuitLeg::get_point_b() {
+    return point_b;
+}
+
+LPoint3f SuitLeg::get_pos_a() {
+    return pos_a;
+}
+
+LPoint3f SuitLeg::get_pos_at_time(double time) {
+    LPoint3f point;
+    
+    switch (type) {
+        case Type::FromSky:
+        case Type::FromSuitBuilding:
+        case Type::FromCogHQ:
+            point = pos_a;
+            break;
+        case Type::ToSky:
+        case Type::ToSuitBuilding:
+        case Type::ToToonBuilding:
+        case Type::ToCogHQ:
+        case Type::Off:
+            point = pos_b;
+            break;
+        default:
+            if (time >= 0.0) {
+                if (time > leg_time) {
+                    point = pos_b;
+                } else {
+                    double new_time = time / leg_time;
+                    point = (pos_b - pos_a) * new_time;
+                    point = pos_a + point;
+                }
+            } else {
+                point = pos_a;
+            }
+            break;
+    }
+    return point;
+}
+
+LPoint3f SuitLeg::get_pos_b() {
+    return pos_b;
+}
+
+double SuitLeg::get_start_time() {
+    return start_time;
+}
+
+std::string SuitLeg::get_type_name(SuitLeg::Type type) {
+    switch (type) {
+        case Type::WalkFromStreet:
+            return "WalkFromStreet";
+        case Type::WalkToStreet:
+            return "WalkToStreet";
+        case Type::Walk:
+            return "Walk";
+        case Type::FromSky:
+            return "FromSky";
+        case Type::ToSky:
+            return "ToSky";
+        case Type::FromSuitBuilding:
+            return "FromSuitBuilding";
+        case Type::ToSuitBuilding:
+            return "ToSuitBuilding";
+        case Type::ToToonBuilding:
+            return "ToToonBuilding";
+        case Type::FromCogHQ:
+            return "FromCogHQ";
+        case Type::ToCogHQ:
+            return "ToCogHQ";
+        case Type::Off:
+            return "Off";
+        default:
+            return "**invalid**";
+    }
+}
+
+int SuitLeg::get_zone_id() {
+    return zone_id;
+}
+
+void SuitLeg::output(std::ostream &out) {
+    out << "(" << get_type_name(type) << ", " << start_time << " (" << leg_time << "), " << zone_id << ", " << point_a << ", " << point_b << ")";
+}
+
+
+### SuitLegList (Class) ###
+
+SuitLegList::SuitLegList(SuitLegList *this, const DNASuitPath *path, const DNAStorage &storage, double suit_walk_speed, double from_sky_time, double to_sky_time, double, from_suit_building_time, double to_suit_building_time, double to_toon_building_time) {
+    double suit_time = 0.0;
+    SuitLeg::Type type = SuitLeg::Type::FromSky;
+    
+    DNASuitPoint *point_a = store->get_suit_point_with_index(path->points[0]);
+    DNASuitPoint *point_b = store->get_suit_point_with_index(path->points[1]);
+    if (point_a->type == SuitLeg::Type::Walk) {
+        type = SuitLeg::Type::FromSuitBuilding;
+    }
+    if (type == SuitLeg::Type::FromSky) {
+        suit_time = from_sky_time;
+    } else if (type == SuitLeg::Type::FromSuitBuilding) {
+        suit_time = from_suit_building_time;
+    }
 }

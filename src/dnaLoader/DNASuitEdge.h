@@ -8,7 +8,7 @@
 class DNASuitPoint;
 class DNAStorage;
 
-class EXPCL_DNA DNASuitEdge : public TypedReferenceCount {
+class EXPCL_TOONTOWN DNASuitEdge : public TypedReferenceCount {
     PUBLISHED:
         DNASuitEdge(PT(DNASuitPoint) start_point, PT(DNASuitPoint) end_point, std::string zone_id);
         ~DNASuitEdge();

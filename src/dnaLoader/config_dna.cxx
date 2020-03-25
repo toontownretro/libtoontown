@@ -21,10 +21,10 @@ Configure(config_dna);
 NotifyCategoryDef(dna, "");
 
 ConfigureFn(config_dna) {
-    init_libtoontown();
+    init_libdnaLoader();
 }
 
-void init_libtoontown() {
+void init_libdnaLoader() {
     static bool initialized = false;
     if (initialized) {
         return;
@@ -32,17 +32,17 @@ void init_libtoontown() {
 
     initialized = true;
     
+    DNAGroup::init_type();
+    DNAVisGroup::init_type();
+    DNANode::init_type();
+    DNALandmarkBuilding::init_type();
+    DNAProp::init_type();
     DNAAnimProp::init_type();
-    DNABattleCell::init_type();
+    DNAInteractiveProp::init_type();
     DNADoor::init_type();
     DNAFlatDoor::init_type();
-    DNAGroup::init_type();
-    DNAInteractiveProp::init_type();
-    DNALandmarkBuilding::init_type();
-    DNANode::init_type();
-    DNAProp::init_type();
+    DNASuitPoint::init_type();
     DNASuitEdge::init_type();
     DNASuitPath::init_type();
-    DNASuitPoint::init_type();
-    DNAVisGroup::init_type();
+    DNABattleCell::init_type();
 }

@@ -13,7 +13,7 @@
 
 class DNAStorage;
 
-class EXPCL_DNA DNAVisGroup : public DNAGroup {
+class EXPCL_TOONTOWN DNAVisGroup : public DNAGroup {
 	PUBLISHED:
 		DNAVisGroup(std::string initial_name);
 		~DNAVisGroup();

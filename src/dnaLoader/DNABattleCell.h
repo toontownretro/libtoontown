@@ -8,7 +8,7 @@
 
 class DNAStorage;
 
-class EXPCL_DNA DNABattleCell : public TypedReferenceCount {
+class EXPCL_TOONTOWN DNABattleCell : public TypedReferenceCount {
     PUBLISHED:
         DNABattleCell(float width, float height, LPoint3f pos);
         ~DNABattleCell();

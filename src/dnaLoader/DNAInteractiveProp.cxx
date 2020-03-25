@@ -1,29 +1,29 @@
-#include "DNAAnimProp.h"
+#include "DNAInteractiveProp.h"
 #include "DNAStorage.h"
 
-TypeHandle DNAAnimProp::_type_handle;
+TypeHandle DNAInteractiveProp::_type_handle;
 
-DNAAnimProp::DNAAnimProp(std::string initial_name) : DNAProp(initial_name) {
+DNAInteractiveProp::DNAInteractiveProp(std::string initial_name) : DNAAnimProp(initial_name) {
+    cell_id = -1;
+}
+
+DNAInteractiveProp::DNAInteractiveProp(const DNAInteractiveProp &interactive_prop) : DNAAnimProp(interactive_prop) {
+    cell_id = interactive_prop.cell_id;
+}
+
+DNAInteractiveProp::~DNAInteractiveProp() {
 
 }
 
-DNAAnimProp::DNAAnimProp(const DNAAnimProp &anim_prop) : DNAProp(anim_prop) {
-    anim = anim_prop.anim;
+int DNAInteractiveProp::get_cell_id() {
+    return cell_id;
 }
 
-DNAAnimProp::~DNAAnimProp() {
-
+void DNAInteractiveProp::set_cell_id(int cell_id) {
+    this->cell_id = cell_id;
 }
 
-std::string DNAAnimProp::get_anim() {
-    return anim;
-}
-
-void DNAAnimProp::set_anim(std::string &anim) {
-    this->anim = anim;
-}
-
-NodePath DNAAnimProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
+NodePath DNAInteractiveProp::traverse(NodePath& parent, DNAStorage* store, int editing) {
     NodePath _np;
 
     if (code == "DCS") {
@@ -49,8 +49,13 @@ NodePath DNAAnimProp::traverse(NodePath &parent, DNAStorage *store, int editing)
         _np.node()->set_name(name); // Is it this or _np.set_name(name)?
     }
     _np.set_tag("DNAAnim", anim);
+    _np.set_tag("DNACellIndex", std::to_string(cell_id));
     _np.set_pos_hpr_scale(pos, hpr, scale);
     _np.set_color_scale(color);
+
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->traverse(_np, store, editing);
+    }
 
     if (editing) {
         PT(DNAGroup) PT_this = (DNAGroup*)this;
@@ -60,13 +65,15 @@ NodePath DNAAnimProp::traverse(NodePath &parent, DNAStorage *store, int editing)
     return _np;
 }
 
-void DNAAnimProp::write(std::ostream &out, DNAStorage *store, int indent_level) {
+void DNAInteractiveProp::write(std::ostream& out, DNAStorage* store, int indent_level) {
     indent(out, indent_level);
-    out << "anim_prop \"" << name << "\" [" << std::endl;
+    out << "interactive_prop \"" << name << "\" [" << std::endl;
     indent(out, indent_level + 1);
     out << "code [ \"" << code << "\" ]" << std::endl;
     indent(out, indent_level + 1);
     out << "anim [ \"" << anim << "\" ]" << std::endl;
+    indent(out, indent_level + 1);
+    out << "cell_id [ " << cell_id << " ]" << std::endl;
 
     // Animated Props always have a position.
     indent(out, indent_level + 1);
@@ -76,7 +83,8 @@ void DNAAnimProp::write(std::ostream &out, DNAStorage *store, int indent_level) 
     indent(out, indent_level + 1);
     if (temp_hpr_fix) {
         out << "nhpr [ ";
-    } else {
+    }
+    else {
         out << "hpr [ ";
     }
     out << hpr[0] << " " << hpr[1] << " " << hpr[2] << " ]" << std::endl;

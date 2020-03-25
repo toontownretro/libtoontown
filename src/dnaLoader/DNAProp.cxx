@@ -63,6 +63,10 @@ NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
     _np.set_pos_hpr_scale(pos, hpr, scale);
     _np.set_color_scale(color);
 
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->traverse(_np, store, editing);
+    }
+
     if (editing) {
         PT(DNAGroup) PT_this = (DNAGroup*)this;
         PT(PandaNode) store_node = _np.node();

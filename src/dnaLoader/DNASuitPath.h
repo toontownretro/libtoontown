@@ -6,7 +6,7 @@
 #include <typedReferenceCount.h>
 #include <vector_int.h>
 
-class EXPCL_DNA DNASuitPath : public TypedReferenceCount {
+class EXPCL_TOONTOWN DNASuitPath : public TypedReferenceCount {
     PUBLISHED:
         DNASuitPath();
         DNASuitPath(int reserve_length);

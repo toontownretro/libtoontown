@@ -13,7 +13,7 @@
 
 class DNAStorage;
 
-class EXPCL_DNA DNAInteractiveProp : public DNAAnimProp {
+class EXPCL_TOONTOWN DNAInteractiveProp : public DNAAnimProp {
 	PUBLISHED:
 		DNAInteractiveProp(std::string initial_name);
 		DNAInteractiveProp(const DNAInteractiveProp &interactive_prop);

@@ -11,7 +11,7 @@
 
 class DNAStorage;
 
-class EXPCL_DNA DNALandmarkBuilding : public DNANode {
+class EXPCL_TOONTOWN DNALandmarkBuilding : public DNANode {
     PUBLISHED:
         DNALandmarkBuilding(std::string initial_name);
         ~DNALandmarkBuilding();

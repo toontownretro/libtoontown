@@ -12,7 +12,7 @@
 
 class DNAStorage;
 
-class EXPCL_DNA DNADoor : public DNAGroup {
+class EXPCL_TOONTOWN DNADoor : public DNAGroup {
 	PUBLISHED:
 		DNADoor(std::string initial_name);
 		DNADoor(const DNADoor &door);

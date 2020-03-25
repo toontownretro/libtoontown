@@ -11,7 +11,7 @@
 
 class DNAStorage;
 
-class EXPCL_DNA DNANode : public DNAGroup {
+class EXPCL_TOONTOWN DNANode : public DNAGroup {
 	PUBLISHED:
         DNANode(std::string initial_name);
         DNANode(const DNANode &node);

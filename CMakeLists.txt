@@ -37,51 +37,54 @@ endif()
 execute_process(COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}")
 
 ### Define core components ###
-set(BASE_FILES
-    src/base/dnabase.h
-    src/base/config_dna.h
-    src/base/config_dna.cxx
+set(DNALOADER_FILES
+    src/dnaLoader/dnabase.h
+    src/dnaLoader/config_dna.h
+    src/dnaLoader/config_dna.cxx
+    src/dnaLoader/DNAAnimProp.cxx
+    src/dnaLoader/DNAAnimProp.h
+    src/dnaLoader/DNABattleCell.cxx
+    src/dnaLoader/DNABattleCell.h
+    src/dnaLoader/DNADoor.cxx
+    src/dnaLoader/DNADoor.h
+    src/dnaLoader/DNAFlatDoor.cxx
+    src/dnaLoader/DNAFlatDoor.h
+    src/dnaLoader/DNAGroup.cxx
+    src/dnaLoader/DNAGroup.h
+    src/dnaLoader/DNAInteractiveProp.cxx
+    src/dnaLoader/DNAInteractiveProp.h
+    src/dnaLoader/DNALandmarkBuilding.cxx
+    src/dnaLoader/DNALandmarkBuilding.h
+    src/dnaLoader/DNANode.cxx
+    src/dnaLoader/DNANode.h
+    src/dnaLoader/DNAProp.cxx
+    src/dnaLoader/DNAProp.h
+    src/dnaLoader/DNAStorage.cxx
+    src/dnaLoader/DNAStorage.h
+    src/dnaLoader/DNASuitEdge.cxx
+    src/dnaLoader/DNASuitEdge.h
+    src/dnaLoader/DNASuitPath.cxx
+    src/dnaLoader/DNASuitPath.h
+    src/dnaLoader/DNASuitPoint.cxx
+    src/dnaLoader/DNASuitPoint.h
+    src/dnaLoader/DNAVisGroup.cxx
+    src/dnaLoader/DNAVisGroup.h
 )
 
-set(COMPONENTS_FILES
-    src/components/DNAAnimProp.cxx
-    src/components/DNAAnimProp.h
-    src/components/DNABattleCell.cxx
-    src/components/DNABattleCell.h
-    src/components/DNADoor.cxx
-    src/components/DNADoor.h
-    src/components/DNAFlatDoor.cxx
-    src/components/DNAFlatDoor.h
-    src/components/DNAGroup.cxx
-    src/components/DNAGroup.h
-    src/components/DNAInteractiveProp.cxx
-    src/components/DNAInteractiveProp.h
-    src/components/DNALandmarkBuilding.cxx
-    src/components/DNALandmarkBuilding.h
-    src/components/DNANode.cxx
-    src/components/DNANode.h
-    src/components/DNAProp.cxx
-    src/components/DNAProp.h
-    src/components/DNAStorage.cxx
-    src/components/DNAStorage.h
-    src/components/DNASuitEdge.cxx
-    src/components/DNASuitEdge.h
-    src/components/DNASuitPath.cxx
-    src/components/DNASuitPath.h
-    src/components/DNASuitPoint.cxx
-    src/components/DNASuitPoint.h
-    src/components/DNAVisGroup.cxx
-    src/components/DNAVisGroup.h
+set(SUIT_FILES
+    src/suit/SuitLeg.cxx
+    src/suit/SuitLeg.h
 )
 
 set(IGATE_FILES
-    src/base_igate.cxx
-    src/components_igate.cxx
+    src/dnaLoader_igate.cxx
+    src/suit_igate.cxx
     src/libtoontown_module.cxx
 )
 
 include_directories(src/base)
-include_directories(src/components)
+include_directories(src/dnaLoader)
+include_directories(src/suit)
 include_directories(${PANDA_DIR}/include)
 include_directories(${Python_INCLUDE_DIRS})
 include_directories(/usr/include/eigen3)
@@ -150,8 +153,8 @@ if(NOT BUILD_STATIC_LIB)
 
     if(WIN32)
         add_library(libtoontown SHARED
-            ${BASE_FILES}
-            ${COMPONENTS_FILES}
+            ${DNALOADER_FILES}
+            ${SUIT_FILES}
             ${IGATE_FILES}
         )
         SET_TARGET_PROPERTIES(libtoontown PROPERTIES SUFFIX ".pyd")
@@ -163,8 +166,8 @@ if(NOT BUILD_STATIC_LIB)
 
     else()
         add_library(toontown MODULE
-            ${BASE_FILES}
-            ${COMPONENTS_FILES}
+            ${DNALOADER_FILES}
+            ${SUIT_FILES}
             ${IGATE_FILES}
         )
         target_link_libraries(toontown ${PANDA_LIBS} ${Python_LIBRARIES})
@@ -178,8 +181,8 @@ else()
 
     if(WIN32)
         add_library(libtoontown STATIC
-            ${BASE_FILES}
-            ${COMPONENTS_FILES}
+            ${DNALOADER_FILES}
+            ${SUIT_FILES}
             ${IGATE_FILES}
         )
         add_custom_command(TARGET libtoontown
@@ -189,8 +192,8 @@ else()
 
     else()
         add_library(toontown STATIC
-            ${BASE_FILES}
-            ${COMPONENTS_FILES}
+            ${DNALOADER_FILES}
+            ${SUIT_FILES}
             ${IGATE_FILES}
         )
         add_custom_command(TARGET toontown
@@ -202,6 +205,6 @@ else()
 endif()
 
 ### Setup source groups and defines for configurables ###
-source_group("base" FILES ${BASE_FILES})
-source_group("components" FILES ${COMPONENTS_FILES})
+source_group("dnaLoader" FILES ${DNALOADER_FILES})
+source_group("suit" FILES ${SUIT_FILES})
 source_group("interrogate_files" FILES ${IGATE_FILES})

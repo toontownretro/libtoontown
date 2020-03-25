@@ -15,7 +15,7 @@
 #include <pvector.h>
 #include <pmap.h>
 
-class EXPCL_DNA DNAStorage {
+class EXPCL_TOONTOWN DNAStorage {
     PUBLISHED:
         DNAStorage();
         ~DNAStorage();

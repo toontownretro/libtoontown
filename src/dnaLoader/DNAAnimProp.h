@@ -2,27 +2,26 @@
 
 #include "dnabase.h"
 
-#include "DNANode.h"
+#include "DNAProp.h"
 
+#include <string>
 #include <luse.h>
 #include <typedReferenceCount.h>
 #include <nodePath.h>
+#include <modelNode.h>
 #include <pvector.h>
 
 class DNAStorage;
 
-class EXPCL_DNA DNAProp : public DNANode {
+class EXPCL_TOONTOWN DNAAnimProp : public DNAProp {
 	PUBLISHED:
-		DNAProp(std::string initial_name);
-		DNAProp(const DNAProp& prop);
-		~DNAProp();
+		DNAAnimProp(std::string initial_name);
+		DNAAnimProp(const DNAAnimProp& anim_prop);
+		~DNAAnimProp();
 
-		std::string get_code();
+		std::string get_anim();
 
-		LVector4f get_color();
-
-		void set_code(std::string &code);
-		void set_color(const LVecBase4f &color);
+		void set_anim(std::string &anim);
 
 	public:
 		virtual NodePath traverse(NodePath& parent, DNAStorage* store, int editing = 0);
@@ -30,8 +29,7 @@ class EXPCL_DNA DNAProp : public DNANode {
 		virtual void write(std::ostream& out, DNAStorage* store, int indent_level = 0);
 
 	protected:
-		std::string code;
-		LVecBase4f color;
+		std::string anim;
 
-	TYPE_HANDLE(DNAProp, DNANode);
+	TYPE_HANDLE(DNAAnimProp, DNAProp);
 };

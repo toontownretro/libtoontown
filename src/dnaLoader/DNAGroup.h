@@ -9,7 +9,7 @@
 
 class DNAStorage;
 
-class EXPCL_DNA DNAGroup : public TypedReferenceCount {
+class EXPCL_TOONTOWN DNAGroup : public TypedReferenceCount {
     PUBLISHED:
         DNAGroup(std::string initial_name);
         DNAGroup(const DNAGroup &group);
