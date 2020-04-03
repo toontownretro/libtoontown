@@ -1,5 +1,7 @@
 #include "config_dna.h"
 
+#include <loaderFileTypeRegistry.h>
+
 #include "DNAAnimProp.h"
 #include "DNABattleCell.h"
 #include "DNADoor.h"
@@ -14,8 +16,12 @@
 #include "DNASuitPoint.h"
 #include "DNAVisGroup.h"
 
+#include "LoaderFileTypeDNA.h"
+
 #include <pandabase.h>
 #include <dconfig.h>
+
+ConfigVariableSearchPath dna_path("dna-path", ".", "");
 
 Configure(config_dna);
 NotifyCategoryDef(dna, "");
@@ -45,4 +51,20 @@ void init_libdnaLoader() {
     DNASuitEdge::init_type();
     DNASuitPath::init_type();
     DNABattleCell::init_type();
+    LoaderFileTypeDNA::init_type();
+
+    LoaderFileTypeRegistry *reg = LoaderFileTypeRegistry::get_global_ptr();
+    reg->register_type(new LoaderFileTypeDNA);
+}
+
+PT(PandaNode) load_dna_file(DNAStorage *dna_store, std::string &filename, CoordinateSystem cs, int editing) {
+    return nullptr;
+}
+
+PT(PandaNode) load_dna_file_AI(DNAStorage *dna_store, std::string &filename, CoordinateSystem cs) {
+    return nullptr;
+}
+
+ConfigVariableSearchPath &get_dna_path() {
+    return dna_path;
 }

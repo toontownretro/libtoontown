@@ -39,8 +39,10 @@ execute_process(COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_inter
 ### Define core components ###
 set(DNALOADER_FILES
     src/dnaLoader/dnabase.h
-    src/dnaLoader/config_dna.h
     src/dnaLoader/config_dna.cxx
+    src/dnaLoader/config_dna.h
+    src/dnaLoader/LoaderFileTypeDNA.cxx
+    src/dnaLoader/LoaderFileTypeDNA.h
     src/dnaLoader/DNAAnimProp.cxx
     src/dnaLoader/DNAAnimProp.h
     src/dnaLoader/DNABattleCell.cxx
@@ -61,6 +63,8 @@ set(DNALOADER_FILES
     src/dnaLoader/DNAProp.h
     src/dnaLoader/DNAStorage.cxx
     src/dnaLoader/DNAStorage.h
+    src/dnaLoader/DNAStreet.cxx
+    src/dnaLoader/DNAStreet.h
     src/dnaLoader/DNASuitEdge.cxx
     src/dnaLoader/DNASuitEdge.h
     src/dnaLoader/DNASuitPath.cxx

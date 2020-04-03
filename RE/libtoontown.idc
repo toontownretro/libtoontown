@@ -4696,6 +4696,7 @@ static ApplyStrucTInfos_1(void) {
 	SetType(get_member_id(id, 0x38), "__int64");
 	SetType(get_member_id(id, 0x40), "__int64");
 	id = get_struc_id("Filename");
+	SetType(get_member_id(id, 0x0), "__string2");
 	SetType(get_member_id(id, 0x18), "unsigned int");
 	SetType(get_member_id(id, 0x1C), "unsigned int");
 	SetType(get_member_id(id, 0x20), "unsigned int");
@@ -16113,6 +16114,44 @@ static ApplyStrucTInfos_12(void) {
 	SetType(get_member_id(id, 0x24), "_DWORD");
 	SetType(get_member_id(id, 0x28), "LPoint3f");
 	SetType(get_member_id(id, 0x34), "LPoint3f");
+	id = get_struc_id("SuitLegList");
+	SetType(get_member_id(id, 0x0), "char");
+	SetType(get_member_id(id, 0x1), "_BYTE[11]");
+	SetType(get_member_id(id, 0xC), "_DWORD");
+	SetType(get_member_id(id, 0x10), "_DWORD");
+	id = get_struc_id("__string2");
+	SetType(get_member_id(id, 0x0), "__string2_alloc");
+	id = get_struc_id("__string2_alloc");
+	SetType(get_member_id(id, 0x0), "__string2_pair");
+	id = get_struc_id("__string2_pair");
+	SetType(get_member_id(id, 0x0), "__string2_stringval");
+	id = get_struc_id("__string2_stringval");
+	SetType(get_member_id(id, 0x0), "__string2_stringval::_Bxty");
+	SetType(get_member_id(id, 0x10), "unsigned int");
+	SetType(get_member_id(id, 0x14), "unsigned int");
+	id = get_struc_id("__string2_stringval::_Bxty");
+	SetType(get_member_id(id, 0x0), "char[16]");
+	SetType(get_member_id(id, 0x1), "char *");
+	SetType(get_member_id(id, 0x2), "char[16]");
+	id = get_struc_id("DNAWindows");
+	SetType(get_member_id(id, 0x0), "DNAGroup");
+	SetType(get_member_id(id, 0x4C), "__string");
+	SetType(get_member_id(id, 0x68), "_DWORD");
+	SetType(get_member_id(id, 0x6C), "LVecBase4f");
+	id = get_struc_id("DNAWall");
+	SetType(get_member_id(id, 0x0), "DNANode");
+	SetType(get_member_id(id, 0x70), "__string");
+	SetType(get_member_id(id, 0x8C), "float");
+	SetType(get_member_id(id, 0x90), "LVecBase4f");
+	id = get_struc_id("DNAStreet");
+	SetType(get_member_id(id, 0x0), "DNANode");
+	SetType(get_member_id(id, 0x70), "__string[]");
+	SetType(get_member_id(id, 0x8C), "__string");
+	SetType(get_member_id(id, 0xA8), "__string");
+	SetType(get_member_id(id, 0xC4), "__string");
+	SetType(get_member_id(id, 0xE0), "LVecBase4f");
+	SetType(get_member_id(id, 0xF0), "LVecBase4f");
+	SetType(get_member_id(id, 0x100), "LVecBase4f");
 	return id;
 }
 
@@ -22341,6 +22380,15 @@ static Structures_10(id) {
 	id = add_struc(-1,"DNASignBaseline",0);
 	id = add_struc(-1,"DNASignBaseline_TypedObject_VTable",0);
 	id = add_struc(-1,"SuitLeg",0);
+	id = add_struc(-1,"SuitLegList",0);
+	id = add_struc(-1,"__string2",0);
+	id = add_struc(-1,"__string2_alloc",0);
+	id = add_struc(-1,"__string2_pair",0);
+	id = add_struc(-1,"__string2_stringval",0);
+	id = add_struc(-1,"__string2_stringval::_Bxty",1);
+	id = add_struc(-1,"DNAWindows",0);
+	id = add_struc(-1,"DNAWall",0);
+	id = add_struc(-1,"DNAStreet",0);
 	
 	id = get_struc_id("GUID");
 	mid = add_struc_member(id,"Data1",	0,	0x20000400,	-1,	4);
@@ -22702,6 +22750,12 @@ static Structures_10(id) {
 	id = get_struc_id("std::basic_ostream<wchar_t,std::char_traits<wchar_t> >::_Sentry_base");
 	mid = add_struc_member(id,"_Myostr",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_11(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::basic_ostream<wchar_t,std::char_traits<wchar_t> >::sentry");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::basic_ostream<wchar_t,std::char_traits<wchar_t> >::_Sentry_base"),	4);
@@ -22709,12 +22763,6 @@ static Structures_10(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::basic_ostream<unsigned short,std::char_traits<unsigned short> >::_Sentry_base");
-	return id;
-}
-
-static Structures_11(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_Myostr",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
@@ -24192,6 +24240,12 @@ static Structures_11(id) {
 	
 	id = get_struc_id("$_TypeDescriptor$_extraBytes_20");
 	mid = add_struc_member(id,"pVFTable",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	return id;
+}
+
+static Structures_12(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"spare",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"name",	0X8,	0x000400,	-1,	20);
 	set_struc_align(id,2);
@@ -24201,12 +24255,6 @@ static Structures_11(id) {
 	mid = add_struc_member(id,"gapC",	0XC,	0x000400,	-1,	1);
 	
 	id = get_struc_id("$_TypeDescriptor$_extraBytes_25");
-	return id;
-}
-
-static Structures_12(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"pVFTable",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"spare",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"name",	0X8,	0x000400,	-1,	25);
@@ -25617,6 +25665,12 @@ static Structures_12(id) {
 	id = get_struc_id("std::vector<Filename,pallocator_array<Filename> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Vector_alloc<std::_Vec_base_types<Filename,pallocator_array<Filename> > >"),	16);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_13(id) {
+        auto mid;
+
 	
 	id = get_struc_id("pvector<Filename>");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::vector<Filename,pallocator_array<Filename> >"),	16);
@@ -25627,12 +25681,6 @@ static Structures_12(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("ConfigVariableSearchPath");
-	return id;
-}
-
-static Structures_13(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("ConfigVariableBase"),	4);
 	mid = add_struc_member(id,"_lock",	0X4,	0x60000400,	get_struc_id("MutexWin32Impl"),	8);
 	mid = add_struc_member(id,"_default_value",	0XC,	0x60000400,	get_struc_id("DSearchPath"),	16);
@@ -26735,7 +26783,32 @@ static Structures_13(id) {
 	
 	id = get_struc_id("std::less<PandaNode::UpConnection>");
 	
+	id = get_struc_id("__string2_stringval::_Bxty");
+	mid = add_struc_member(id,"_Buf",	0,	0x000400,	-1,	16);
+	mid = add_struc_member(id,"_Ptr",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
+	mid = add_struc_member(id,"_Alias",	0,	0x000400,	-1,	16);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("__string2_stringval");
+	mid = add_struc_member(id,"_Bx",	0,	0x60000400,	get_struc_id("__string2_stringval::_Bxty"),	16);
+	mid = add_struc_member(id,"_Mysize",	0X10,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"_Myres",	0X14,	0x20000400,	-1,	4);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("__string2_pair");
+	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("__string2_stringval"),	24);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("__string2_alloc");
+	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("__string2_pair"),	24);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("__string2");
+	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("__string2_alloc"),	24);
+	set_struc_align(id,2);
+	
 	id = get_struc_id("Filename");
+	mid = add_struc_member(id,"_filename",	0,	0x60000400,	get_struc_id("__string2"),	24);
 	mid = add_struc_member(id,"_dirname_end",	0X18,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_basename_start",	0X1C,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_basename_end",	0X20,	0x20000400,	-1,	4);
@@ -26917,18 +26990,18 @@ static Structures_13(id) {
 	
 	id = get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int> > >,0>");
 	mid = add_struc_member(id,"_Myval1",	0,	0x60000400,	get_struc_id("std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int>,void *> > >"),	4);
-	mid = add_struc_member(id,"_Myval2",	0X4,	0x60000400,	get_struc_id("std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int> > >"),	8);
-	set_struc_align(id,2);
-	
-	id = get_struc_id("std::_Compressed_pair<std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int> > >,0>,1>");
-	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int> > >,0>"),	12);
-	set_struc_align(id,2);
 	return id;
 }
 
 static Structures_14(id) {
         auto mid;
 
+	mid = add_struc_member(id,"_Myval2",	0X4,	0x60000400,	get_struc_id("std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int> > >"),	8);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("std::_Compressed_pair<std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int> > >,0>,1>");
+	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int> > >,0>"),	12);
+	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,int,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,pallocator_single<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int> >,0> >");
 	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,int> > >,0>,1>"),	12);
@@ -27960,6 +28033,12 @@ static Structures_14(id) {
 	id = get_struc_id("std::_Compressed_pair<std::less<NodePath>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<NodePath const ,PointerTo<AuxSceneData> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<NodePath const ,PointerTo<AuxSceneData> > > >,0>,1>");
 	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<NodePath const ,PointerTo<AuxSceneData> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<NodePath const ,PointerTo<AuxSceneData> > > >,0>"),	12);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_15(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<NodePath,PointerTo<AuxSceneData>,std::less<NodePath>,pallocator_single<std::pair<NodePath const ,PointerTo<AuxSceneData> > >,0> >");
 	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::less<NodePath>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<NodePath const ,PointerTo<AuxSceneData> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<NodePath const ,PointerTo<AuxSceneData> > > >,0>,1>"),	12);
@@ -27968,12 +28047,6 @@ static Structures_14(id) {
 	id = get_struc_id("std::_Tree<std::_Tmap_traits<NodePath,PointerTo<AuxSceneData>,std::less<NodePath>,pallocator_single<std::pair<NodePath const ,PointerTo<AuxSceneData> > >,0> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<NodePath,PointerTo<AuxSceneData>,std::less<NodePath>,pallocator_single<std::pair<NodePath const ,PointerTo<AuxSceneData> > >,0> >"),	12);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_15(id) {
-        auto mid;
-
 	
 	id = get_struc_id("std::map<NodePath,PointerTo<AuxSceneData>,std::less<NodePath>,pallocator_single<std::pair<NodePath const ,PointerTo<AuxSceneData> > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree<std::_Tmap_traits<NodePath,PointerTo<AuxSceneData>,std::less<NodePath>,pallocator_single<std::pair<NodePath const ,PointerTo<AuxSceneData> > >,0> >"),	12);
@@ -29221,6 +29294,12 @@ static Structures_15(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("DeletedChain<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,pset<void (__cdecl*)(Event const *),std::less<void (__cdecl*)(Event const *)> > >,void *> >");
+	return id;
+}
+
+static Structures_16(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_chain",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
@@ -29249,12 +29328,6 @@ static Structures_15(id) {
 	id = get_struc_id("DeletedChain<std::_Tree_node<TextureStage *,void *> >");
 	mid = add_struc_member(id,"_chain",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_16(id) {
-        auto mid;
-
 	
 	id = get_struc_id("pallocator_array<DisplayRegion::Region>");
 	mid = add_struc_member(id,"_type_handle",	0,	0x60000400,	get_struc_id("TypeHandle"),	4);
@@ -30019,6 +30092,12 @@ static Structures_16(id) {
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("TypedWritableReferenceCount"),	24);
 	mid = add_struc_member(id,"_id",	0X18,	0x20000400,	-1,	4);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_17(id) {
+        auto mid;
+
 	
 	id = get_struc_id("ParamValue<std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("ParamValueBase"),	24);
@@ -30046,12 +30125,6 @@ static Structures_16(id) {
 	
 	id = get_struc_id("SubfileInfo");
 	mid = add_struc_member(id,"_file",	0,	0x60000400,	get_struc_id("ConstPointerTo<FileReference>"),	4);
-	return id;
-}
-
-static Structures_17(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_start",	0X8,	0x60000400,	get_struc_id("std::fpos<_Mbstatet>"),	24);
 	mid = add_struc_member(id,"_size",	0X20,	0x30000400,	-1,	8);
 	set_struc_align(id,3);
@@ -31030,6 +31103,12 @@ static Structures_17(id) {
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("NodeCachedReferenceCount"),	32);
 	mid = add_struc_member(id,"_saved_entry",	0X20,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_composition_cache",	0X24,	0x60000400,	get_struc_id("SimpleHashMap<TransformState const *,TransformState::Composition,pointer_hash>"),	20);
+	return id;
+}
+
+static Structures_18(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_invert_composition_cache",	0X38,	0x60000400,	get_struc_id("SimpleHashMap<TransformState const *,TransformState::Composition,pointer_hash>"),	20);
 	mid = add_struc_member(id,"_cycle_detect",	0X4C,	0x60000400,	get_struc_id("UpdateSeq"),	4);
 	mid = add_struc_member(id,"_pos",	0X50,	0x60000400,	get_struc_id("LPoint3f"),	12);
@@ -31041,12 +31120,6 @@ static Structures_17(id) {
 	mid = add_struc_member(id,"_mat",	0XA0,	0x60000400,	get_struc_id("LMatrix4f"),	64);
 	mid = add_struc_member(id,"_inv_mat",	0XE0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"_hash",	0XE4,	0x20000400,	-1,	4);
-	return id;
-}
-
-static Structures_18(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_flags",	0XE8,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_lock",	0XEC,	0x60000400,	get_struc_id("LightMutex"),	8);
 	set_struc_align(id,2);
@@ -32209,6 +32282,12 @@ static Structures_18(id) {
 	
 	id = get_struc_id("PointerToArray<UnalignedLVecBase4f>");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("PointerToArrayBase<UnalignedLVecBase4f>"),	4);
+	return id;
+}
+
+static Structures_19(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_type_handle",	0X4,	0x60000400,	get_struc_id("TypeHandle"),	4);
 	set_struc_align(id,2);
 	
@@ -32220,12 +32299,6 @@ static Structures_18(id) {
 	id = get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<std::allocator<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,NotifyCategory *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,NotifyCategory *> > >,1>");
 	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,NotifyCategory *> > >"),	8);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_19(id) {
-        auto mid;
-
 	
 	id = get_struc_id("std::_Compressed_pair<std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::_Compressed_pair<std::_Wrap_alloc<std::allocator<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,NotifyCategory *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,NotifyCategory *> > >,1>,1>");
 	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<std::allocator<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,NotifyCategory *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,NotifyCategory *> > >,1>"),	8);
@@ -33554,6 +33627,12 @@ static Structures_19(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_array<Shader::ShaderVarSpec> >,std::_Vector_val<std::_Simple_types<Shader::ShaderVarSpec> >,0>");
+	return id;
+}
+
+static Structures_20(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_Myval1",	0,	0x60000400,	get_struc_id("std::_Wrap_alloc<pallocator_array<Shader::ShaderVarSpec> >"),	4);
 	mid = add_struc_member(id,"_Myval2",	0X4,	0x60000400,	get_struc_id("std::_Vector_val<std::_Simple_types<Shader::ShaderVarSpec> >"),	12);
 	set_struc_align(id,2);
@@ -33565,12 +33644,6 @@ static Structures_19(id) {
 	id = get_struc_id("std::vector<Shader::ShaderVarSpec,pallocator_array<Shader::ShaderVarSpec> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Vector_alloc<std::_Vec_base_types<Shader::ShaderVarSpec,pallocator_array<Shader::ShaderVarSpec> > >"),	16);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_20(id) {
-        auto mid;
-
 	
 	id = get_struc_id("pvector<Shader::ShaderVarSpec>");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::vector<Shader::ShaderVarSpec,pallocator_array<Shader::ShaderVarSpec> >"),	16);
@@ -34806,6 +34879,12 @@ static Structures_20(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("ordered_vector<PandaNode::DownConnection,std::less<PandaNode::DownConnection>,pvector<PandaNode::DownConnection> >");
+	return id;
+}
+
+static Structures_21(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_vector",	0X4,	0x60000400,	get_struc_id("pvector<PandaNode::DownConnection>"),	16);
 	set_struc_align(id,2);
 	
@@ -34817,12 +34896,6 @@ static Structures_20(id) {
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("CopyOnWriteObject"),	64);
 	mid = add_struc_member(id,"baseclass_40",	0X40,	0x60000400,	get_struc_id("ov_multiset<PandaNode::DownConnection,std::less<PandaNode::DownConnection>,pvector<PandaNode::DownConnection> >"),	20);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_21(id) {
-        auto mid;
-
 	
 	id = get_struc_id("BamReaderAuxData");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("TypedReferenceCount"),	20);
@@ -35995,6 +36068,12 @@ static Structures_21(id) {
 	mid = add_struc_member(id,"_pointer_events",	0X7C,	0x60000400,	get_struc_id("PointerTo<PointerEventList>"),	4);
 	mid = add_struc_member(id,"_num_pointers",	0X80,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_pointers",	0X84,	0x60000400,	get_struc_id("pvector<PointerData>"),	16);
+	return id;
+}
+
+static Structures_22(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"_buttons",	0X94,	0x60000400,	get_struc_id("pvector<InputDevice::ButtonState>"),	16);
 	mid = add_struc_member(id,"_axes",	0XA4,	0x60000400,	get_struc_id("pvector<InputDevice::AxisState>"),	16);
 	mid = add_struc_member(id,"_pointer_data",	0XB8,	0x60000400,	get_struc_id("PointerData"),	40);
@@ -36011,12 +36090,6 @@ static Structures_21(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree_val<std::_Tree_simple_types<ButtonHandle> >");
-	return id;
-}
-
-static Structures_22(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_Myhead",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"_Mysize",	0X4,	0x20000400,	-1,	4);
 	set_struc_align(id,2);
@@ -37136,6 +37209,12 @@ static Structures_22(id) {
 	mid = add_struc_member(id,"st_rdev",	0X10,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"st_size",	0X14,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"st_atime",	0X18,	0x30000400,	-1,	8);
+	return id;
+}
+
+static Structures_23(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"st_mtime",	0X20,	0x30000400,	-1,	8);
 	mid = add_struc_member(id,"st_ctime",	0X28,	0x30000400,	-1,	8);
 	set_struc_align(id,3);
@@ -37159,12 +37238,6 @@ static Structures_22(id) {
 	
 	id = get_struc_id("PyStructSequence_Field");
 	mid = add_struc_member(id,"name",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
-	return id;
-}
-
-static Structures_23(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"doc",	0X4,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
@@ -38635,6 +38708,12 @@ static Structures_23(id) {
 	mid = add_struc_member(id,"ht_name",	0X1AC,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"ht_slots",	0X1B0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_24(id) {
+        auto mid;
+
 	
 	id = get_struc_id("_grouperobject");
 	mid = add_struc_member(id,"ob_refcnt",	0,	0x20000400,	-1,	4);
@@ -38654,12 +38733,6 @@ static Structures_23(id) {
 	mid = add_struc_member(id,"st_size",	0X14,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"st_atime",	0X18,	0x30000400,	-1,	8);
 	mid = add_struc_member(id,"st_mtime",	0X20,	0x30000400,	-1,	8);
-	return id;
-}
-
-static Structures_24(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"st_ctime",	0X28,	0x30000400,	-1,	8);
 	set_struc_align(id,3);
 	
@@ -39913,6 +39986,12 @@ static Structures_24(id) {
 	
 	id = get_struc_id("std::_Vector_val__stringalloc");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Container_base_aux_alloc_real__std::allocator_general__"),	8);
+	return id;
+}
+
+static Structures_25(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"gap8",	0X8,	0x000400,	-1,	4);
 	set_struc_align(id,2);
 	
@@ -39931,12 +40010,6 @@ static Structures_24(id) {
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Vector_val_general"),	12);
 	mid = add_struc_member(id,"_Myfirst",	0XC,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	mid = add_struc_member(id,"_Mylast",	0X10,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
-	return id;
-}
-
-static Structures_25(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_Myend",	0X14,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
@@ -41197,6 +41270,12 @@ static Structures_25(id) {
 	id = get_struc_id("pvector<PointerTo<GraphicsOutput> >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::vector<PointerTo<GraphicsOutput>,pallocator_array<PointerTo<GraphicsOutput> > >"),	16);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_26(id) {
+        auto mid;
+
 	
 	id = get_struc_id("ordered_vector<PointerTo<GraphicsOutput>,IndirectLess<GraphicsOutput>,pvector<PointerTo<GraphicsOutput> > >");
 	mid = add_struc_member(id,"_vector",	0X4,	0x60000400,	get_struc_id("pvector<PointerTo<GraphicsOutput> >"),	16);
@@ -41212,12 +41291,6 @@ static Structures_25(id) {
 	mid = add_struc_member(id,"width",	0,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"height",	0X4,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"bits_per_pixel",	0X8,	0x20000400,	-1,	4);
-	return id;
-}
-
-static Structures_26(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"refresh_rate",	0XC,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"fullscreen_only",	0X10,	0x20000400,	-1,	4);
 	set_struc_align(id,2);
@@ -42167,6 +42240,12 @@ static Structures_26(id) {
 	mid = add_struc_member(id,"_start_row",	0X28,	0x20000400,	-1,	4);
 	mid = add_struc_member(id,"_force",	0X2C,	0x000400,	-1,	1);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_27(id) {
+        auto mid;
+
 	
 	id = get_struc_id("GeomVertexRewriter");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("GeomVertexWriter"),	44);
@@ -42182,12 +42261,6 @@ static Structures_26(id) {
 	id = get_struc_id("NotifyCategoryGetCategory_portal");
 	
 	id = get_struc_id("std::_Tree<std::_Tmap_traits<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,LoaderFileType *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,pallocator_single<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,LoaderFileType *> >,0> >::_Copy_tag");
-	return id;
-}
-
-static Structures_27(id) {
-        auto mid;
-
 	
 	id = get_struc_id("std::_Tree<std::_Tmap_traits<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,ConstPointerTo<RenderState>,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,pallocator_single<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,ConstPointerTo<RenderState> > >,0> >::_Copy_tag");
 	
@@ -43355,18 +43428,18 @@ static Structures_27(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<Shader::ShaderFile,PointerTo<Shader>,std::less<Shader::ShaderFile>,pallocator_single<std::pair<Shader::ShaderFile const ,PointerTo<Shader> > >,0> >");
-	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::less<Shader::ShaderFile>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<Shader::ShaderFile const ,PointerTo<Shader> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<Shader::ShaderFile const ,PointerTo<Shader> > > >,0>,1>"),	12);
-	set_struc_align(id,2);
-	
-	id = get_struc_id("std::_Tree<std::_Tmap_traits<Shader::ShaderFile,PointerTo<Shader>,std::less<Shader::ShaderFile>,pallocator_single<std::pair<Shader::ShaderFile const ,PointerTo<Shader> > >,0> >");
-	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<Shader::ShaderFile,PointerTo<Shader>,std::less<Shader::ShaderFile>,pallocator_single<std::pair<Shader::ShaderFile const ,PointerTo<Shader> > >,0> >"),	12);
-	set_struc_align(id,2);
 	return id;
 }
 
 static Structures_28(id) {
         auto mid;
 
+	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::less<Shader::ShaderFile>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<Shader::ShaderFile const ,PointerTo<Shader> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<Shader::ShaderFile const ,PointerTo<Shader> > > >,0>,1>"),	12);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("std::_Tree<std::_Tmap_traits<Shader::ShaderFile,PointerTo<Shader>,std::less<Shader::ShaderFile>,pallocator_single<std::pair<Shader::ShaderFile const ,PointerTo<Shader> > >,0> >");
+	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<Shader::ShaderFile,PointerTo<Shader>,std::less<Shader::ShaderFile>,pallocator_single<std::pair<Shader::ShaderFile const ,PointerTo<Shader> > >,0> >"),	12);
+	set_struc_align(id,2);
 	
 	id = get_struc_id("std::map<Shader::ShaderFile,PointerTo<Shader>,std::less<Shader::ShaderFile>,pallocator_single<std::pair<Shader::ShaderFile const ,PointerTo<Shader> > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree<std::_Tmap_traits<Shader::ShaderFile,PointerTo<Shader>,std::less<Shader::ShaderFile>,pallocator_single<std::pair<Shader::ShaderFile const ,PointerTo<Shader> > >,0> >"),	12);
@@ -44578,6 +44651,12 @@ static Structures_28(id) {
 	id = get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<GeomVertexData const * const,int> > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<GeomVertexData const * const,int> > >,std::_Iterator_base0>"),	4);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_29(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<GeomVertexData const * const,int> > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<GeomVertexData const * const,int> > > >"),	4);
@@ -44589,12 +44668,6 @@ static Structures_28(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("pallocator_single<std::_Tree_node<std::pair<InternalName const * const,char const *>,void *> >");
-	return id;
-}
-
-static Structures_29(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_type_handle",	0,	0x60000400,	get_struc_id("TypeHandle"),	4);
 	set_struc_align(id,2);
 	
@@ -45229,6 +45302,12 @@ static Structures_29(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree<std::_Tmap_traits<int,BamReader::PointerReference,integer_hash<int,std::less<int> >,pallocator_single<std::pair<int const ,BamReader::PointerReference> >,0> >");
+	return id;
+}
+
+static Structures_30(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<int,BamReader::PointerReference,integer_hash<int,std::less<int> >,pallocator_single<std::pair<int const ,BamReader::PointerReference> >,0> >"),	12);
 	set_struc_align(id,2);
 	
@@ -45239,12 +45318,6 @@ static Structures_29(id) {
 	id = get_struc_id("pmap<int,BamReader::PointerReference,integer_hash<int,std::less<int> > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::map<int,BamReader::PointerReference,integer_hash<int,std::less<int> >,pallocator_single<std::pair<int const ,BamReader::PointerReference> > >"),	12);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_30(id) {
-        auto mid;
-
 	
 	id = get_struc_id("pallocator_single<std::_Tree_node<TypedWritable *,void *> >");
 	mid = add_struc_member(id,"_type_handle",	0,	0x60000400,	get_struc_id("TypeHandle"),	4);
@@ -46143,6 +46216,12 @@ static Structures_30(id) {
 	id = get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<RenderState> const ,pvector<int> > > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<RenderState> const ,pvector<int> > > >,std::_Iterator_base0>"),	4);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_31(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<RenderState> const ,pvector<int> > > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<RenderState> const ,pvector<int> > > > >"),	4);
@@ -46154,12 +46233,6 @@ static Structures_30(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<GeomTransformer::NewCollectedKey const ,GeomTransformer::NewCollectedData *> > >,std::_Iterator_base0>");
-	return id;
-}
-
-static Structures_31(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_Ptr",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
@@ -47029,6 +47102,12 @@ static Structures_31(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<PandaNode * const,plist<PointerTo<PandaNode> > >,void *> > >");
+	return id;
+}
+
+static Structures_32(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("pallocator_single<std::_Tree_node<std::pair<PandaNode * const,plist<PointerTo<PandaNode> > >,void *> >"),	4);
 	set_struc_align(id,2);
 	
@@ -47041,12 +47120,6 @@ static Structures_31(id) {
 	mid = add_struc_member(id,"_Myval1",	0,	0x60000400,	get_struc_id("std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<PandaNode * const,plist<PointerTo<PandaNode> > >,void *> > >"),	4);
 	mid = add_struc_member(id,"_Myval2",	0X4,	0x60000400,	get_struc_id("std::_Tree_val<std::_Tree_simple_types<std::pair<PandaNode * const,plist<PointerTo<PandaNode> > > > >"),	8);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_32(id) {
-        auto mid;
-
 	
 	id = get_struc_id("std::_Compressed_pair<SortByState,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<PandaNode * const,plist<PointerTo<PandaNode> > >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<PandaNode * const,plist<PointerTo<PandaNode> > > > >,0>,1>");
 	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<PandaNode * const,plist<PointerTo<PandaNode> > >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<PandaNode * const,plist<PointerTo<PandaNode> > > > >,0>"),	12);
@@ -48057,6 +48130,12 @@ static Structures_32(id) {
 	mid = add_struc_member(id,"_Myval1",	0,	0x60000400,	get_struc_id("std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<PandaNode const * const,PandaNode *>,void *> > >"),	4);
 	mid = add_struc_member(id,"_Myval2",	0X4,	0x60000400,	get_struc_id("std::_Tree_val<std::_Tree_simple_types<std::pair<PandaNode const * const,PandaNode *> > >"),	8);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_33(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::_Compressed_pair<std::less<PandaNode const *>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<PandaNode const * const,PandaNode *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<PandaNode const * const,PandaNode *> > >,0>,1>");
 	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<PandaNode const * const,PandaNode *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<PandaNode const * const,PandaNode *> > >,0>"),	12);
@@ -48065,12 +48144,6 @@ static Structures_32(id) {
 	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<PandaNode const *,PandaNode *,std::less<PandaNode const *>,pallocator_single<std::pair<PandaNode const * const,PandaNode *> >,0> >");
 	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::less<PandaNode const *>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<PandaNode const * const,PandaNode *>,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<PandaNode const * const,PandaNode *> > >,0>,1>"),	12);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_33(id) {
-        auto mid;
-
 	
 	id = get_struc_id("pallocator_single<std::_Tree_node<std::pair<PartGroup const * const,PartGroup *>,void *> >");
 	mid = add_struc_member(id,"_type_handle",	0,	0x60000400,	get_struc_id("TypeHandle"),	4);
@@ -48924,6 +48997,12 @@ static Structures_33(id) {
 	id = get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<PointerTo<GraphicsStateGuardianBase> const ,PointerTo<GraphicsOutputBase> > > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<PointerTo<GraphicsStateGuardianBase> const ,PointerTo<GraphicsOutputBase> > > >,std::_Iterator_base0>"),	4);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_34(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<PointerTo<GraphicsStateGuardianBase> const ,PointerTo<GraphicsOutputBase> > > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<PointerTo<GraphicsStateGuardianBase> const ,PointerTo<GraphicsOutputBase> > > > >"),	4);
@@ -48935,12 +49014,6 @@ static Structures_33(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,PointerTo<GraphicsEngine::RenderThread> > > >,std::_Iterator_base0>");
-	return id;
-}
-
-static Structures_34(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"_Ptr",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
 	set_struc_align(id,2);
 	
@@ -49772,6 +49845,12 @@ static Structures_34(id) {
 	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<ConstPointerTo<Material>,PointerTo<Material>,indirect_compare_to<Material const *>,pallocator_single<std::pair<ConstPointerTo<Material> const ,PointerTo<Material> > >,0> >");
 	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<indirect_compare_to<Material const *>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<ConstPointerTo<Material> const ,PointerTo<Material> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<Material> const ,PointerTo<Material> > > >,0>,1>"),	12);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_35(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<Material> const ,PointerTo<Material> > > >,std::_Iterator_base0>");
 	mid = add_struc_member(id,"_Ptr",	0,	0x25500400,	0XFFFFFFFF,	4,	0XFFFFFFFF,	0,	0x000002);
@@ -49784,12 +49863,6 @@ static Structures_34(id) {
 	id = get_struc_id("std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<Material> const ,PointerTo<Material> > > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<Material> const ,PointerTo<Material> > > > >"),	4);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_35(id) {
-        auto mid;
-
 	
 	id = get_struc_id("std::pair<std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<Material> const ,PointerTo<Material> > > > >,bool>");
 	mid = add_struc_member(id,"first",	0,	0x60000400,	get_struc_id("std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<Material> const ,PointerTo<Material> > > > >"),	4);
@@ -50529,18 +50602,18 @@ static Structures_35(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Compressed_pair<indirect_compare_to<TextureStage const *>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> > > >,0>,1>");
-	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> > > >,0>"),	12);
-	set_struc_align(id,2);
-	
-	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<ConstPointerTo<TextureStage>,PointerTo<TextureStage>,indirect_compare_to<TextureStage const *>,pallocator_single<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> > >,0> >");
-	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<indirect_compare_to<TextureStage const *>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> > > >,0>,1>"),	12);
-	set_struc_align(id,2);
 	return id;
 }
 
 static Structures_36(id) {
         auto mid;
 
+	mid = add_struc_member(id,"_Myval2",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> > > >,0>"),	12);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("std::_Tree_comp_alloc<std::_Tmap_traits<ConstPointerTo<TextureStage>,PointerTo<TextureStage>,indirect_compare_to<TextureStage const *>,pallocator_single<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> > >,0> >");
+	mid = add_struc_member(id,"_Mypair",	0,	0x60000400,	get_struc_id("std::_Compressed_pair<indirect_compare_to<TextureStage const *>,std::_Compressed_pair<std::_Wrap_alloc<pallocator_single<std::_Tree_node<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> >,void *> > >,std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<TextureStage> const ,PointerTo<TextureStage> > > >,0>,1>"),	12);
+	set_struc_align(id,2);
 	
 	id = get_struc_id("pallocator_single<std::_Tree_node<std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,PointerTo<TextureStage> >,void *> >");
 	mid = add_struc_member(id,"_type_handle",	0,	0x60000400,	get_struc_id("TypeHandle"),	4);
@@ -51538,6 +51611,12 @@ static Structures_36(id) {
 	mid = add_struc_member(id,"qs",	0X64,	0x60000400,	get_struc_id("pvector<Triangulator::node_t>"),	16);
 	mid = add_struc_member(id,"tr",	0X74,	0x60000400,	get_struc_id("pvector<Triangulator::trap_t>"),	16);
 	mid = add_struc_member(id,"mchain",	0X84,	0x60000400,	get_struc_id("pvector<Triangulator::monchain_t>"),	16);
+	return id;
+}
+
+static Structures_37(id) {
+        auto mid;
+
 	mid = add_struc_member(id,"vert",	0X94,	0x60000400,	get_struc_id("pvector<Triangulator::vertexchain_t>"),	16);
 	mid = add_struc_member(id,"mon",	0XA4,	0x60000400,	get_struc_id("pvector<int>"),	16);
 	mid = add_struc_member(id,"visited",	0XB4,	0x60000400,	get_struc_id("pvector<int>"),	16);
@@ -51552,12 +51631,6 @@ static Structures_36(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<RenderState> const ,pvector<TextAssembler::QuadDef> > > > >");
-	return id;
-}
-
-static Structures_37(id) {
-        auto mid;
-
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<ConstPointerTo<RenderState> const ,pvector<TextAssembler::QuadDef> > > > >"),	4);
 	set_struc_align(id,2);
 	
@@ -52429,6 +52502,12 @@ static Structures_37(id) {
 	id = get_struc_id("std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<int const ,TypeHandle> > > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<int const ,TypeHandle> > > >"),	4);
 	set_struc_align(id,2);
+	return id;
+}
+
+static Structures_38(id) {
+        auto mid;
+
 	
 	id = get_struc_id("std::pair<std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<int const ,TypeHandle> > > >,bool>");
 	mid = add_struc_member(id,"first",	0,	0x60000400,	get_struc_id("std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<int const ,TypeHandle> > > >"),	4);
@@ -52447,12 +52526,6 @@ static Structures_37(id) {
 	id = get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<ObsoleteName> > >");
 	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<ObsoleteName> >,std::_Iterator_base0>"),	4);
 	set_struc_align(id,2);
-	return id;
-}
-
-static Structures_38(id) {
-        auto mid;
-
 	
 	id = get_struc_id("std::pair<std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<ObsoleteName> > >,bool>");
 	mid = add_struc_member(id,"first",	0,	0x60000400,	get_struc_id("std::_Tree_const_iterator<std::_Tree_val<std::_Tree_simple_types<ObsoleteName> > >"),	4);
@@ -52996,6 +53069,38 @@ static Structures_38(id) {
 	mid = add_struc_member(id,"pos_a",	0X28,	0x60000400,	get_struc_id("LPoint3f"),	12);
 	mid = add_struc_member(id,"pos_b",	0X34,	0x60000400,	get_struc_id("LPoint3f"),	12);
 	set_struc_align(id,3);
+	
+	id = get_struc_id("SuitLegList");
+	mid = add_struc_member(id,"char0",	0,	0x000400,	-1,	1);
+	mid = add_struc_member(id,"gap1",	0X1,	0x000400,	-1,	11);
+	mid = add_struc_member(id,"dwordC",	0XC,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"dword10",	0X10,	0x20000400,	-1,	4);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("DNAWindows");
+	mid = add_struc_member(id,"dnagroup",	0,	0x60000400,	get_struc_id("DNAGroup"),	76);
+	mid = add_struc_member(id,"code",	0X4C,	0x60000400,	get_struc_id("__string"),	28);
+	mid = add_struc_member(id,"window_count",	0X68,	0x20000400,	-1,	4);
+	mid = add_struc_member(id,"color",	0X6C,	0x60000400,	get_struc_id("LVecBase4f"),	16);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("DNAWall");
+	mid = add_struc_member(id,"dnanode",	0,	0x60000400,	get_struc_id("DNANode"),	112);
+	mid = add_struc_member(id,"code",	0X70,	0x60000400,	get_struc_id("__string"),	28);
+	mid = add_struc_member(id,"height",	0X8C,	0x80000400,	-1,	4);
+	mid = add_struc_member(id,"color",	0X90,	0x60000400,	get_struc_id("LVecBase4f"),	16);
+	set_struc_align(id,2);
+	
+	id = get_struc_id("DNAStreet");
+	mid = add_struc_member(id,"dnanode",	0,	0x60000400,	get_struc_id("DNANode"),	112);
+	mid = add_struc_member(id,"code",	0X70,	0x60000400,	get_struc_id("__string"),	28);
+	mid = add_struc_member(id,"street_texture",	0X8C,	0x60000400,	get_struc_id("__string"),	28);
+	mid = add_struc_member(id,"sidewalk_texture",	0XA8,	0x60000400,	get_struc_id("__string"),	28);
+	mid = add_struc_member(id,"curb_texture",	0XC4,	0x60000400,	get_struc_id("__string"),	28);
+	mid = add_struc_member(id,"street_color",	0XE0,	0x60000400,	get_struc_id("LVecBase4f"),	16);
+	mid = add_struc_member(id,"sidewalk_color",	0XF0,	0x60000400,	get_struc_id("LVecBase4f"),	16);
+	mid = add_struc_member(id,"curb_color",	0X100,	0x60000400,	get_struc_id("LVecBase4f"),	16);
+	set_struc_align(id,2);
 	return id;
 }
 
