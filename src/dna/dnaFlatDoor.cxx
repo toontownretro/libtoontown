@@ -1,5 +1,5 @@
-#include "DNAFlatDoor.h"
-#include "DNAStorage.h"
+#include "dnaFlatDoor.h"
+#include "dnaStorage.h"
 
 TypeHandle DNAFlatDoor::_type_handle;
 

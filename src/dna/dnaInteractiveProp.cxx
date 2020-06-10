@@ -1,5 +1,5 @@
-#include "DNAInteractiveProp.h"
-#include "DNAStorage.h"
+#include "dnaInteractiveProp.h"
+#include "dnaStorage.h"
 
 TypeHandle DNAInteractiveProp::_type_handle;
 

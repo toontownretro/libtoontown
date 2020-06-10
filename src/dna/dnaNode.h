@@ -2,7 +2,7 @@
 
 #include "dnabase.h"
 
-#include "DNAGroup.h"
+#include "dnaGroup.h"
 
 #include <luse.h>
 #include <typedReferenceCount.h>

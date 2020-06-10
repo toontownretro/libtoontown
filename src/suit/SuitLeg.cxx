@@ -1,6 +1,6 @@
-#include "SuitLeg.h"
+#include "suitLeg.h"
 
-#include "DNASuitPoint.h"
+#include "dnaSuitPoint.h"
 
 SuitLeg::SuitLeg(SuitLeg::Type type, double start_time, double leg_time, int zone_id, int block_number, DNASuitPoint *point_a, DNASuitPoint *point_b) {
     this->start_time = start_time;

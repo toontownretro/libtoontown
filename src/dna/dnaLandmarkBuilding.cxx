@@ -1,56 +1,95 @@
-#include "DNALandmarkBuilding.h"
-#include "DNAStorage.h"
+#include "dnaLandmarkBuilding.h"
+#include "dnaStorage.h"
 
 TypeHandle DNALandmarkBuilding::_type_handle;
 
+/**
+ *
+ */
 DNALandmarkBuilding::DNALandmarkBuilding(std::string initial_name) : DNANode(initial_name) {
     wall_color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
 }
 
+/**
+ *
+ */
 DNALandmarkBuilding::~DNALandmarkBuilding() {
 
 }
 
+/**
+ *
+ */
 std::string DNALandmarkBuilding::get_article() {
     return article;
 }
 
+/**
+ *
+ */
 std::string DNALandmarkBuilding::get_building_type() {
     return building_type;
 }
 
+/**
+ *
+ */
 std::string DNALandmarkBuilding::get_code() {
     return code;
 }
 
+/**
+ *
+ */
 std::string DNALandmarkBuilding::get_title() {
     return title;
 }
 
+/**
+ *
+ */
 LVecBase4f DNALandmarkBuilding::get_wall_color() {
     return wall_color;
 }
 
+/**
+ *
+ */
 void DNALandmarkBuilding::set_article(std::string &article) {
     this->article = article;
 }
 
+/**
+ *
+ */
 void DNALandmarkBuilding::set_building_type(std::string &type) {
     this->building_type = type;
 }
 
+/**
+ *
+ */
 void DNALandmarkBuilding::set_code(std::string &code) {
     this->code = code;
 }
 
+/**
+ *
+ */
 void DNALandmarkBuilding::set_title(std::string &title) {
     this->title = title;
 }
 
+/**
+ *
+ */
 void DNALandmarkBuilding::set_wall_color(const LVecBase4f &wall_color) {
     this->wall_color = wall_color;
 }
 
+/**
+ *
+ */
 void DNALandmarkBuilding::setup_suit_building_origin(NodePath &parent, NodePath &node) {
     if (name.size() > 2 && name[0] == 't' && name[1] == 'b' && isdigit(name[2]) && name.find(':', 0) != std::string::npos) {
         name[0] = 's';
@@ -66,6 +105,9 @@ void DNALandmarkBuilding::setup_suit_building_origin(NodePath &parent, NodePath 
     }
 }
 
+/**
+ *
+ */
 NodePath DNALandmarkBuilding::traverse(NodePath &parent, DNAStorage *store, int editing) {
     NodePath _np = store->find_node(code);
     _np = _np.copy_to(parent);
@@ -102,6 +144,9 @@ NodePath DNALandmarkBuilding::traverse(NodePath &parent, DNAStorage *store, int 
     return _np;
 }
 
+/**
+ *
+ */
 void DNALandmarkBuilding::write(std::ostream &out, DNAStorage *store, int indent_level) {
     indent(out, indent_level);
     out << "landmark_building \"" << name << "\" [" << std::endl;

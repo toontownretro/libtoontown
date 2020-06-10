@@ -2,7 +2,7 @@
 
 #include "dnabase.h"
 
-#include "DNAGroup.h"
+#include "dnaGroup.h"
 
 #include <luse.h>
 #include <typedReferenceCount.h>
@@ -12,6 +12,9 @@
 
 class DNAStorage;
 
+/**
+ * A door
+ */
 class EXPCL_TOONTOWN DNADoor : public DNAGroup {
 	PUBLISHED:
 		DNADoor(std::string initial_name);

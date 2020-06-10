@@ -842,17 +842,70 @@ void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level = 0) 
 
 ### DNASign (Class) ###
 
-DNASign::DNASign(std::string initial_name) : DNAProp(initial_name) {
+DNASign::DNASign(std::string initial_name) : DNANode(initial_name) {
+    color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
+}
+
+DNASign::DNASign(const DNASign &Sign) : DNANode(Sign) {
+    code = Sign.code;
+    color = Sign.color;
+}
+
+DNASign::~DNASign() {
 
 }
 
-DNASign::DNASign(const DNASign &Sign) : DNAProp(Sign) {
-
+std::string DNASign::get_code() {
+    return code;
 }
 
-// TODO
+LVecBase4f DNASign::get_color() {
+    return color;
+}
+
+void DNASign::set_code(std::string &code) {
+    this->code = code;
+}
+
+void DNASign::set_color(LVecBase4f &color) {
+    this->color = color;
+}
+
 NodePath DNASign::traverse(NodePath &parent, DNAStorage *store, int editing = 0) {
- 
+    NodePath node = parent.find("**/sign_decal");
+    if (node.is_empty()) {
+        node = parent.find("**/*_front");
+        if (!node.get_node(0)->is_geom_node()) {
+            node = node.find("**/+GeomNode");
+        }
+    }
+    node.set_effect(DecalEffect::make());
+    if (code.size()) {
+        NodePath code_node = store->find_node(code);
+        node = code_node->copy_to(node);
+        if (node.is_empty()) {
+            Notify::out() << "Sign not found in storage: " << code << std::endl;
+            return parent;
+        }
+        node.set_name("sign");
+    } else {
+        ModelNode sign_node = ModelNode("sign");
+        node = node.attach_new_node((PandaNode *)sign_node);
+    }
+    node.set_depth_write(0, 0);
+    node.set_pos_hpr_scale(parent.find("**/*sign_origin"), pos, hpr, scale);
+    
+    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
+        (*it)->traverse(node, store, editing);
+    }
+    
+    if (editing) {
+        PT(DNAGroup) PT_this = (DNAGroup *)this;
+        PT(PandaNode) store_node = node.node();
+        store->store_DNAGroup(store_node, PT_this);
+    } else {
+        // TODO
+    }
 }
 
 void DNASign::write(std::ostream &out, DNAStorage *store, int indent_level = 0) {

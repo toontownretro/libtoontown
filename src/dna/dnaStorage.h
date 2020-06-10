@@ -2,10 +2,10 @@
 
 #include "dnabase.h"
 
-#include "DNAGroup.h"
-#include "DNAVisGroup.h"
-#include "DNABattleCell.h"
-#include "DNASuitPoint.h"
+#include "dnaGroup.h"
+#include "dnaVisGroup.h"
+#include "dnaBattleCell.h"
+#include "dnaSuitPoint.h"
 
 #include <luse.h>
 #include <typedReferenceCount.h>
@@ -60,7 +60,7 @@ class EXPCL_TOONTOWN DNAStorage {
         void store_block_door_pos_hpr(std::string &block, const LPoint3f &pos, const LPoint3f &hpr);
         void store_block_number(std::string &block, std::string &zone_id);
         void store_block_sign_transform(std::string &block, const LMatrix4f &mat);
-        void store_block_title(std::string& block, std::string& title);
+        void store_block_title(std::string &block, std::string &title);
         void store_catalog_string(std::string &catalog_string, std::string &dna_string);
         void store_font(std::string &code_string, PT(TextFont) font);
         void store_hood_node(std::string &code_string, NodePath &node, std::string &code_category);

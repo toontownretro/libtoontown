@@ -1,5 +1,5 @@
-#include "DNANode.h"
-#include "DNAStorage.h"
+#include "dnaNode.h"
+#include "dnaStorage.h"
 
 TypeHandle DNANode::_type_handle;
 

@@ -38,46 +38,47 @@ execute_process(COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_inter
 
 ### Define core components ###
 set(DNALOADER_FILES
-    src/dnaLoader/dnabase.h
-    src/dnaLoader/config_dna.cxx
-    src/dnaLoader/config_dna.h
-    src/dnaLoader/LoaderFileTypeDNA.cxx
-    src/dnaLoader/LoaderFileTypeDNA.h
-    src/dnaLoader/DNAAnimProp.cxx
-    src/dnaLoader/DNAAnimProp.h
-    src/dnaLoader/DNABattleCell.cxx
-    src/dnaLoader/DNABattleCell.h
-    src/dnaLoader/DNADoor.cxx
-    src/dnaLoader/DNADoor.h
-    src/dnaLoader/DNAFlatDoor.cxx
-    src/dnaLoader/DNAFlatDoor.h
-    src/dnaLoader/DNAGroup.cxx
-    src/dnaLoader/DNAGroup.h
-    src/dnaLoader/DNAInteractiveProp.cxx
-    src/dnaLoader/DNAInteractiveProp.h
-    src/dnaLoader/DNALandmarkBuilding.cxx
-    src/dnaLoader/DNALandmarkBuilding.h
-    src/dnaLoader/DNANode.cxx
-    src/dnaLoader/DNANode.h
-    src/dnaLoader/DNAProp.cxx
-    src/dnaLoader/DNAProp.h
-    src/dnaLoader/DNAStorage.cxx
-    src/dnaLoader/DNAStorage.h
-    src/dnaLoader/DNAStreet.cxx
-    src/dnaLoader/DNAStreet.h
-    src/dnaLoader/DNASuitEdge.cxx
-    src/dnaLoader/DNASuitEdge.h
-    src/dnaLoader/DNASuitPath.cxx
-    src/dnaLoader/DNASuitPath.h
-    src/dnaLoader/DNASuitPoint.cxx
-    src/dnaLoader/DNASuitPoint.h
-    src/dnaLoader/DNAVisGroup.cxx
-    src/dnaLoader/DNAVisGroup.h
+    src/dna/dnabase.h
+    src/dna/config_dna.cxx
+    src/dna/config_dna.h
+    src/dna/dnaAnimProp.cxx
+    src/dna/dnaAnimProp.h
+    src/dna/dnaBattleCell.cxx
+    src/dna/dnaBattleCell.h
+    src/dna/dnaDoor.cxx
+    src/dna/dnaDoor.h
+    src/dna/dnaFlatDoor.cxx
+    src/dna/dnaFlatDoor.h
+    src/dna/dnaGroup.cxx
+    src/dna/dnaGroup.h
+    src/dna/dnaGroup.I
+    src/dna/dnaInteractiveProp.cxx
+    src/dna/dnaInteractiveProp.h
+    src/dna/dnaLandmarkBuilding.cxx
+    src/dna/dnaLandmarkBuilding.h
+    src/dna/dnaNode.cxx
+    src/dna/dnaNode.h
+    src/dna/dnaProp.cxx
+    src/dna/dnaProp.h
+    src/dna/dnaStorage.cxx
+    src/dna/dnaStorage.h
+    src/dna/dnaStreet.cxx
+    src/dna/dnaStreet.h
+    src/dna/dnaSuitEdge.cxx
+    src/dna/dnaSuitEdge.h
+    src/dna/dnaSuitPath.cxx
+    src/dna/dnaSuitPath.h
+    src/dna/dnaSuitPoint.cxx
+    src/dna/dnaSuitPoint.h
+    src/dna/dnaVisGroup.cxx
+    src/dna/dnaVisGroup.h
+    src/dna/loaderFileTypeDNA.cxx
+    src/dna/loaderFileTypeDNA.h
 )
 
 set(SUIT_FILES
-    src/suit/SuitLeg.cxx
-    src/suit/SuitLeg.h
+    src/suit/suitLeg.cxx
+    src/suit/suitLeg.h
 )
 
 set(IGATE_FILES
@@ -87,7 +88,7 @@ set(IGATE_FILES
 )
 
 include_directories(src/base)
-include_directories(src/dnaLoader)
+include_directories(src/dna)
 include_directories(src/suit)
 include_directories(${PANDA_DIR}/include)
 include_directories(${Python_INCLUDE_DIRS})

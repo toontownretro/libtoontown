@@ -2,7 +2,7 @@
 
 #include "dnabase.h"
 
-#include "DNAAnimProp.h"
+#include "dnaAnimProp.h"
 
 #include <string>
 #include <luse.h>

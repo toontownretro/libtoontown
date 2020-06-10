@@ -2,7 +2,7 @@
 
 #include "dnabase.h"
 
-#include "DNANode.h"
+#include "dnaNode.h"
 
 #include <luse.h>
 #include <typedReferenceCount.h>
@@ -11,6 +11,9 @@
 
 class DNAStorage;
 
+/*
+ * A prop like a tree or fire hydrant.
+ */
 class EXPCL_TOONTOWN DNAProp : public DNANode {
 	PUBLISHED:
 		DNAProp(std::string initial_name);

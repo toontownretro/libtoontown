@@ -2,7 +2,7 @@
 
 #include "dnabase.h"
 
-#include "DNANode.h"
+#include "dnaNode.h"
 
 #include <luse.h>
 #include <typedReferenceCount.h>
@@ -11,6 +11,9 @@
 
 class DNAStorage;
 
+/*
+ * A landmark building.
+ */
 class EXPCL_TOONTOWN DNALandmarkBuilding : public DNANode {
     PUBLISHED:
         DNALandmarkBuilding(std::string initial_name);

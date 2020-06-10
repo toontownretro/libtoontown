@@ -2,7 +2,7 @@
 
 #include "dnabase.h"
 
-#include "DNADoor.h"
+#include "dnaDoor.h"
 
 #include <luse.h>
 #include <typedReferenceCount.h>
@@ -12,6 +12,9 @@
 
 class DNAStorage;
 
+/**
+ * A door for a flat buildings
+ */
 class EXPCL_TOONTOWN DNAFlatDoor : public DNADoor {
 	PUBLISHED:
 	    DNAFlatDoor(std::string initial_name);

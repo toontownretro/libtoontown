@@ -1,4 +1,4 @@
-#include "DNABattleCell.h"
+#include "dnaBattleCell.h"
 
 TypeHandle DNABattleCell::_type_handle;
 

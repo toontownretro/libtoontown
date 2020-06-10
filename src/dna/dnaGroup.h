@@ -9,6 +9,9 @@
 
 class DNAStorage;
 
+/**
+ * A group of dna nodes
+ */
 class EXPCL_TOONTOWN DNAGroup : public TypedReferenceCount {
     PUBLISHED:
         DNAGroup(std::string initial_name);

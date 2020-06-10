@@ -1,15 +1,21 @@
-#include "DNAStreet.h"
+#include "dnaStreet.h"
 
-#include "DNAStorage.h"
+#include "dnaStorage.h"
 
 TypeHandle DNAStreet::_type_handle;
 
+/**
+ *
+ */
 DNAStreet::DNAStreet(std::string initial_name) : DNANode(initial_name) {
     curb_color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
     sidewalk_color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
     street_color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
 }
 
+/**
+ *
+ */
 DNAStreet::DNAStreet(const DNAStreet &street) : DNANode(street) {
     code = street.code;
     curb_texture = street.curb_texture;
@@ -20,66 +26,114 @@ DNAStreet::DNAStreet(const DNAStreet &street) : DNANode(street) {
     street_color = street.street_color;
 }
 
+/**
+ *
+ */
 DNAStreet::~DNAStreet() {
 
 }
 
+/**
+ *
+ */
 std::string DNAStreet::get_code() {
     return code;
 }
 
+/**
+ *
+ */
 LVecBase4f DNAStreet::get_curb_color() {
     return curb_color;
 }
 
+/**
+ *
+ */
 std::string DNAStreet::get_curb_texture() {
     return curb_texture;
 }
 
+/**
+ *
+ */
 LVecBase4f DNAStreet::get_sidewalk_color() {
     return sidewalk_color;
 }
 
+/**
+ *
+ */
 std::string DNAStreet::get_sidewalk_texture() {
     return sidewalk_texture;
 }
 
+/**
+ *
+ */
 LVecBase4f DNAStreet::get_street_color() {
     return street_color;
 }
 
+/**
+ *
+ */
 std::string DNAStreet::get_street_texture() {
     return street_texture;
 }
 
+/**
+ *
+ */
 void DNAStreet::set_code(std::string &code) {
     this->code = code;
 }
 
+/**
+ *
+ */
 void DNAStreet::set_curb_color(LVecBase4f &color) {
     this->curb_color = color;
 }
 
+/**
+ *
+ */
 void DNAStreet::set_curb_texture(std::string &curb_texture) {
     this->curb_texture = curb_texture;
 }
 
+/**
+ *
+ */
 void DNAStreet::set_sidewalk_color(LVecBase4f &color) {
     this->sidewalk_color = color;
 }
 
+/**
+ *
+ */
 void DNAStreet::set_sidewalk_texture(std::string &sidewalk_texture) {
     this->sidewalk_texture = sidewalk_texture;
 }
 
+/**
+ *
+ */
 void DNAStreet::set_street_color(LVecBase4f &color) {
     this->street_color = color;
 }
 
+/**
+ *
+ */
 void DNAStreet::set_street_texture(std::string &street_texture) {
     this->street_texture = street_texture;
 }
 
+/**
+ *
+ */
 NodePath DNAStreet::traverse(NodePath &parent, DNAStorage *store, int editing) {
     NodePath node = store->find_node(code);
     node = node.copy_to(parent);
@@ -111,6 +165,9 @@ NodePath DNAStreet::traverse(NodePath &parent, DNAStorage *store, int editing) {
     return node;
 }
 
+/**
+ *
+ */
 void DNAStreet::write(std::ostream& out, DNAStorage* store, int indent_level) {
     indent(out, indent_level);
     out << "street \"" << name << "\" [" << std::endl;

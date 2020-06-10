@@ -11,7 +11,7 @@ def run_command(cmd):
     ret = p.wait()
 
     if ret != 0:
-        print()
+        print("\n")
         print('The following command return a non-zero value (%d): %s' % (ret, cmd))
         sys.exit(ret)
 
@@ -19,15 +19,24 @@ def interrogate(module):
     print('Interrogating', module)
     cmd = os.path.join(pandadir, 'bin', 'interrogate')
     cmd += ' -D__inline -DCPPPARSER -DP3_INTERROGATE=1 -D__cplusplus -fnames -string -refcount -assert'
-    cmd += ' -S"%(pandadir)s/include/parser-inc" -S"%(pandadir)s/include" -I"%(pandadir)s/include" -I"%(srcdir)s/suit" -I"%(srcdir)s/dnaLoader"'
-    cmd += ' -srcdir "%(srcdir)s/%(module)s" -oc "%(srcdir)s/%(module)s_igate.cxx" -od "%(srcdir)s/lib%(module)s.in" -python-native -DCPPPARSER -D__STDC__=1'
+    cmd += ' -S"%(pandadir)s/include/parser-inc" -S"%(pandadir)s/include" -I"%(pandadir)s/include" -I"%(srcdir)s/suit" -I"%(srcdir)s/dna"'
+    if module == 'dnaLoader':
+        cmd += ' -srcdir "%(srcdir)s/dna"'
+    else:
+        cmd += ' -srcdir "%(srcdir)s/%(module)s"'
+    cmd += ' -oc "%(srcdir)s/%(module)s_igate.cxx" -od "%(srcdir)s/lib%(module)s.in" -python-native -DCPPPARSER -D__STDC__=1'
     cmd += ' -D__cplusplus -D__inline -D_X86_ -DWIN32_VC -DWIN32 -module libtoontown -library %(module)s -Dvolatile='
 
     cmd = cmd % {'pandadir': pandadir, 'module': module, 'srcdir': srcdir}
-    files = glob.glob(os.path.join(srcdir, module, '*.h'))
+    if module == 'dnaLoader':
+        files = glob.glob(os.path.join(srcdir, 'dna', '*.h'))
+        files += glob.glob(os.path.join(srcdir, 'dna', '*.cxx'))
+    else:
+        files = glob.glob(os.path.join(srcdir, module, '*.h'))
+        files += glob.glob(os.path.join(srcdir, module, '*.cxx'))
     for file in files:
         cmd += ' %s' % os.path.basename(file)
-
+    
     run_command(cmd)
 
 for module in ('suit', 'dnaLoader'):

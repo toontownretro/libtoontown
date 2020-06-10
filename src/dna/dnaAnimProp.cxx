@@ -1,39 +1,29 @@
-#include "DNAProp.h"
-#include "DNAStorage.h"
+#include "dnaAnimProp.h"
+#include "dnaStorage.h"
 
-#include <modelNode.h>
+TypeHandle DNAAnimProp::_type_handle;
 
-TypeHandle DNAProp::_type_handle;
-
-DNAProp::DNAProp(std::string initial_name) : DNANode(initial_name) {
-    color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
-}
-
-DNAProp::DNAProp(const DNAProp &prop) : DNANode(prop) {
-    color = prop.color;
-}
-
-DNAProp::~DNAProp() {
+DNAAnimProp::DNAAnimProp(std::string initial_name) : DNAProp(initial_name) {
 
 }
 
-std::string DNAProp::get_code() {
-    return code;
+DNAAnimProp::DNAAnimProp(const DNAAnimProp &anim_prop) : DNAProp(anim_prop) {
+    anim = anim_prop.anim;
 }
 
-LVector4f DNAProp::get_color() {
-    return color;
+DNAAnimProp::~DNAAnimProp() {
+
 }
 
-void DNAProp::set_code(std::string &code) {
-    this->code = code;
+std::string DNAAnimProp::get_anim() {
+    return anim;
 }
 
-void DNAProp::set_color(const LVecBase4f &color) {
-    this->color = color;
+void DNAAnimProp::set_anim(std::string &anim) {
+    this->anim = anim;
 }
 
-NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
+NodePath DNAAnimProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
     NodePath _np;
 
     if (code == "DCS") {
@@ -48,8 +38,6 @@ NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
 
         _np = nodepath.copy_to(parent);
 
-        // This is my best guess for as to what it did. 
-        // The code is a mess in the decompiler.
         if (nodepath.has_tag("DNARoot")) {
             std::string tag = nodepath.get_tag("DNARoot");
             _np.set_tag("DNARoot", tag);
@@ -60,6 +48,7 @@ NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
         }
         _np.node()->set_name(name); // Is it this or _np.set_name(name)?
     }
+    _np.set_tag("DNAAnim", anim);
     _np.set_pos_hpr_scale(pos, hpr, scale);
     _np.set_color_scale(color);
 
@@ -75,19 +64,19 @@ NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
     return _np;
 }
 
-void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level) {
+void DNAAnimProp::write(std::ostream &out, DNAStorage *store, int indent_level) {
     indent(out, indent_level);
-    out << "prop \"" << name << "\" [" << std::endl;
-
-    // DNAProps always have a code.
+    out << "anim_prop \"" << name << "\" [" << std::endl;
     indent(out, indent_level + 1);
     out << "code [ \"" << code << "\" ]" << std::endl;
+    indent(out, indent_level + 1);
+    out << "anim [ \"" << anim << "\" ]" << std::endl;
 
-    // DNAProps always have a pos.
+    // Animated Props always have a position.
     indent(out, indent_level + 1);
     out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
 
-    // DNAProps always have a hpr.
+    // Animated Props always have a hpr.
     indent(out, indent_level + 1);
     if (temp_hpr_fix) {
         out << "nhpr [ ";

@@ -2,9 +2,9 @@
 
 #include "dnabase.h"
 
-#include "DNAGroup.h"
-#include "DNABattleCell.h"
-#include "DNASuitEdge.h"
+#include "dnaGroup.h"
+#include "dnaBattleCell.h"
+#include "dnaSuitEdge.h"
 
 #include <luse.h>
 #include <typedReferenceCount.h>
@@ -13,6 +13,12 @@
 
 class DNAStorage;
 
+/**
+ * A group of dna nodes with special visibility info
+ * tagged in a vis property. The vis property should list
+ * all the other DNAVisGroups (including itself) that
+ * should be rendered when the avatar is standing in this group
+ */
 class EXPCL_TOONTOWN DNAVisGroup : public DNAGroup {
 	PUBLISHED:
 		DNAVisGroup(std::string initial_name);

@@ -1,4 +1,4 @@
-#include "DNAStorage.h"
+#include "dnaStorage.h"
 
 DNAStorage::DNAStorage() {
 

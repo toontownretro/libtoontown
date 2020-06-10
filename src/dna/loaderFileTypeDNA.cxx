@@ -1,6 +1,6 @@
-#include "LoaderFileTypeDNA.h"
+#include "loaderFileTypeDNA.h"
 
-#include "DNAStorage.h"
+#include "dnaStorage.h"
 
 #include <coordinateSystem.h>
 #include <virtualFileSystem.h>
