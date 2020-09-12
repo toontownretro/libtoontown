@@ -1,131 +1,139 @@
+// Filename: suitLeg.cxx
+// Created by:  drose (08Nov01)
+//
+////////////////////////////////////////////////////////////////////
+
 #include "suitLeg.h"
 
 #include "dnaSuitPoint.h"
 
-SuitLeg::SuitLeg(SuitLeg::Type type, double start_time, double leg_time, int zone_id, int block_number, DNASuitPoint *point_a, DNASuitPoint *point_b) {
-    this->start_time = start_time;
-    this->zone_id = zone_id;
-    this->leg_time = leg_time;
-    this->type = type;
-    this->block_number = block_number;
-    this->point_a = point_a->get_index();
-    this->point_b = point_b->get_index();
-    pos_a = point_a->get_pos();
-    pos_b = point_b->get_pos();
+////////////////////////////////////////////////////////////////////
+//     Function: SuitLeg::Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+SuitLeg::
+SuitLeg(Type type, double start_time, double leg_time, int zone_id,
+        int block_number,
+        const DNASuitPoint *point_a, const DNASuitPoint *point_b) :
+  _type(type),
+  _start_time(start_time),
+  _leg_time(leg_time),
+  _zone_id(zone_id),
+  _block_number(block_number),
+  _point_a(point_a->get_index()),
+  _point_b(point_b->get_index()),
+  _pos_a(point_a->get_pos()),
+  _pos_b(point_b->get_pos())
+{
 }
 
-SuitLeg::~SuitLeg() {
+////////////////////////////////////////////////////////////////////
+//     Function: SuitLeg::get_pos_at_time
+//       Access: Published
+//  Description: Returns the expected position of the suit at the
+//               indicated time, in seconds elapsed since the start of
+//               this leg.
+////////////////////////////////////////////////////////////////////
+LPoint3f SuitLeg::
+get_pos_at_time(double time) const {
+  switch (_type) {
+  case T_walk_from_street:
+  case T_walk_to_street:
+  case T_walk:
+    break;
 
+  case T_from_sky:
+    return _pos_a;
+
+  case T_to_sky:
+    return _pos_b;
+
+  case T_from_suit_building:
+    return _pos_a;
+
+  case T_to_suit_building:
+    return _pos_b;
+
+  case T_to_toon_building:
+    return _pos_b;
+
+  case T_from_coghq:
+    return _pos_a;
+
+  case T_to_coghq:
+    return _pos_b;
+
+  case T_off:
+    return _pos_b;
+  }
+
+  if (time < 0.0) {
+    return _pos_a;
+  } else if (time > _leg_time) {
+    return _pos_b;
+  } else {
+    return _pos_a + (time / _leg_time) * (_pos_b - _pos_a);
+  }
 }
 
-void SuitLeg::operator=(SuitLeg &other) {
-    type = other.type;
-    start_time = other.start_time;
-    leg_time = other.leg_time;
-    zone_id = other.zone_id;
-    block_number = other.block_number;
-    point_a = other.point_a;
-    point_b = other.point_b;
-    pos_a = other.pos_a;
-    pos_b = other.pos_b;
+////////////////////////////////////////////////////////////////////
+//     Function: SuitLeg::get_type_name
+//       Access: Published, Static
+//  Description: Returns the std::string name associated with the indicated
+//               type.  This is also the name that corresponds to a
+//               state in DistributedSuit.
+////////////////////////////////////////////////////////////////////
+std::string SuitLeg::
+get_type_name(SuitLeg::Type type) {
+  switch (type) {
+  case T_walk_from_street:
+    return "WalkFromStreet";
+
+  case T_walk_to_street:
+    return "WalkToStreet";
+
+  case T_walk:
+    return "Walk";
+
+  case T_from_sky:
+    return "FromSky";
+
+  case T_to_sky:
+    return "ToSky";
+
+  case T_from_suit_building:
+    return "FromSuitBuilding";
+
+  case T_to_suit_building:
+    return "ToSuitBuilding";
+
+  case T_to_toon_building:
+    return "ToToonBuilding";
+
+  case T_from_coghq:
+    return "FromCogHQ";
+
+  case T_to_coghq:
+    return "ToCogHQ";
+
+  case T_off:
+    return "Off";
+  }
+
+  return "**invalid**";
 }
 
-int SuitLeg::get_block_number() {
-    return block_number;
+////////////////////////////////////////////////////////////////////
+//     Function: SuitLeg::output
+//       Access: Published
+//  Description:
+////////////////////////////////////////////////////////////////////
+void SuitLeg::
+output(std::ostream &out) const {
+  out << "(" << _type << ", " << _start_time << " (" << _leg_time
+      << "), " << _zone_id << ", " << _point_a << ", "
+      << _point_b << ")";
 }
 
-double SuitLeg::get_leg_time() {
-    return leg_time;
-}
 
-int SuitLeg::get_point_a() {
-    return point_a;
-}
-
-int SuitLeg::get_point_b() {
-    return point_b;
-}
-
-LPoint3f SuitLeg::get_pos_a() {
-    return pos_a;
-}
-
-LPoint3f SuitLeg::get_pos_at_time(double time) {
-    LPoint3f point;
-
-    switch (type) {
-        case Type::FromSky:
-        case Type::FromSuitBuilding:
-        case Type::FromCogHQ:
-            point = pos_a;
-            break;
-        case Type::ToSky:
-        case Type::ToSuitBuilding:
-        case Type::ToToonBuilding:
-        case Type::ToCogHQ:
-        case Type::Off:
-            point = pos_b;
-            break;
-        default:
-            if (time >= 0.0) {
-                if (time > leg_time) {
-                    point = pos_b;
-                }
-                else {
-                    double new_time = time / leg_time;
-                    point = (pos_b - pos_a) * new_time;
-                    point = pos_a + point;
-                }
-            }
-            else {
-                point = pos_a;
-            }
-            break;
-    }
-    return point;
-}
-
-LPoint3f SuitLeg::get_pos_b() {
-    return pos_b;
-}
-
-double SuitLeg::get_start_time() {
-    return start_time;
-}
-
-std::string SuitLeg::get_type_name(SuitLeg::Type type) {
-    switch (type) {
-        case Type::WalkFromStreet:
-            return "WalkFromStreet";
-        case Type::WalkToStreet:
-            return "WalkToStreet";
-        case Type::Walk:
-            return "Walk";
-        case Type::FromSky:
-            return "FromSky";
-        case Type::ToSky:
-            return "ToSky";
-        case Type::FromSuitBuilding:
-            return "FromSuitBuilding";
-        case Type::ToSuitBuilding:
-            return "ToSuitBuilding";
-        case Type::ToToonBuilding:
-            return "ToToonBuilding";
-        case Type::FromCogHQ:
-            return "FromCogHQ";
-        case Type::ToCogHQ:
-            return "ToCogHQ";
-        case Type::Off:
-            return "Off";
-        default:
-            return "**invalid**";
-    }
-}
-
-int SuitLeg::get_zone_id() {
-    return zone_id;
-}
-
-void SuitLeg::output(std::ostream &out) {
-    out << "(" << get_type_name(type) << ", " << start_time << " (" << leg_time << "), " << zone_id << ", " << point_a << ", " << point_b << ")";
-}

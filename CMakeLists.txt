@@ -107,10 +107,20 @@ set(DNALOADER_FILES
     src/dna/loaderFileTypeDNA.cxx
     src/dna/loaderFileTypeDNA.h
 )
+    
+set(TOONTOWNBASE_FILES
+    src/toontownbase/toontownbase.cxx
+    src/toontownbase/toontownbase.h
+    src/toontownbase/toontownsymbols.h
+)
 
 set(SUIT_FILES
     src/suit/suitLeg.cxx
     src/suit/suitLeg.h
+    src/suit/suitLeg.I
+    src/suit/suitLegList.cxx
+    src/suit/suitLegList.h
+    src/suit/suitLegList.I
 )
 
 set(IGATE_FILES
@@ -119,9 +129,9 @@ set(IGATE_FILES
     src/libtoontown_module.cxx
 )
 
-include_directories(src/base)
 include_directories(src/dna)
 include_directories(src/suit)
+include_directories(src/toontownbase)
 include_directories(${PANDA_DIR}/include)
 include_directories(${Python_INCLUDE_DIRS})
 include_directories(/usr/include/eigen3)
@@ -151,7 +161,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_definitions(-Wno-ignored-attributes -Wno-deprecated-declarations)
 endif()
 
-add_definitions(-DBUILDING_DNA)
+add_definitions(-DBUILDING_TOONTOWN)
 
 if(NOT BUILD_STATIC_LIB)
     set(PANDA_LIBS
@@ -192,6 +202,7 @@ if(NOT BUILD_STATIC_LIB)
         add_library(libtoontown SHARED
             ${DNALOADER_FILES}
             ${SUIT_FILES}
+            ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
         SET_TARGET_PROPERTIES(libtoontown PROPERTIES SUFFIX ".pyd")
@@ -205,6 +216,7 @@ if(NOT BUILD_STATIC_LIB)
         add_library(toontown MODULE
             ${DNALOADER_FILES}
             ${SUIT_FILES}
+            ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
         target_link_libraries(toontown ${PANDA_LIBS} ${Python_LIBRARIES})
@@ -220,6 +232,7 @@ else()
         add_library(libtoontown STATIC
             ${DNALOADER_FILES}
             ${SUIT_FILES}
+            ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
         add_custom_command(TARGET libtoontown
@@ -231,6 +244,7 @@ else()
         add_library(toontown STATIC
             ${DNALOADER_FILES}
             ${SUIT_FILES}
+            ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
         add_custom_command(TARGET toontown
@@ -244,4 +258,5 @@ endif()
 ### Setup source groups and defines for configurables ###
 source_group("dnaLoader" FILES ${DNALOADER_FILES})
 source_group("suit" FILES ${SUIT_FILES})
+source_group("toontownbase" FILES ${TOONTOWNBASE_FILES})
 source_group("interrogate_files" FILES ${IGATE_FILES})

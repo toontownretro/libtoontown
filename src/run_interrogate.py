@@ -20,6 +20,7 @@ def interrogate(module):
     cmd = os.path.join(pandadir, 'bin', 'interrogate')
     cmd += ' -D__inline -DCPPPARSER -DP3_INTERROGATE=1 -D__cplusplus -fnames -string -refcount -assert'
     cmd += ' -S"%(pandadir)s/include/parser-inc" -S"%(pandadir)s/include" -I"%(pandadir)s/include" -I"%(srcdir)s/suit" -I"%(srcdir)s/dna"'
+    cmd += ' -I"%(srcdir)s/toontownbase"'
     if module == 'dnaLoader':
         cmd += ' -srcdir "%(srcdir)s/dna"'
     else:

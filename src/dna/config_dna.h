@@ -5,9 +5,7 @@
 
 #pragma once
 
-#ifdef NDEBUG
-#undef NDEBUG
-#endif
+#include "toontownbase.h"
 
 #include <pandabase.h>
 #include <notifyCategoryProxy.h>
@@ -19,17 +17,6 @@
 #include <pointerTo.h>
 
 class DSearchPath;
-
-#pragma warning (disable : 4273)
-#pragma warning (disable : 4275)
-
-#ifdef BUILDING_DNA 
-    #define EXPCL_TOONTOWN EXPORT_CLASS 
-    #define EXPTP_TOONTOWN EXPORT_TEMPL 
-#else 
-   #define EXPCL_TOONTOWN IMPORT_CLASS 
-   #define EXPTP_TOONTOWN IMPORT_TEMPL 
-#endif 
 
 extern ConfigVariableList dna_preload;
 extern ConfigVariableSearchPath dna_path;
