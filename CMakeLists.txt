@@ -41,6 +41,9 @@ set(DNALOADER_FILES
     src/dna/dnabase.h
     src/dna/config_dna.cxx
     src/dna/config_dna.h
+    src/dna/dnaAnimBuilding.cxx
+    src/dna/dnaAnimBuilding.h
+    src/dna/dnaAnimBuilding.I
     src/dna/dnaAnimProp.cxx
     src/dna/dnaAnimProp.h
     src/dna/dnaAnimProp.I

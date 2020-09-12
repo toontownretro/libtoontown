@@ -2,6 +2,7 @@
 
 #include <loaderFileTypeRegistry.h>
 
+#include "dnaAnimBuilding.h"
 #include "dnaAnimProp.h"
 #include "dnaBattleCell.h"
 #include "dnaDoor.h"
@@ -44,6 +45,7 @@ void init_libdnaLoader() {
     DNAProp::init_type();
     DNAAnimProp::init_type();
     DNAInteractiveProp::init_type();
+    DNAAnimBuilding::init_type();
     DNADoor::init_type();
     DNAFlatDoor::init_type();
     DNASuitPoint::init_type();
