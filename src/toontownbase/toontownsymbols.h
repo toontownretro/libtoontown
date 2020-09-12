@@ -13,6 +13,7 @@
 #include <datagramIterator.h>
 #include <luse.h>
 #include <string.h>
+#include <string_utils.h>
 
 #ifndef temp_hpr_fix
 #define temp_hpr_fix true

@@ -11,6 +11,7 @@
 #include "dnaAnimProp.h"
 #include "dnaBattleCell.h"
 #include "dnaCornice.h"
+#include "dnaData.h"
 #include "dnaDoor.h"
 #include "dnaGroup.h"
 #include "dnaInteractiveProp.h"
@@ -53,7 +54,7 @@ void init_libdnaLoader() {
     
     DNAGroup::init_type();
     DNAVisGroup::init_type();
-    //DNAData::init_type();
+    DNAData::init_type();
     DNANode::init_type();
     DNAWindows::init_type();
     DNAStreet::init_type();

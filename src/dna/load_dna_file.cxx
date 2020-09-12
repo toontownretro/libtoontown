@@ -5,8 +5,8 @@
 
 #include "config_dna.h"
 #include "load_dna_file.h"
-//#include "dnaLoader.h"
-//#include "dnaData.h"
+#include "dnaLoader.h"
+#include "dnaData.h"
 #include "dnaStorage.h"
 #include "config_putil.h"
 #include "virtualFileSystem.h"
@@ -24,8 +24,6 @@
 ////////////////////////////////////////////////////////////////////
 PT(PandaNode) load_DNA_file(DNAStorage *dna_store, const std::string &filename, CoordinateSystem cs, int editing) {
   // We use binary mode to avoid Windows' end-of-line convention.
-  return (PandaNode *)NULL;
-  /*
   Filename dna_filename = Filename::binary_filename(filename);
   if (!dna_filename.is_fully_qualified()) {
     if (!DNAData::resolve_dna_filename(dna_filename)) {
@@ -47,8 +45,8 @@ PT(PandaNode) load_DNA_file(DNAStorage *dna_store, const std::string &filename, 
   bool ok_flag;
 
   VirtualFileSystem *vfs = VirtualFileSystem::get_global_ptr();
-  istream *istr = vfs->open_read_file(dna_filename, true);
-  if (istr == (istream *)NULL) {
+  std::istream *istr = vfs->open_read_file(dna_filename, true);
+  if (istr == (std::istream *)NULL) {
     dna_cat.error()
       << "Could not open " << dna_filename << " for reading.\n";
     return (PandaNode *)NULL;
@@ -63,11 +61,9 @@ PT(PandaNode) load_DNA_file(DNAStorage *dna_store, const std::string &filename, 
 
   dna_cat.debug() << "About to call loader.build_graph\n";
   return loader.build_graph(dna_store, editing);
-  */
 }
 
 
-/*
 ////////////////////////////////////////////////////////////////////
 //     Function: load_dna_file_AI
 //  Description: Loads up the indicated dna file but does not create
@@ -93,8 +89,8 @@ PT(DNAData) load_DNA_file_AI(DNAStorage *dna_store, const std::string &filename,
   bool ok_flag;
 
   VirtualFileSystem *vfs = VirtualFileSystem::get_global_ptr();
-  istream *istr = vfs->open_read_file(dna_filename, true);
-  if (istr == (istream *)NULL) {
+  std::istream *istr = vfs->open_read_file(dna_filename, true);
+  if (istr == (std::istream *)NULL) {
     dna_cat.error()
       << "Could not open " << dna_filename << " for reading.\n";
     return NULL;
@@ -110,4 +106,3 @@ PT(DNAData) load_DNA_file_AI(DNAStorage *dna_store, const std::string &filename,
   // Success!
   return loader._data;
 }
-*/

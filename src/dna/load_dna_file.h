@@ -5,9 +5,8 @@
 
 #pragma once
 
-#include "dnabase.h"
-//#include "toontownbase.h"
-//#include "dnaData.h"
+#include "toontownbase.h"
+#include "dnaData.h"
 #include "pointerTo.h"
 #include "pandaNode.h"
 #include "coordinateSystem.h"

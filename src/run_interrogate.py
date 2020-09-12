@@ -6,6 +6,8 @@ import os
 srcdir = os.path.abspath(os.path.dirname(__file__))
 pandadir = os.path.abspath(sys.argv[1])
 
+ignoredFiles = ["parser.yxx", "parser.cxx", "parser.hxx", "lexer.cxx", "lexer.lxx"]
+
 def run_command(cmd):
     p = subprocess.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, shell=True)
     ret = p.wait()
@@ -36,6 +38,9 @@ def interrogate(module):
         files = glob.glob(os.path.join(srcdir, module, '*.h'))
         files += glob.glob(os.path.join(srcdir, module, '*.cxx'))
     for file in files:
+        head, tail = os.path.split(file)
+        if tail in ignoredFiles:
+            continue
         cmd += ' %s' % os.path.basename(file)
     
     run_command(cmd)

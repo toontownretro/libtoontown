@@ -56,6 +56,9 @@ set(DNALOADER_FILES
     src/dna/dnaConstants.h
     src/dna/dnaCornice.cxx
     src/dna/dnaCornice.h
+    src/dna/dnaData.cxx
+    src/dna/dnaData.h
+    src/dna/dnaData.I
     src/dna/dnaDoor.cxx
     src/dna/dnaDoor.h
     src/dna/dnaGroup.cxx
@@ -64,6 +67,8 @@ set(DNALOADER_FILES
     src/dna/dnaInteractiveProp.cxx
     src/dna/dnaInteractiveProp.h
     src/dna/dnaInteractiveProp.I
+    src/dna/dnaLoader.cxx
+    src/dna/dnaLoader.h
     src/dna/dnaNode.cxx
     src/dna/dnaNode.h
     src/dna/dnaNode.I
@@ -102,10 +107,14 @@ set(DNALOADER_FILES
     src/dna/dnaWindow.cxx
     src/dna/dnaWindow.h
     src/dna/dnaWindow.I
+    src/dna/lexer.cxx
+    src/dna/lexerDefs.h
     src/dna/load_dna_file.cxx
     src/dna/load_dna_file.h
     src/dna/loaderFileTypeDNA.cxx
     src/dna/loaderFileTypeDNA.h
+    src/dna/parser.cxx
+    src/dna/parser.hxx
 )
     
 set(TOONTOWNBASE_FILES
