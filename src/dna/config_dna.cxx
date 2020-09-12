@@ -11,6 +11,11 @@
 #include "dnaBuildings.h"
 #include "dnaNode.h"
 #include "dnaProp.h"
+#include "dnaSign.h"
+#include "dnaSignBaseline.h"
+#include "dnaSignGraphic.h"
+#include "dnaSignText.h"
+#include "dnaStreet.h"
 #include "dnaSuitEdge.h"
 #include "dnaSuitPath.h"
 #include "dnaSuitPoint.h"
@@ -41,6 +46,9 @@ void init_libdnaLoader() {
     DNAGroup::init_type();
     DNAVisGroup::init_type();
     DNANode::init_type();
+    DNAStreet::init_type();
+    DNAWall::init_type();
+    DNAFlatBuilding::init_type();
     DNALandmarkBuilding::init_type();
     DNAProp::init_type();
     DNAAnimProp::init_type();
@@ -48,6 +56,10 @@ void init_libdnaLoader() {
     DNAAnimBuilding::init_type();
     DNADoor::init_type();
     DNAFlatDoor::init_type();
+    DNASign::init_type();
+    DNASignBaseline::init_type();
+    DNASignGraphic::init_type();
+    DNASignText::init_type();
     DNASuitPoint::init_type();
     DNASuitEdge::init_type();
     DNASuitPath::init_type();

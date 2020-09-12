@@ -53,6 +53,7 @@ set(DNALOADER_FILES
     src/dna/dnaBuildings.cxx
     src/dna/dnaBuildings.h
     src/dna/dnaBuildings.I
+    src/dna/dnaConstants.h
     src/dna/dnaDoor.cxx
     src/dna/dnaDoor.h
     src/dna/dnaGroup.cxx
@@ -67,6 +68,18 @@ set(DNALOADER_FILES
     src/dna/dnaProp.cxx
     src/dna/dnaProp.h
     src/dna/dnaProp.I
+    src/dna/dnaSign.cxx
+    src/dna/dnaSign.h
+    src/dna/dnaSign.I
+    src/dna/dnaSignBaseline.cxx
+    src/dna/dnaSignBaseline.h
+    src/dna/dnaSignBaseline.I
+    src/dna/dnaSignGraphic.cxx
+    src/dna/dnaSignGraphic.h
+    src/dna/dnaSignGraphic.I
+    src/dna/dnaSignText.cxx
+    src/dna/dnaSignText.h
+    src/dna/dnaSignText.I
     src/dna/dnaStorage.cxx
     src/dna/dnaStorage.h
     src/dna/dnaStorage.I

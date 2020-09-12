@@ -2,6 +2,8 @@
 
 #include "config_dna.h"
 
+#include "dnaConstants.h"
+
 #include <pandabase.h>
 #include <pandaVersion.h>
 #include <datagramIterator.h>
