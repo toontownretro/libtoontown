@@ -1,55 +1,89 @@
-#pragma once
+// Filename: dnaStreet.h
+// Created by:  shochet (26May00)
+//
+////////////////////////////////////////////////////////////////////
 
-#include "dnabase.h"
-
+//
+#ifndef DNASTREET_H
+#define DNASTREET_H
+//
+////////////////////////////////////////////////////////////////////
+// Includes
+////////////////////////////////////////////////////////////////////
+#include "dnaStorage.h"
 #include "dnaNode.h"
+#include "pandaNode.h"
+#include "nodePath.h"
+#include "luse.h"
+#include "pvector.h"
 
-#include <luse.h>
-#include <typedReferenceCount.h>
-#include <nodePath.h>
-#include <pvector.h>
 
-class DNAStorage;
+////////////////////////////////////////////////////////////////////
+//       Class : DNAStreet
+// Description : A street.
+////////////////////////////////////////////////////////////////////
+class EXPCL_TOONTOWN DNAStreet : public DNANode  {
+PUBLISHED:
+  DNAStreet(const std::string &initial_name);
+  DNAStreet(const DNAStreet &street);
 
-/**
- * A street.
- */
-class EXPCL_TOONTOWN DNAStreet : public DNANode {
-	PUBLISHED:
-		DNAStreet(std::string initial_name);
-		DNAStreet(const DNAStreet &street);
-		~DNAStreet();
+  virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing=0);
+  virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
 
-		std::string get_code();
-		std::string get_curb_texture();
-		std::string get_sidewalk_texture();
-		std::string get_street_texture();
+  INLINE void set_code(std::string code);
+  INLINE std::string get_code() const;
 
-		LVecBase4f get_curb_color();
-		LVecBase4f get_sidewalk_color();
-		LVecBase4f get_street_color();
+  INLINE void set_street_texture(std::string street_texture);
+  INLINE std::string get_street_texture() const;
 
-		void set_code(std::string &code);
-		void set_curb_color(LVecBase4f &color);
-		void set_curb_texture(std::string &curb_texture);
-		void set_sidewalk_color(LVecBase4f &color);
-		void set_sidewalk_texture(std::string &sidewalk_texture);
-		void set_street_color(LVecBase4f &color);
-		void set_street_texture(std::string &street_texture);
+  INLINE void set_sidewalk_texture(std::string sidewalk_texture);
+  INLINE std::string get_sidewalk_texture() const;
 
-	public:
-		virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing = 0);
-		virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0);
+  INLINE void set_curb_texture(std::string curb_texture);
+  INLINE std::string get_curb_texture() const;
 
-	protected:
-		std::string code;
-		std::string curb_texture;
-		std::string sidewalk_texture;
-		std::string street_texture;
+  // For now we no longer support color on streets to allow vertex color
 
-		LVecBase4f curb_color;
-		LVecBase4f sidewalk_color;
-		LVecBase4f street_color;
+  INLINE void set_street_color(const Colorf &color);
+  INLINE Colorf get_street_color() const;
 
-	TYPE_HANDLE(DNAStreet, DNANode);
+  INLINE void set_sidewalk_color(const Colorf &color);
+  INLINE Colorf get_sidewalk_color() const;
+
+  INLINE void set_curb_color(const Colorf &color);
+  INLINE Colorf get_curb_color() const;
+
+private:
+  virtual DNAGroup* make_copy();
+
+private:
+  std::string _code;
+  std::string _street_texture;
+  std::string _sidewalk_texture;
+  std::string _curb_texture;
+  Colorf _street_color;
+  Colorf _sidewalk_color;
+  Colorf _curb_color;
+
+public:
+  static TypeHandle get_class_type() {
+    return _type_handle;
+  }
+  static void init_type() {
+    DNANode::init_type();
+    register_type(_type_handle, "DNAStreet",
+                  DNANode::get_class_type()
+                  );
+  }
+  virtual TypeHandle get_type() const {
+    return get_class_type();
+  }
+  virtual TypeHandle force_init_type() {init_type(); return get_class_type();}
+
+private:
+  static TypeHandle _type_handle;
 };
+
+#include "dnaStreet.I"
+
+#endif

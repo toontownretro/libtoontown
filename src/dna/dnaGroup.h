@@ -1,45 +1,66 @@
-#pragma once
+// Filename: dnaGroup.h
+// Created by:  shochet (24May00)
+//
+////////////////////////////////////////////////////////////////////
 
+#pragma once
+//
+////////////////////////////////////////////////////////////////////
+// Includes
+////////////////////////////////////////////////////////////////////
+//#include "toontownbase.h"
 #include "dnabase.h"
 
-#include <luse.h>
-#include <typedReferenceCount.h>
-#include <nodePath.h>
-#include <pvector.h>
+#include "typedObject.h"
+#include "namable.h"
+#include "nodePath.h"
+#include "pvector.h"
+#include <string>
+#include "pointerTo.h"
+#include "typedReferenceCount.h"
 
 class DNAStorage;
 
-/**
- * A group of dna nodes
- */
-class EXPCL_TOONTOWN DNAGroup : public TypedReferenceCount {
-    PUBLISHED:
-        DNAGroup(std::string initial_name);
-        DNAGroup(const DNAGroup &group);
-        ~DNAGroup();
+////////////////////////////////////////////////////////////////////
+//       Class : DNAGroup
+// Description : A group of dna nodes
+////////////////////////////////////////////////////////////////////
+class EXPCL_TOONTOWN DNAGroup : public TypedReferenceCount, public Namable {
+PUBLISHED:
+  DNAGroup(const std::string &initial_name = "");
+  DNAGroup(const DNAGroup &group);
 
-        void add(PT(DNAGroup) group);
-        void remove(PT(DNAGroup) group);
-        void set_parent(PT(DNAGroup) parent);
-        void clear_parent();
-        void ls();
-        virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0);
+  virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing=0);
+  NodePath top_level_traverse(NodePath &parent, DNAStorage *store, int editing=0);
 
-        PT(DNAGroup) get_parent();
-        PT(DNAGroup) at(size_t index);
-        PT(DNAGroup) current();
+  void add(PT(DNAGroup) group);
+  void remove(PT(DNAGroup) group);
+  INLINE PT(DNAGroup) at(uint index);
+  INLINE PT(DNAGroup) current();
+  INLINE int get_num_children();
+  INLINE PT(DNAGroup) get_parent() const;
 
-        NodePath top_level_traverse(NodePath &parent, DNAStorage *store, int editing = 0);
-        virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing = 0);
+  virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
 
-        size_t get_num_children();
+  void ls() const;
 
-    protected:
-        std::string name;
-        pvector<PT(DNAGroup)> children;
+public:
+  INLINE void set_parent(PT(DNAGroup));
+  INLINE void clear_parent();
 
-    private:
-        PT(DNAGroup) parent;
+protected:
+  pvector<PT(DNAGroup)> _group_vector;
 
-    TYPE_HANDLE(DNAGroup, TypedReferenceCount);
+private:
+  virtual DNAGroup* make_copy();
+  // Ok, the parent pointer is not going to be a PointerTo to prevent
+  // circular references from being leaked
+  // TODO: in this destructor, null out all the children's parent pointers
+  // so they will have NULL pointers, and not "bad" pointers
+  DNAGroup* _parent;
+
+  TYPE_HANDLE2(DNAGroup, TypedReferenceCount, Namable)
 };
+
+
+#include "dnaGroup.I"

@@ -16060,7 +16060,9 @@ static ApplyStrucTInfos_12(void) {
 	SetType(get_member_id(id, 0x0), "DNANode");
 	SetType(get_member_id(id, 0x70), "float");
 	id = get_struc_id("DNASign");
-	SetType(get_member_id(id, 0x0), "DNAProp");
+	SetType(get_member_id(id, 0x0), "DNANode");
+	SetType(get_member_id(id, 0x70), "__string");
+	SetType(get_member_id(id, 0x8C), "LVecBase4f");
 	id = get_struc_id("DNASignBaseline");
 	SetType(get_member_id(id, 0x0), "DNASignBaseline_TypedObject_VTable *");
 	SetType(get_member_id(id, 0x4), "int");
@@ -27715,11 +27717,11 @@ static Structures_14(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("PointerToBase<PandaNode>");
-	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("PointerToVoid"),	4);
+	mid = add_struc_member(id,"baseclass",	0,	0x60000400,	get_struc_id("PointerToVoid"),	4);
 	set_struc_align(id,2);
 	
 	id = get_struc_id("PointerTo<PandaNode>");
-	mid = add_struc_member(id,"baseclass_0",	0,	0x60000400,	get_struc_id("PointerToBase<PandaNode>"),	4);
+	mid = add_struc_member(id,"baseclass",	0,	0x60000400,	get_struc_id("PointerToBase<PandaNode>"),	4);
 	set_struc_align(id,2);
 	
 	id = get_struc_id("AnimControl");
@@ -53016,7 +53018,9 @@ static Structures_38(id) {
 	set_struc_align(id,2);
 	
 	id = get_struc_id("DNASign");
-	mid = add_struc_member(id,"dnaprop",	0,	0x60000400,	get_struc_id("DNAProp"),	156);
+	mid = add_struc_member(id,"dnanode",	0,	0x60000400,	get_struc_id("DNANode"),	112);
+	mid = add_struc_member(id,"code",	0X70,	0x60000400,	get_struc_id("__string"),	28);
+	mid = add_struc_member(id,"color",	0X8C,	0x60000400,	get_struc_id("LVecBase4f"),	16);
 	set_struc_align(id,2);
 	
 	id = get_struc_id("DNASignBaseline");

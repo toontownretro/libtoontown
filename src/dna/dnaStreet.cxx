@@ -1,206 +1,169 @@
+// Filename: dnaStreet.cxx
+// Created by:  shochet (26May00)
+//
+////////////////////////////////////////////////////////////////////
+
+
 #include "dnaStreet.h"
-
 #include "dnaStorage.h"
+#include "pandaNode.h"
+#include "pointerTo.h"
+#include "compose_matrix.h"
+#include "config_linmath.h"
+#include "luse.h"
 
+////////////////////////////////////////////////////////////////////
+// Static variables
+////////////////////////////////////////////////////////////////////
 TypeHandle DNAStreet::_type_handle;
 
-/**
- *
- */
-DNAStreet::DNAStreet(std::string initial_name) : DNANode(initial_name) {
-    curb_color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
-    sidewalk_color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
-    street_color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
+////////////////////////////////////////////////////////////////////
+//     Function: DNAStreet::Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNAStreet::DNAStreet(const std::string &initial_name) :
+  DNANode(initial_name)
+{
+  _code = "";
+  _street_texture = "";
+  _sidewalk_texture = "";
+  _curb_texture = "";
+  _street_color.set(1.0, 1.0, 1.0, 1.0);
+  _sidewalk_color.set(1.0, 1.0, 1.0, 1.0);
+  _curb_color.set(1.0, 1.0, 1.0, 1.0);
 }
 
-/**
- *
- */
-DNAStreet::DNAStreet(const DNAStreet &street) : DNANode(street) {
-    code = street.code;
-    curb_texture = street.curb_texture;
-    sidewalk_texture = street.sidewalk_texture;
-    street_texture = street.street_texture;
-    curb_color = street.curb_color;
-    sidewalk_color = street.sidewalk_color;
-    street_color = street.street_color;
+////////////////////////////////////////////////////////////////////
+//     Function: DNAStreet::Copy Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNAStreet::DNAStreet(const DNAStreet &street) :
+  DNANode(street)
+{
+  _code = street.get_code();
+  _street_texture = street.get_street_texture();
+  _sidewalk_texture = street.get_sidewalk_texture();
+  _curb_texture = street.get_curb_texture();
+  _street_color = street.get_street_color();
+  _sidewalk_color = street.get_sidewalk_color();
+  _curb_color = street.get_curb_color();
 }
 
-/**
- *
- */
-DNAStreet::~DNAStreet() {
 
-}
-
-/**
- *
- */
-std::string DNAStreet::get_code() {
-    return code;
-}
-
-/**
- *
- */
-LVecBase4f DNAStreet::get_curb_color() {
-    return curb_color;
-}
-
-/**
- *
- */
-std::string DNAStreet::get_curb_texture() {
-    return curb_texture;
-}
-
-/**
- *
- */
-LVecBase4f DNAStreet::get_sidewalk_color() {
-    return sidewalk_color;
-}
-
-/**
- *
- */
-std::string DNAStreet::get_sidewalk_texture() {
-    return sidewalk_texture;
-}
-
-/**
- *
- */
-LVecBase4f DNAStreet::get_street_color() {
-    return street_color;
-}
-
-/**
- *
- */
-std::string DNAStreet::get_street_texture() {
-    return street_texture;
-}
-
-/**
- *
- */
-void DNAStreet::set_code(std::string &code) {
-    this->code = code;
-}
-
-/**
- *
- */
-void DNAStreet::set_curb_color(LVecBase4f &color) {
-    this->curb_color = color;
-}
-
-/**
- *
- */
-void DNAStreet::set_curb_texture(std::string &curb_texture) {
-    this->curb_texture = curb_texture;
-}
-
-/**
- *
- */
-void DNAStreet::set_sidewalk_color(LVecBase4f &color) {
-    this->sidewalk_color = color;
-}
-
-/**
- *
- */
-void DNAStreet::set_sidewalk_texture(std::string &sidewalk_texture) {
-    this->sidewalk_texture = sidewalk_texture;
-}
-
-/**
- *
- */
-void DNAStreet::set_street_color(LVecBase4f &color) {
-    this->street_color = color;
-}
-
-/**
- *
- */
-void DNAStreet::set_street_texture(std::string &street_texture) {
-    this->street_texture = street_texture;
-}
-
-/**
- *
- */
+////////////////////////////////////////////////////////////////////
+//     Function: DNAStreet::traverse
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
 NodePath DNAStreet::traverse(NodePath &parent, DNAStorage *store, int editing) {
-    NodePath node = store->find_node(code);
-    node = node.copy_to(parent);
-    node.set_name(name);
+  // Try to find this street in the node map
+  NodePath street_node_path = (store->find_node(_code)).copy_to(parent);
+  nassertr(!street_node_path.is_empty(), street_node_path);
+  street_node_path.node()->set_name(get_name());
 
-    NodePath street_node = node.find("**/*_street");
-    NodePath sidewalk_node = node.find("**/*_sidewalk");
-    NodePath curb_node = node.find("**/*_curb");
-    if (!street_node.is_empty()) {
-        street_node.set_texture(store->find_texture(street_texture), 1);
-        street_node.set_color_scale(street_color);
-    }
-    if (!sidewalk_node.is_empty()) {
-        sidewalk_node.set_texture(store->find_texture(sidewalk_texture), 1);
-        sidewalk_node.set_color_scale(sidewalk_color);
-    }
-    if (!curb_node.is_empty()) {
-        curb_node.set_texture(store->find_texture(curb_texture), 1);
-        curb_node.set_color_scale(curb_color);
-    }
-    node.set_pos_hpr_scale(pos, hpr, scale);
+  // Find the street and sidewalk texture in dna storage
+  PT(Texture) street_texture = store->find_texture(_street_texture);
+  PT(Texture) sidewalk_texture = store->find_texture(_sidewalk_texture);
+  PT(Texture) curb_texture = store->find_texture(_curb_texture);
 
-    if (editing) {
-        PT(DNAGroup) PT_this = (DNAGroup*)this;
-        PT(PandaNode) store_node = node.node();
-        store->store_DNAGroup(store_node, PT_this);
-    }
+  NodePath street_street = street_node_path.find("**/*_street");
+  NodePath street_sidewalk = street_node_path.find("**/*_sidewalk");
+  NodePath street_curb = street_node_path.find("**/*_curb");
 
-    return node;
+  // Set the textures and colors
+  if (!street_street.is_empty()) {
+    // we call set_texture() with a small override to force the
+    // texture to replace whatever is already on the Geoms.
+    street_street.set_texture(street_texture, 1);
+    street_street.set_color_scale(_street_color);
+  };
+  if (!street_sidewalk.is_empty()) {
+    street_sidewalk.set_texture(sidewalk_texture, 1);
+    street_sidewalk.set_color_scale(_sidewalk_color);
+  };
+  if (!street_curb.is_empty()) {
+    street_curb.set_texture(curb_texture, 1);
+    street_curb.set_color_scale(_curb_color);
+  };
+
+  street_node_path.set_pos_hpr_scale(_pos, _hpr, _scale);
+
+  // Do not traverse because we do not have children
+
+  if (editing) {
+    // Remember that this nodepath is associated with this dna group
+    store->store_DNAGroup(street_node_path.node(), this);
+  }
+
+  return street_node_path;
 }
 
-/**
- *
- */
-void DNAStreet::write(std::ostream& out, DNAStorage* store, int indent_level) {
-    indent(out, indent_level);
-    out << "street \"" << name << "\" [" << std::endl;
-    indent(out, indent_level + 1);
-    out << "code [ \"" << code << "\" ]" << std::endl;
-    indent(out, indent_level + 1);
-    out << "pos [ " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
-    indent(out, indent_level + 1);
-    if (temp_hpr_fix) {
-        out << "nhpr [ ";
-    } else {
-        out << "hpr [ ";
-    }
-    out << hpr[0] << " " << hpr[1] << " " << hpr[2] << " ]" << std::endl;
-    if (street_color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
-        indent(out, indent_level + 1);
-        out << "color [ " << street_color[0] << " " << street_color[1] << " " << street_color[2] << " " << street_color[3] << " ]" << std::endl;
-    }
-    if (sidewalk_color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
-        indent(out, indent_level + 1);
-        out << "color [ " << sidewalk_color[0] << " " << sidewalk_color[1] << " " << sidewalk_color[2] << " " << sidewalk_color[3] << " ]" << std::endl;
-    }
-    if (curb_color != LVecBase4f(1.0, 1.0, 1.0, 1.0)) {
-        indent(out, indent_level + 1);
-        out << "color [ " << curb_color[0] << " " << curb_color[1] << " " << curb_color[2] << " " << curb_color[3] << " ]" << std::endl;
-    }
-    indent(out, indent_level + 1);
-    out << "texture [ \"" << street_texture << "\" ]" << std::endl;
-    out << "texture [ \"" << sidewalk_texture << "\" ]" << std::endl;
-    out << "texture [ \"" << curb_texture << "\" ]" << std::endl;
-    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
-        (*it)->write(out, store, indent_level + 1);
-    }
-    indent(out, indent_level);
-    out << "]" << std::endl;
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAStreet::write
+//       Access: Public
+//  Description: Writes the group and all children to output
+////////////////////////////////////////////////////////////////////
+void DNAStreet::write(std::ostream &out, DNAStorage *store, int indent_level) const {
+  indent(out, indent_level) << "street ";
+  out << '"' << get_name() << '"' << " [\n";
+
+  // Write out all properties
+  indent(out, indent_level + 1) << "code [ " <<
+    '"' << _code << '"' << " ]\n";
+  indent(out, indent_level + 1) << "pos [ " <<
+    _pos[0] << " " << _pos[1] << " " << _pos[2] << " ]\n";
+  if (temp_hpr_fix) {
+    indent(out, indent_level + 1) << "nhpr [ " <<
+      _hpr[0] << " " << _hpr[1] << " " << _hpr[2] << " ]\n";
+  } else {
+    indent(out, indent_level + 1) << "hpr [ " <<
+      _hpr[0] << " " << _hpr[1] << " " << _hpr[2] << " ]\n";
+  }
+
+  // Only write out color if it is not white. This saves unnecessary work
+  if ((!_street_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0))) ||
+      (!_sidewalk_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0))) ||
+      (!_curb_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0)))) {
+    indent(out, indent_level + 1) << "color [ " <<
+      _street_color[0] << " " << _street_color[1] << " " << _street_color[2] << " " << _street_color[3] <<
+      " ]\n";
+    indent(out, indent_level + 1) << "color [ " <<
+      _sidewalk_color[0] << " " << _sidewalk_color[1] << " " << _sidewalk_color[2] << " " << _sidewalk_color[3] <<
+      " ]\n";
+    indent(out, indent_level + 1) << "color [ " <<
+      _curb_color[0] << " " << _curb_color[1] << " " << _curb_color[2] << " " << _curb_color[3] <<
+      " ]\n";
+  }
+
+
+  indent(out, indent_level + 1) << "texture [ " <<
+    '"' << _street_texture << '"' << " ]\n";
+  indent(out, indent_level + 1) << "texture [ " <<
+    '"' << _sidewalk_texture << '"' << " ]\n";
+  indent(out, indent_level + 1) << "texture [ " <<
+    '"' << _curb_texture << '"' << " ]\n";
+
+  // Write all the children
+  pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+  for(; i != _group_vector.end(); ++i) {
+    // Traverse each node in our vector
+    PT(DNAGroup) group = *i;
+    group->write(out, store, indent_level + 1);
+  }
+
+  indent(out, indent_level) << "]\n";
+
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAStreet::make_copy
+//       Access: Public
+//  Description: Copies all the children into our own vector
+////////////////////////////////////////////////////////////////////
+DNAGroup* DNAStreet::make_copy() {
+  return new DNAStreet(*this);
 }

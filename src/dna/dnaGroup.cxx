@@ -1,152 +1,184 @@
-/*
- * @file dnaGroup.cxx
- * @author theclashingfritz
- * @date 6-10-20
- */
+// Filename: dnaGroup.cxx
+// Created by:  shochet (24May00)
+//
+////////////////////////////////////////////////////////////////////
 
 #include "dnaGroup.h"
 #include "dnaStorage.h"
+#include "pandaNode.h"
+#include "pointerTo.h"
+#include "indent.h"
+#include "sceneGraphReducer.h"
 
+////////////////////////////////////////////////////////////////////
+// Static variables
+////////////////////////////////////////////////////////////////////
 TypeHandle DNAGroup::_type_handle;
 
-/**
- *
- */
-DNAGroup::DNAGroup(std::string initial_name) {
-    name = initial_name;
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNAGroup::DNAGroup(const std::string &initial_name) :
+  Namable(initial_name)
+{
+  _parent = NULL;
 }
 
-/**
- *
- */
-DNAGroup::DNAGroup(const DNAGroup &group) {
-    name = group.name;
-    children = group.children;
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::CopyConstructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNAGroup::DNAGroup(const DNAGroup &copy) :
+  Namable(copy)
+{
+  _parent = NULL;
+  pvector<PT(DNAGroup)>::const_iterator i = copy._group_vector.begin();
+  for(; i != copy._group_vector.end(); ++i) {
+    // Push in a copy of the dna group
+    _group_vector.push_back((*i)->make_copy());
+  }
 }
 
-/**
- *
- */
-DNAGroup::~DNAGroup() {
 
-}
-
-/**
- *
- */
-INLINE void DNAGroup::clear_parent() {
-    parent = nullptr;
-}
-
-/**
- * Return the current group
- */
-INLINE PT(DNAGroup) DNAGroup::current() {
-    return children.back();
-}
-
-/**
- * How many groups do we have under us?
- */
-INLINE size_t DNAGroup::get_num_children() {
-    return children.size();
-}
-
-/**
- *  Return the parent group
- */
-INLINE PT(DNAGroup) DNAGroup::get_parent() {
-    return parent;
-}
-
- 
-/**
- * Return the nth group in the vector
- */
-INLINE PT(DNAGroup) DNAGroup::at(size_t index) {
-    return children.at(index);
-}
-
-/**
- * Remove a group from this vector. Note, this is
- * not really meant for heavy use, since we are using
- * an STL vector which erases in linear time.
- * Should be ok, since removal will be rare.
- */
-INLINE void DNAGroup::remove(PT(DNAGroup) group) {
-    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
-        if (*it == group) {
-            children.erase(it);
-            return;
-        }
-    }
-    dna_cat.warning() << "DNAGroup: group not found in map" << std::endl;
-}
-
-/**
- * Add a DNAGroup to this vector of nodes
- */
-INLINE void DNAGroup::add(PT(DNAGroup) group) {
-    children.push_back(group);
-}
-
-/**
- * Writes the group and all children to cout (for debugging)
- */
-INLINE void DNAGroup::ls() {
-    write(std::cout, 0, 0);
-}
-
-/**
- * 
- */
-INLINE void DNAGroup::set_parent(PT(DNAGroup) parent) {
-    this->parent = parent;
-}
-
-/**
- * Writes the group and all children to output
- */
-void DNAGroup::write(std::ostream &out, DNAStorage *store, int indent_level) {
-    indent(out, indent_level);
-    out << "group \"" << name << "\" [" << std::endl;
-    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
-        (*it)->write(out, store, indent_level + 1);
-    }
-    indent(out, indent_level);
-    out << "]" << std::endl;
-}
-
-/**
- * The top level traverse does some special things
- */
-NodePath DNAGroup::top_level_traverse(NodePath &parent, DNAStorage *store, int editing) {
-    NodePath _np = parent.attach_new_node(name);
-    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
-        (*it)->traverse(_np, store, editing);
-    }
-
-    if (editing) {
-        PT(DNAGroup) PT_this = this;
-        PT(PandaNode) store_node = _np.node();
-        store->store_DNAGroup(store_node, PT_this);
-    }
-    return _np;
-}
-
-/**
- *
- */
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::traverse
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
 NodePath DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing) {
-    NodePath _np = parent.attach_new_node(name);
-    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
-        (*it)->traverse(_np, store, editing);
-    }
+  // Make a new node for this group
 
-    if (editing) {
-        PT(DNAGroup) PT_this = this;
-        PT(PandaNode) store_node = _np.node();
-        store->store_DNAGroup(store_node, PT_this);
-    }
-    return _np;
+  PT(PandaNode) new_node = new PandaNode(get_name());
+  NodePath group_node_path = parent.attach_new_node(new_node);
+
+  pvector<PT(DNAGroup)>::iterator i = _group_vector.begin();
+  for(; i != _group_vector.end(); ++i) {
+    // Traverse each node in our vector
+    PT(DNAGroup) group = *i;
+    group->traverse(group_node_path, store, editing);
+  }
+
+  if (editing) {
+    // Remember that this nodepath is associated with this dna group
+    store->store_DNAGroup(group_node_path.node(), this);
+  }
+
+  return group_node_path;
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::top_level_traverse
+//       Access: Public
+//  Description: The top level traverse does some special things
+////////////////////////////////////////////////////////////////////
+NodePath DNAGroup::top_level_traverse(NodePath &parent, DNAStorage *store, int editing) {
+  // Make a new node for this group
+
+  PT(PandaNode) new_node = new PandaNode(get_name());
+  NodePath group_node_path = parent.attach_new_node(new_node);
+
+  pvector<PT(DNAGroup)>::iterator i = _group_vector.begin();
+  for(; i != _group_vector.end(); ++i) {
+    // Traverse each node in our vector
+    PT(DNAGroup) group = *i;
+    group->traverse(group_node_path, store, editing);
+    // Top level groups do not have parents
+    group->clear_parent();
+  }
+
+  // Do not flatten here. It is done in Python now.
+
+  if (editing) {
+    // Remember that this nodepath is associated with this dna group
+    store->store_DNAGroup(group_node_path.node(), this);
+  }
+
+  return group_node_path;
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::add
+//       Access: Public
+//  Description: add a DNAGroup to this vector of nodes
+////////////////////////////////////////////////////////////////////
+void DNAGroup::add(PT(DNAGroup) group) {
+  _group_vector.push_back(group);
+  // This child group's parent is now this group
+  group->set_parent(this);
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::remove
+//       Access: Public
+//  Description: Remove a group from this vector. Note, this is
+//               not really meant for heavy use, since we are using
+//               an STL vector which erases in linear time.
+//               Should be ok, since removal will be rare.
+////////////////////////////////////////////////////////////////////
+void DNAGroup::remove(PT(DNAGroup) group) {
+  pvector<PT(DNAGroup)>::iterator i = find(_group_vector.begin(),
+                                          _group_vector.end(), group);
+  if (i == _group_vector.end()) {
+    dna_cat.warning()
+      << "DNAGroup: group not found in map" << std::endl;
+    return;
+  }
+
+  // This child group no longer has a parent
+  group->clear_parent();
+
+  // Erase him out of our vector
+  _group_vector.erase(i);
+}
+
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::write
+//       Access: Public
+//  Description: Writes the group and all children to output
+////////////////////////////////////////////////////////////////////
+void DNAGroup::write(std::ostream &out, DNAStorage *store, int indent_level) const {
+  indent(out, indent_level) << "group ";
+  out << '"' << get_name() << '"' << " [\n";
+
+  // Write all the children
+  pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+  for(; i != _group_vector.end(); ++i) {
+    // Traverse each node in our vector
+    PT(DNAGroup) group = *i;
+    group->write(out, store, indent_level + 1);
+  }
+
+  indent(out, indent_level) << "]\n";
+
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::ls
+//       Access: Public
+//  Description: Writes the group and all children to cout (for debugging)
+////////////////////////////////////////////////////////////////////
+void DNAGroup::ls() const {
+  write(std::cout, 0);
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::make_copy
+//       Access: Public
+//  Description: Copies all the children into our own vector
+//               Redefine this for every class that subclasses DNAGroup
+//               It is used in the copy constructor
+////////////////////////////////////////////////////////////////////
+DNAGroup* DNAGroup::make_copy() {
+  return new DNAGroup(*this);
 }

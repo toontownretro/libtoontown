@@ -1,55 +1,80 @@
+// Filename: dnaVisGroup.h
+// Created by:  shochet (24May00)
+//
+////////////////////////////////////////////////////////////////////
 #pragma once
-
+////////////////////////////////////////////////////////////////////
+// Includes
+////////////////////////////////////////////////////////////////////
 #include "dnabase.h"
+//#include "toontownbase.h"
+
+#include "typedObject.h"
+#include "namable.h"
+#include "nodePath.h"
+#include "pvector.h"
+#include <string>
+#include "pointerTo.h"
 
 #include "dnaGroup.h"
-#include "dnaBattleCell.h"
 #include "dnaSuitEdge.h"
-
-#include <luse.h>
-#include <typedReferenceCount.h>
-#include <nodePath.h>
-#include <pvector.h>
+#include "dnaBattleCell.h"
 
 class DNAStorage;
 
-/**
- * A group of dna nodes with special visibility info
- * tagged in a vis property. The vis property should list
- * all the other DNAVisGroups (including itself) that
- * should be rendered when the avatar is standing in this group
- */
+////////////////////////////////////////////////////////////////////
+//       Class : DNAVisGroup
+// Description : A group of dna nodes with special visibility info
+//               tagged in a vis property. The vis property should list
+//               all the other DNAVisGroups (including itself) that
+//               should be rendered when the avatar is standing in this group
+////////////////////////////////////////////////////////////////////
 class EXPCL_TOONTOWN DNAVisGroup : public DNAGroup {
-	PUBLISHED:
-		DNAVisGroup(std::string initial_name);
-		~DNAVisGroup();
+PUBLISHED:
+  DNAVisGroup(const std::string &initial_name = "");
+  DNAVisGroup(const DNAVisGroup &group);
 
-		void add_battle_cell(PT(DNABattleCell) cell);
-		void add_suit_edge(PT(DNASuitEdge) edge);
-		void add_visible(std::string &vis_group_name);
-		void remove_battle_cell(PT(DNABattleCell) cell);
-		void remove_suit_edge(PT(DNASuitEdge) edge);
-		void remove_visible(std::string &vis_group_name);
+  virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing=0);
+  virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
 
-		PT(DNABattleCell) get_battle_cell(unsigned int i);
+  void add_visible(const std::string &vis_group_name);
+  int remove_visible(const std::string &vis_group_name);
+  int get_num_visibles() const;
+  std::string get_visible_name(uint i) const;
 
-		PT(DNASuitEdge) get_suit_edge(unsigned int i);
+  void add_suit_edge(PT(DNASuitEdge) edge);
+  int remove_suit_edge(PT(DNASuitEdge) edge);
+  int get_num_suit_edges() const;
+  PT(DNASuitEdge) get_suit_edge(uint i) const;
 
-		std::string get_visible_name(unsigned int i);
+  void add_battle_cell(PT(DNABattleCell) cell);
+  int remove_battle_cell(PT(DNABattleCell) cell);
+  int get_num_battle_cells() const;
+  PT(DNABattleCell) get_battle_cell(uint i) const;
 
-		size_t get_num_battle_cells();
-		size_t get_num_suit_edges();
-		size_t get_num_visibles();
+private:
+  virtual DNAGroup* make_copy();
 
-	public:
-		virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0);
+protected:
+  pvector< std::string > _vis_vector;
+  pvector< PT(DNASuitEdge) > _suit_edge_vector;
+  pvector< PT(DNABattleCell) > _battle_cell_vector;
 
-		virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing = 0);
+public:
+  static TypeHandle get_class_type() {
+    return _type_handle;
+  }
+  static void init_type() {
+    DNAGroup::init_type();
+    register_type(_type_handle, "DNAVisGroup",
+                  DNAGroup::get_class_type()
+                  );
+  }
+  virtual TypeHandle get_type() const {
+    return get_class_type();
+  }
+  virtual TypeHandle force_init_type() {init_type(); return get_class_type();}
 
-	private:
-		pvector<PT(DNABattleCell)> battle_cells;
-		pvector<PT(DNASuitEdge)> suit_edges;
-		pvector<std::string> visibles;
-
-	TYPE_HANDLE(DNAVisGroup, DNAGroup);
+private:
+  static TypeHandle _type_handle;
 };

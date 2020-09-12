@@ -1,116 +1,302 @@
+// Filename: dnaDoor.cxx
+// Created by:  shochet (27Jun00)
+//
+////////////////////////////////////////////////////////////////////
+
 #include "dnaDoor.h"
+#include "nodePath.h"
 #include "dnaStorage.h"
+#include "decalEffect.h"
 
+////////////////////////////////////////////////////////////////////
+// Static variables
+////////////////////////////////////////////////////////////////////
 TypeHandle DNADoor::_type_handle;
+TypeHandle DNAFlatDoor::_type_handle;
 
-DNADoor::DNADoor(std::string initial_name) : DNAGroup(initial_name) {
-    color = LVecBase4f(1.0, 1.0, 1.0, 1.0);
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNADoor::DNADoor(const std::string &initial_name) :
+  DNAGroup(initial_name) {
+  _code = "";
+  _color.set(1.0, 1.0, 1.0, 1.0);
 }
 
-DNADoor::DNADoor(const DNADoor &door) : DNAGroup(door) {
-    code = door.code;
-    color = door.color;
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::Copy Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNADoor::DNADoor(const DNADoor &door) :
+  DNAGroup(door) {
+  _code = door.get_code();
+  _color = door.get_color();
 }
 
-DNADoor::~DNADoor() {
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::set_color
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+void DNADoor::set_color(const Colorf &color) {
+  _color = color;
 }
 
-std::string DNADoor::get_code() {
-    return code;
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::get_color
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+Colorf DNADoor::get_color() const {
+  return _color;
 }
 
-LVecBase4f DNADoor::get_color() {
-    return color;
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::set_code
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+void DNADoor::set_code(std::string code) {
+  _code = code;
 }
 
-void DNADoor::set_code(std::string &code) {
-    this->code = code;
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::get_code
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+std::string DNADoor::get_code() const {
+  return _code;
 }
 
-void DNADoor::set_color(const LVecBase4f &color) {
-    this->color = color;
-}
 
-void DNADoor::setup_door(NodePath &node, const NodePath &parent, const NodePath &door_origin, DNAStorage *store, std::string &block, const LVecBase4f &color) {
-    node.set_pos_hpr_scale(door_origin, LVecBase3f(0.0, 0.0, 0.0), LVecBase3f(0.0, 0.0, 0.0), LVecBase3f(1.0, 1.0, 1.0));
-    node.set_color(color);
-
-    NodePath door_hole_left = node.find("door_*_hole_left");
-    door_hole_left.set_name("doorFrameHoleLeft");
-
-    NodePath door_hole_right = node.find("door_*_hole_right");
-    door_hole_right.set_name("doorFrameHoleRight");
-
-    NodePath door_right = node.find("door_*_right");
-    door_right.set_name("rightDoor");
-
-    NodePath door_left = node.find("door_*_left");
-    door_left.set_name("leftDoor");
-
-    NodePath door_flat = node.find("door_*_flat");
-    if (!door_flat.is_empty()) {
-        door_hole_left.wrt_reparent_to(door_flat);
-        door_hole_right.wrt_reparent_to(door_flat);
-
-        door_flat.set_effect(DecalEffect::make());
-
-        door_right.wrt_reparent_to(parent);
-        door_left.wrt_reparent_to(parent);
-
-        door_right.hide();
-        door_left.hide();
-    }
-
-    door_hole_left.hide();
-    door_hole_right.hide();
-
-    door_right.set_color(color);
-    door_left.set_color(color);
-    door_hole_left.set_color(LVecBase4f(0.0, 0.0, 0.0, 1.0));
-    door_hole_right.set_color(LVecBase4f(0.0, 0.0, 0.0, 1.0));
-
-    NodePath door_trigger = node.find("door_*_trigger");
-    door_trigger.wrt_reparent_to(parent);
-    door_trigger.set_name("door_trigger_" + block);
-}
-
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::traverse
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
 NodePath DNADoor::traverse(NodePath &parent, DNAStorage *store, int editing) {
-    NodePath _front_path = parent.find("**/*_front");
-    if (!_front_path.get_node(0)->is_geom_node()) {
-        _front_path = _front_path.find("**/+GeomNode");
-    }
+  // Make this a decal onto the wall
+  // It should be the only geom node under a group ending with _front
+  NodePath building_front = parent.find("**/*_front");
+  nassertr(!building_front.is_empty(), parent);
+  // If the _front is not a GeomNode, look for the first geom node under that
+  if (!building_front.node()->is_geom_node()) {
+    building_front = building_front.find("**/+GeomNode");
+    nassertr(!building_front.is_empty(), parent);
+  }
 
-    _front_path.set_effect(DecalEffect::make());
-    NodePath node = store->find_node(code);
-    if (node.is_empty()) {
-        dna_cat.error() << "Door not found: " << code << std::endl;
-        return parent;
-    }
-    node = node.copy_to(_front_path);
+  PandaNode *node = building_front.node();
+  node->set_effect(DecalEffect::make());
 
-    NodePath door_origin = parent.find("**/*door_origin");
-    std::string block = store->get_block(parent.get_name());
+  // Try to find this door in the node map
+  NodePath door_code = store->find_node(_code);
+  if (door_code.is_empty()) {
+    dna_cat.error()
+      << "Door not found: " << _code << "\n";
+    return parent;
+  }
 
-    setup_door(node, parent, door_origin, store, block, color);
-    store->store_block_door_pos_hpr(block, door_origin.get_pos(), door_origin.get_hpr());
+  NodePath door_node_path = door_code.copy_to(building_front);
+  nassertr(!door_node_path.is_empty(), parent);
+  // Doors do not have meaningful names so do not name them
 
-    if (editing) {
-        PT(DNAGroup) PT_this = (DNAGroup*)this;
-        PT(PandaNode) store_node = node.node();
-        store->store_DNAGroup(store_node, PT_this);
-    }
+  // The door_origin is a special node in the model with a local
+  // origin that we position the door wrt
+  NodePath door_origin = parent.find("**/*door_origin");
+  nassertr(!door_origin.is_empty(), parent);
 
-    return node;
+  std::string block=store->get_block(parent.node()->get_name());
+  setup_door(door_node_path, parent, door_origin, store, block, _color);
+  store->store_block_door_pos_hpr(block,
+      door_origin.get_pos(NodePath()), door_origin.get_hpr(NodePath()));
+
+  if (editing) {
+    // Remember that this nodepath is associated with this dna group
+    store->store_DNAGroup(door_node_path.node(), this);
+  }
+
+  // We don't traverse our children because there will not be any
+
+  return door_node_path;
 }
 
-void DNADoor::write(std::ostream &out, DNAStorage *store, int indent_level) {
-    indent(out, indent_level);
-    out << "door [" << std::endl;
-    indent(out, indent_level + 1);
-    out << "code [ \"" << code << "\" ]" << std::endl;
-    indent(out, indent_level + 1);
-    out << "color [ " << color[0] << " " << color[1] << " " << color[2] << " " << color[3] << " ]" << std::endl;
-    indent(out, indent_level);
-    out << "]" << std::endl;
+void DNADoor::setup_door(NodePath& door_node_path,
+    NodePath& parent, NodePath& door_origin, DNAStorage *store,
+    const std::string& block, const LVector4f& color) {
+  // Place the door at the bottom center of the building,
+  // three feet out from the origin where the wall is
+  door_node_path.set_pos_hpr_scale(door_origin,
+           LVector3f(0.0),
+           LVector3f(0.0),
+           LVector3f(1.0));
+  door_node_path.set_color(color);
+
+  // Rename the left hole in the door frame:
+  NodePath doorFrameHoleLeft=door_node_path.find("door_*_hole_left");
+  nassertv(!doorFrameHoleLeft.is_empty());
+  doorFrameHoleLeft.node()->set_name("doorFrameHoleLeft");
+  // Rename the right hole in the door frame:
+  NodePath doorFrameHoleRight=door_node_path.find("door_*_hole_right");
+  nassertv(!doorFrameHoleRight.is_empty());
+  doorFrameHoleRight.node()->set_name("doorFrameHoleRight");
+
+  // Rename the 3D door panels:
+  NodePath rightDoor = door_node_path.find("door_*_right");
+  nassertv(!rightDoor.is_empty());
+  rightDoor.node()->set_name("rightDoor");
+  // Repeat for the left door:
+  NodePath leftDoor = door_node_path.find("door_*_left");
+  nassertv(!leftDoor.is_empty());
+  leftDoor.node()->set_name("leftDoor");
+
+  // Move the hole onto the frame (aka "flat"):
+  NodePath doorFrame = door_node_path.find("door_*_flat");
+  if ( doorFrame.is_empty() )
+    {
+      // this door does not have a flat... always show the 
+      // normal geometry
+    }
+  else
+    {
+      doorFrameHoleLeft.wrt_reparent_to(doorFrame);
+      doorFrameHoleRight.wrt_reparent_to(doorFrame);
+      PandaNode *doorFrameNode = doorFrame.node();
+      doorFrameNode->set_effect(DecalEffect::make());
+
+      // Move the 3D door panels out from the decal:
+      rightDoor.wrt_reparent_to(parent);
+      leftDoor.wrt_reparent_to(parent);
+
+      // Hide the 3D door:
+      rightDoor.hide();
+      leftDoor.hide();
+    }      
+
+  doorFrameHoleLeft.hide();
+  doorFrameHoleRight.hide();
+
+  // Color the doors
+  rightDoor.set_color(color);
+  leftDoor.set_color(color);
+  // Color the holes
+  doorFrameHoleLeft.set_color(LVector4f(0.0, 0.0, 0.0, 1.0));
+  doorFrameHoleRight.set_color(LVector4f(0.0, 0.0, 0.0, 1.0));
+
+  // Set the trigger:
+  NodePath doorTrigger = door_node_path.find("door_*_trigger");
+  nassertv(!doorTrigger.is_empty());
+  doorTrigger.wrt_reparent_to(parent);
+  doorTrigger.node()->set_name("door_trigger_"+block);
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::write
+//       Access: Public
+//  Description: Writes the group and all children to output
+////////////////////////////////////////////////////////////////////
+void DNADoor::write(std::ostream &out, DNAStorage *store, int indent_level) const {
+  indent(out, indent_level) << "door [\n";
+
+  // Write out all properties
+  indent(out, indent_level + 1) << "code [ " <<
+    '"' << _code << '"' << " ]\n";
+  indent(out, indent_level + 1) << "color [ " <<
+    _color[0] << " " << _color[1] << " " << _color[2] << " " << _color[3] <<
+    " ]\n";
+
+  // We dont traverse our children because we do not have any
+  indent(out, indent_level) << "]\n";
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::make_copy
+//       Access: Public
+//  Description: Copies all the children into our own vector
+////////////////////////////////////////////////////////////////////
+DNAGroup* DNADoor::make_copy() {
+  return new DNADoor(*this);
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAFlatDoor::Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNAFlatDoor::DNAFlatDoor(const std::string &initial_name) :
+  DNADoor(initial_name) {
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAFlatDoor::Copy Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNAFlatDoor::DNAFlatDoor(const DNAFlatDoor &door) :
+  DNADoor(door) {
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAFlatDoor::traverse
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+NodePath DNAFlatDoor::traverse(NodePath &parent, DNAStorage *store, int editing) {
+  // Try to find this door in the node map
+  NodePath door_node_path = (store->find_node(_code)).copy_to(parent);
+  nassertr(!door_node_path.is_empty(), parent);
+  // Doors do not have meaningful names so do not name them
+
+  door_node_path.set_scale(NodePath(), 1, 1, 1);
+  door_node_path.set_pos_hpr(0.5, 0, 0, 0, 0, 0);
+  door_node_path.set_color(_color);
+
+  if (editing) {
+    // Make this a decal onto the walls
+    PandaNode *node = parent.node();
+    node->set_effect(DecalEffect::make());
+    // Remember that this nodepath is associated with this dna group
+    store->store_DNAGroup(door_node_path.node(), this);
+  }
+
+  // We don't traverse our children because there will not be any
+  return door_node_path;
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAFlatDoor::write
+//       Access: Public
+//  Description: Writes the group and all children to output
+////////////////////////////////////////////////////////////////////
+void DNAFlatDoor::write(std::ostream &out, DNAStorage *store, int indent_level) const {
+  indent(out, indent_level) << "flat_door [\n";
+
+  // Write out all properties
+  indent(out, indent_level + 1) << "code [ " <<
+    '"' << _code << '"' << " ]\n";
+  indent(out, indent_level + 1) << "color [ " <<
+    _color[0] << " " << _color[1] << " " << _color[2] << " " << _color[3] <<
+    " ]\n";
+
+  // We dont traverse our children because we do not have any
+  indent(out, indent_level) << "]\n";
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAFlatDoor::make_copy
+//       Access: Public
+//  Description: Copies all the children into our own vector
+////////////////////////////////////////////////////////////////////
+DNAGroup* DNAFlatDoor::make_copy() {
+  return new DNAFlatDoor(*this);
 }

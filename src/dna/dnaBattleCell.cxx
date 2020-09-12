@@ -1,47 +1,56 @@
-#include "dnaBattleCell.h"
+// Filename: dnaBattleCell.cxx
+// Created by:  shochet (31Jan01)
+//
+////////////////////////////////////////////////////////////////////
 
+#include "dnaBattleCell.h"
+#include "dnaStorage.h"
+
+////////////////////////////////////////////////////////////////////
+// Static variables
+////////////////////////////////////////////////////////////////////
 TypeHandle DNABattleCell::_type_handle;
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNABattleCell::Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
 DNABattleCell::DNABattleCell(float width, float height, LPoint3f pos) {
-    this->width = width;
-    this->height = height;
-    this->pos = pos;
+  _width = width;
+  _height = height;
+  _pos = pos;
 }
 
-DNABattleCell::~DNABattleCell() {
-
-}
-
-double DNABattleCell::get_height() {
-    return height;
-}
-
-LPoint3f DNABattleCell::get_pos() {
-    return pos;
-}
-
-double DNABattleCell::get_width() {
-    return width;
-}
-
-void DNABattleCell::set_pos(LPoint3f pos) {
-    this->pos = pos;
-}
-
-void DNABattleCell::set_width_height(float width, float height) {
-    this->width = width;
-    this->height = height;
-}
-
-void DNABattleCell::output(std::ostream &out) {
-    out << "Width: " << width << " Height: " << height << " Pos: " << pos[0] << " " << pos[1] << " " << pos[2];
-}
-
+////////////////////////////////////////////////////////////////////
+//     Function: DNABattleCell::traverse
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
 NodePath DNABattleCell::traverse(NodePath &parent, DNAStorage *store, int editing) {
-    return parent;
+  return parent;
 }
 
-void DNABattleCell::write(std::ostream &out, DNAStorage *store, int indent_level) {
-    indent(out, indent_level);
-    out << "battle_cell [ " << width << " " << height << " " << pos[0] << " " << pos[1] << " " << pos[2] << " ]" << std::endl;
+////////////////////////////////////////////////////////////////////
+//     Function: DNABattleCell::write
+//       Access: Public
+//  Description: Writes the group and all children to output
+////////////////////////////////////////////////////////////////////
+void DNABattleCell::write(std::ostream &out, DNAStorage *store, int indent_level) const {
+  indent(out, indent_level) << "battle_cell [ "
+                            << _width << " " << _height << " "
+                            << _pos[0] << " " << _pos[1] << " " << _pos[2]
+                            << " ]\n";
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNABattleCell::output
+//       Access: Public
+//  Description: Writes the cell properties to output
+////////////////////////////////////////////////////////////////////
+void DNABattleCell::output(std::ostream &out) const {
+  out << "Width: " << _width
+      << " Height: " << _height
+      << " Pos: " << _pos;
 }

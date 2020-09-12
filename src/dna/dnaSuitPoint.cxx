@@ -1,166 +1,82 @@
+// Filename: dnaSuitPoint.cxx
+// Created by:  shochet (28Jan01)
+//
+////////////////////////////////////////////////////////////////////
+
 #include "dnaSuitPoint.h"
 
+
+////////////////////////////////////////////////////////////////////
+// Static variables
+////////////////////////////////////////////////////////////////////
 TypeHandle DNASuitPoint::_type_handle;
 
-/**
- *
- */
+std::ostream &
+operator << (std::ostream &out, DNASuitPoint::DNASuitPointType type) {
+  switch (type) {
+  case DNASuitPoint::STREET_POINT:
+    return out << "STREET_POINT";
+
+  case DNASuitPoint::FRONT_DOOR_POINT:
+    return out << "FRONT_DOOR_POINT";
+
+  case DNASuitPoint::SIDE_DOOR_POINT:
+    return out << "SIDE_DOOR_POINT";
+
+  case DNASuitPoint::COGHQ_IN_POINT:
+    return out << "COGHQ_IN_POINT";
+
+  case DNASuitPoint::COGHQ_OUT_POINT:
+    return out << "COGHQ_OUT_POINT";
+  }
+
+  return out << "**invalid**";
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNASuitPoint::Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
 DNASuitPoint::DNASuitPoint(int index, DNASuitPointType type, LPoint3f pos, int lb_index) {
-    this->index = index;
-    this->type = type;
-    this->pos = pos;
-    this->lb_index = lb_index;
+  // The index gets set when the point is stored in the dnaStorage
+  _index = index;
+  _type = type;
+  _pos = pos;
+  _graph_id = 0;
+  _lb_index = lb_index;
 }
 
-/**
- *
- */
-DNASuitPoint::~DNASuitPoint() {
-
+////////////////////////////////////////////////////////////////////
+//     Function: DNASuitPoint::output
+//       Access: Public
+//  Description: Output all the properties to the stream
+////////////////////////////////////////////////////////////////////
+void DNASuitPoint::output(std::ostream &out) const {
+  out << "<" << _index << ", " << _type << ", " << _pos;
+  if (_lb_index >= 0) {
+    out << ", " << _lb_index;
+  }
+  out << ">";
 }
 
-/**
- *
- */
-int DNASuitPoint::get_graph_id() {
-    return graph_id;
-}
-
-/**
- *
- */
-int DNASuitPoint::get_index() {
-    return index;
-}
-
-/**
- *
- */
-int DNASuitPoint::get_landmark_building_index() {
-    return lb_index;
-}
-
-/**
- *
- */
-DNASuitPoint::DNASuitPointType DNASuitPoint::get_point_type() {
-    return type;
-}
-
-/**
- *
- */
-LPoint3f DNASuitPoint::get_pos() {
-    return pos;
-}
-
-/**
- * Returns true if this point is the sort of point you
- * find at the beginning or end of a suit path (like a
- * FRONT_DOOR_POINT or SIDE_DOOR_POINT), or false if it
- * is something you're more likely to find in the middle
- * of a suit path (like a STREET_POINT).
- */
-bool DNASuitPoint::is_terminal() {
-    return type - 1 <= 1;
-}
-
-/**
- * Output all the properties to the stream
- */
-void DNASuitPoint::output(std::ostream &out) {
-    out << "<" << index << ", ";
-    switch (type) {
-        case DNASuitPointType::STREET_POINT:
-          out << "STREET_POINT";
-          break;
-        case DNASuitPointType::FRONT_DOOR_POINT:
-          out << "FRONT_DOOR_POINT";
-          break;
-        case DNASuitPointType::SIDE_DOOR_POINT:
-          out << "SIDE_DOOR_POINT";
-          break;
-        case DNASuitPointType::COGHQ_IN_POINT:
-          out << "COGHQ_IN_POINT";
-          break;
-        case DNASuitPointType::COGHQ_OUT_POINT:
-          out << "COGHQ_OUT_POINT";
-          break;
-        default:
-          out << "**invalid**";
-          break;
-    }
-    out << ", " << pos[0] << " " << pos[1] << " " << pos[2];
-    if (lb_index >= 0) {
-        out << ", " << lb_index;
-    }
-    out << ">";
-}
-
-/**
- *
- */
-void DNASuitPoint::set_graph_id(int graph_id) {
-    this->graph_id = graph_id;
-}
-
-/**
- *
- */
-void DNASuitPoint::set_index(int index) {
-    this->index = index;
-}
-
-/**
- *
- */
-void DNASuitPoint::set_landmark_building_index(int lb_index) {
-    this->lb_index = lb_index;
-}
-
-/**
- *
- */
-void DNASuitPoint::set_point_type(DNASuitPointType type) {
-    this->type = type;
-}
-
-/**
- *
- */
-void DNASuitPoint::set_pos(const LPoint3f &pos) {
-    this->pos = pos;
-}
-
-/**
- * Write the suit point back out to the dna
- */
-void DNASuitPoint::write(std::ostream &out, int indent_level) {
-    indent(out, indent_level);
-    out << "store_suit_point [ " << index << ", ";
-    switch (type) {
-        case DNASuitPointType::STREET_POINT:
-          out << "STREET_POINT";
-          break;
-        case DNASuitPointType::FRONT_DOOR_POINT:
-          out << "FRONT_DOOR_POINT";
-          break;
-        case DNASuitPointType::SIDE_DOOR_POINT:
-          out << "SIDE_DOOR_POINT";
-          break;
-        case DNASuitPointType::COGHQ_IN_POINT:
-          out << "COGHQ_IN_POINT";
-          break;
-        case DNASuitPointType::COGHQ_OUT_POINT:
-          out << "COGHQ_OUT_POINT";
-          break;
-        default:
-          out << "**invalid**";
-          break;
-    }
-    out << ", " << pos[0] << " " << pos[1] << " " << pos[2];
-    if (lb_index >= 0) {
-        out << ", " << lb_index;
-    }
-    out << " ]" << std::endl;
+////////////////////////////////////////////////////////////////////
+//     Function: DNASuitPoint::write
+//       Access: Public
+//  Description: write the suit point back out to the dna
+////////////////////////////////////////////////////////////////////
+void DNASuitPoint::write(std::ostream &out, int indent_level) const {
+  if (_lb_index >= 0) {
+    indent(out, indent_level) << "store_suit_point [ "
+                              << _index << ", "
+                              << _type << ", "
+                              << _pos << ", "
+                              << _lb_index
+                              << " ]\n";
+  } else {
+    indent(out, indent_level) << "store_suit_point [ "
+                              << _index << ", "
+                              << _type << ", "
+                              << _pos << " ]\n";
+  }
 }

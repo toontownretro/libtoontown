@@ -1,172 +1,305 @@
+// Filename: dnaVisGroup.cxx
+// Created by:  shochet (24May00)
+//
+////////////////////////////////////////////////////////////////////
+
 #include "dnaVisGroup.h"
 #include "dnaStorage.h"
+#include "pandaNode.h"
+#include "pointerTo.h"
+#include "indent.h"
+#include "sceneGraphReducer.h"
 
+////////////////////////////////////////////////////////////////////
+// Static variables
+////////////////////////////////////////////////////////////////////
 TypeHandle DNAVisGroup::_type_handle;
 
-/**
- *
- */
-DNAVisGroup::DNAVisGroup(std::string initial_name) : DNAGroup(initial_name) {
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::Constructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNAVisGroup::DNAVisGroup(const std::string &initial_name) :
+  DNAGroup(initial_name)
+{
 
 }
 
-/**
- *
- */
-DNAVisGroup::~DNAVisGroup() {
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::CopyConstructor
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
+DNAVisGroup::DNAVisGroup(const DNAVisGroup &copy) :
+  DNAGroup(copy)
+{
+  pvector<std::string>::const_iterator i = copy._vis_vector.begin();
+  for(; i != copy._vis_vector.end(); ++i) {
+    // Push in a copy of the vis string
+    _vis_vector.push_back(*i);
+  }
 }
 
-/**
- *
- */
-void DNAVisGroup::add_battle_cell(PT(DNABattleCell) cell) {
-    battle_cells.push_back(cell);
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::add_visible
+//       Access: Public
+//  Description: Add a vis group name to this group's list
+////////////////////////////////////////////////////////////////////
+void DNAVisGroup::add_visible(const std::string &vis_group_name) {
+  _vis_vector.push_back(vis_group_name);
 }
 
-/**
- *
- */
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::remove_vis_group
+//       Access: Public
+//  Description: Remove a vis group name to this group's list
+////////////////////////////////////////////////////////////////////
+int DNAVisGroup::remove_visible(const std::string &vis_group_name) {
+  pvector<std::string>::iterator i = find(_vis_vector.begin(),
+                                    _vis_vector.end(),
+                                    vis_group_name);
+  if (i == _vis_vector.end()) {
+    dna_cat.warning()
+      << "DNAVisGroup: vis group not found in map: " << vis_group_name << std::endl;
+    return 0;
+  }
+
+  // Erase him out of our vector
+  _vis_vector.erase(i);
+  return 1;
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::get_num_visibles
+//       Access: Public
+//  Description: Ask how many visibles this vis group has
+////////////////////////////////////////////////////////////////////
+int DNAVisGroup::get_num_visibles() const {
+  return _vis_vector.size();
+}
+
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::get_visible_name
+//       Access: Public
+//  Description: Return the std::string name of the ith visible
+////////////////////////////////////////////////////////////////////
+std::string DNAVisGroup::get_visible_name(uint i) const {
+  nassertr(i < _vis_vector.size(), "");
+  return _vis_vector[i];
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::add_suit_edge
+//       Access: Public
+//  Description: Adds a suit edge to this vis group
+//               This is only stored here so we can write it back out
+////////////////////////////////////////////////////////////////////
 void DNAVisGroup::add_suit_edge(PT(DNASuitEdge) edge) {
-    if (edge->get_start_point() == edge->get_end_point()) {
-        return;
+  if (edge->get_start_point() == edge->get_end_point()) {
+    // Don't add degenerate edges.
+    return;
+  }
+
+  // Don't repeat edges either.
+  pvector< PT(DNASuitEdge) >::iterator i;
+  for (i = _suit_edge_vector.begin(); i != _suit_edge_vector.end(); ++i) {
+    if (*(*i) == *edge) {
+      return;
     }
-    suit_edges.push_back(edge);
+  }
+
+  _suit_edge_vector.push_back(edge);
 }
 
-/**
- *
- */
-void DNAVisGroup::add_visible(std::string &vis_group_name) {
-    visibles.push_back(vis_group_name);
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::remove_suit_edge
+//       Access: Public
+//  Description: Remove this suit edge
+////////////////////////////////////////////////////////////////////
+int DNAVisGroup::remove_suit_edge(PT(DNASuitEdge) edge) {
+  pvector< PT(DNASuitEdge) >::iterator i = find(_suit_edge_vector.begin(),
+                                    _suit_edge_vector.end(),
+                                    edge);
+  if (i == _suit_edge_vector.end()) {
+    dna_cat.debug()
+      << "DNASuitEdge: edge not found in vector: " << (*edge) << std::endl;
+    return 0;
+  }
+
+  // Erase him out of our vector
+  _suit_edge_vector.erase(i);
+  return 1;
 }
 
-/**
- *
- */
-PT(DNABattleCell) DNAVisGroup::get_battle_cell(unsigned int i) {
-    return battle_cells[i];
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::get_num_suit_edges
+//       Access: Public
+//  Description: Ask how many edges this vis group has
+////////////////////////////////////////////////////////////////////
+int DNAVisGroup::get_num_suit_edges() const {
+  return _suit_edge_vector.size();
 }
 
-/**
- *
- */
-size_t DNAVisGroup::get_num_battle_cells() {
-    return battle_cells.size();
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::get_suit_edge
+//       Access: Public
+//  Description: Return the ith edge in the vector
+////////////////////////////////////////////////////////////////////
+PT(DNASuitEdge) DNAVisGroup::get_suit_edge(uint i) const {
+  nassertr(i < _suit_edge_vector.size(), (DNASuitEdge *)NULL);
+  return _suit_edge_vector[i];
 }
 
-/**
- *
- */
-size_t DNAVisGroup::get_num_suit_edges() {
-    return suit_edges.size();
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::add_battle_cell
+//       Access: Public
+//  Description: Adds a battle_cell to this vis group
+//               This is only stored here so we can write it back out
+////////////////////////////////////////////////////////////////////
+void DNAVisGroup::add_battle_cell(PT(DNABattleCell) cell) {
+  _battle_cell_vector.push_back(cell);
 }
 
-/**
- *
- */
-size_t DNAVisGroup::get_num_visibles() {
-    return visibles.size();
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::remove_battle_cell
+//       Access: Public
+//  Description: Remove this battle cell
+////////////////////////////////////////////////////////////////////
+int DNAVisGroup::remove_battle_cell(PT(DNABattleCell) cell) {
+  pvector< PT(DNABattleCell) >::iterator i = find(_battle_cell_vector.begin(),
+                                                 _battle_cell_vector.end(),
+                                                 cell);
+  if (i == _battle_cell_vector.end()) {
+    dna_cat.warning()
+      << "DNABattleCell: cell not found in vector: " << (*cell) << std::endl;
+    return 0;
+  }
+
+  // Erase him out of our vector
+  _battle_cell_vector.erase(i);
+  return 1;
 }
 
-/**
- *
- */
-PT(DNASuitEdge) DNAVisGroup::get_suit_edge(unsigned int i) {
-    return suit_edges[i];
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::get_num_battle_cells
+//       Access: Public
+//  Description: Ask how many cells this vis group has
+////////////////////////////////////////////////////////////////////
+int DNAVisGroup::get_num_battle_cells() const {
+  return _battle_cell_vector.size();
 }
 
-/**
- *
- */
-std::string DNAVisGroup::get_visible_name(unsigned int i) {
-    return visibles[i];
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::get_battle_cell
+//       Access: Public
+//  Description: Return the ith cell in the vector
+////////////////////////////////////////////////////////////////////
+PT(DNABattleCell) DNAVisGroup::get_battle_cell(uint i) const {
+  nassertr(i < _battle_cell_vector.size(), (DNABattleCell *)NULL);
+  return _battle_cell_vector[i];
 }
 
-/**
- *
- */
-void DNAVisGroup::remove_battle_cell(PT(DNABattleCell) cell) {
-    for (pvector<PT(DNABattleCell)>::iterator it = battle_cells.begin(); it != battle_cells.end(); ++it) {
-        if (*it == cell) {
-            battle_cells.erase(it);
-            return;
-        }
-    }
-    dna_cat.warning() << "DNABattleCell: cell not found in vector: ";
-    cell->output(dna_cat.warning());
-    dna_cat.warning() << std::endl;
-}
 
-/**
- *
- */
-void DNAVisGroup::remove_suit_edge(PT(DNASuitEdge) edge) {
-    for (pvector<PT(DNASuitEdge)>::iterator it = suit_edges.begin(); it != suit_edges.end(); ++it) {
-        if (*it == edge) {
-            suit_edges.erase(it);
-            return;
-        }
-    }
-    // In libtoontown, .debug() and .spam() return a null Notify stream for both dna_cat and pets_cat.
-    // This means that this notify out has to be either of those options.
-    dna_cat.debug() << "DNASuitEdge: edge not found in vector: ";
-    edge->output(dna_cat.debug());
-    dna_cat.debug() << std::endl;
-}
-
-/**
- *
- */
-void DNAVisGroup::remove_visible(std::string &vis_group_name) {
-    for (pvector<std::string>::iterator it = visibles.begin(); it != visibles.end(); ++it) {
-        if (it->compare(vis_group_name) == 0) {
-            visibles.erase(it);
-            return;
-        }
-    }
-    dna_cat.warning() << "DNAVisGroup: vis group not found in vector: " << vis_group_name << std::endl;
-}
-
-/**
- *
- */
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::traverse
+//       Access: Public
+//  Description:
+////////////////////////////////////////////////////////////////////
 NodePath DNAVisGroup::traverse(NodePath &parent, DNAStorage *store, int editing) {
-    NodePath _np = parent.attach_new_node(name);
-    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
-        (*it)->traverse(_np, store, editing);
-    }
+  // Make a new node for this group
 
-    if (editing) {
-        PT(DNAGroup) PT_this = (DNAGroup*)this;
-        PT(PandaNode) store_node = _np.node();
-        store->store_DNAGroup(store_node, PT_this);
-    }
-    store->store_DNAVisGroup(_np.node(), this);
-    return _np;
+  PT(PandaNode) new_node = new PandaNode(get_name());
+  NodePath group_node_path = parent.attach_new_node(new_node);
+
+  // Traverse each node in our vector
+  pvector<PT(DNAGroup)>::iterator i = _group_vector.begin();
+  for(; i != _group_vector.end(); ++i) {
+    PT(DNAGroup) group = *i;
+    group->traverse(group_node_path, store, editing);
+  }
+
+  if (editing) {
+    // Remember that this nodepath is associated with this dnaVisGroup
+    store->store_DNAGroup(group_node_path.node(), this);
+
+  }
+
+  // For retrieving vis data, a separate map is maintained
+  // containing all the vis group info. Store us in that too
+  // Even if we are not editing, this needs to go in the dna vis group
+  // map so it can be extracted for visibility information
+  store->store_DNAVisGroup(group_node_path.node(), this);
+
+  return group_node_path;
 }
 
-/**
- *
- */
-void DNAVisGroup::write(std::ostream &out, DNAStorage *store, int indent_level) {
-    indent(out, indent_level);
-    out << "visgroup \"" << name << "\" [" << std::endl;
-    indent(out, indent_level + 1);
-    out << "vis [ ";
-    for (pvector<std::string>::iterator it = visibles.begin(); it != visibles.end(); ++it) {
-        out << "\"" << *it << "\" ";
-    }
-    out << "]" << std::endl;
-    for (pvector<PT(DNASuitEdge)>::iterator it = suit_edges.begin(); it != suit_edges.end(); ++it) {
-        (*it)->write(out, store, indent_level + 1);
-    }
-    for (pvector<PT(DNABattleCell)>::iterator it = battle_cells.begin(); it != battle_cells.end(); ++it) {
-        (*it)->write(out, store, indent_level + 1);
-    }
-    for (pvector<PT(DNAGroup)>::iterator it = children.begin(); it != children.end(); ++it) {
-        (*it)->write(out, store, indent_level + 1);
-    }
-    indent(out, indent_level);
-    out << "]" << std::endl;
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::write
+//       Access: Public
+//  Description: Writes the group and all children to output
+////////////////////////////////////////////////////////////////////
+void DNAVisGroup::write(std::ostream &out, DNAStorage *store, int indent_level) const {
+  indent(out, indent_level) << "visgroup ";
+  out << '"' << get_name() << '"' << " [\n";
+
+  // Write the vis info
+  indent(out, indent_level + 1) << "vis [ ";
+  pvector<std::string>::const_iterator i = _vis_vector.begin();
+  for(; i != _vis_vector.end(); ++i) {
+    // Traverse each vis std::string in our vis vector
+    indent(out, indent_level + 1) << '"' << (*i) << '"' << " ";
+  }
+  indent(out, indent_level + 1) << "]\n";
+
+  // Write the suit edges
+  pvector<PT(DNASuitEdge)>::const_iterator e = _suit_edge_vector.begin();
+  for(; e != _suit_edge_vector.end(); ++e) {
+    PT(DNASuitEdge) edge = *e;
+    edge->write(out, store, indent_level + 1);
+  }
+
+  // Write the battle cells
+  pvector<PT(DNABattleCell)>::const_iterator c = _battle_cell_vector.begin();
+  for(; c != _battle_cell_vector.end(); ++c) {
+    PT(DNABattleCell) cell = *c;
+    cell->write(out, store, indent_level + 1);
+  }
+
+  // Write all the children
+  pvector<PT(DNAGroup)>::const_iterator j = _group_vector.begin();
+  for(; j != _group_vector.end(); ++j) {
+    // Traverse each node in our vector
+    PT(DNAGroup) group = *j;
+    group->write(out, store, indent_level + 1);
+  }
+
+  indent(out, indent_level) << "]\n";
+
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::make_copy
+//       Access: Public
+//  Description: Copies all the children into our own vector
+////////////////////////////////////////////////////////////////////
+DNAGroup* DNAVisGroup::make_copy() {
+  return new DNAVisGroup(*this);
 }

@@ -43,33 +43,42 @@ set(DNALOADER_FILES
     src/dna/config_dna.h
     src/dna/dnaAnimProp.cxx
     src/dna/dnaAnimProp.h
+    src/dna/dnaAnimProp.I
     src/dna/dnaBattleCell.cxx
     src/dna/dnaBattleCell.h
+    src/dna/dnaBattleCell.I
+    src/dna/dnaBuildings.cxx
+    src/dna/dnaBuildings.h
+    src/dna/dnaBuildings.I
     src/dna/dnaDoor.cxx
     src/dna/dnaDoor.h
-    src/dna/dnaFlatDoor.cxx
-    src/dna/dnaFlatDoor.h
     src/dna/dnaGroup.cxx
     src/dna/dnaGroup.h
     src/dna/dnaGroup.I
     src/dna/dnaInteractiveProp.cxx
     src/dna/dnaInteractiveProp.h
-    src/dna/dnaLandmarkBuilding.cxx
-    src/dna/dnaLandmarkBuilding.h
+    src/dna/dnaInteractiveProp.I
     src/dna/dnaNode.cxx
     src/dna/dnaNode.h
+    src/dna/dnaNode.I
     src/dna/dnaProp.cxx
     src/dna/dnaProp.h
+    src/dna/dnaProp.I
     src/dna/dnaStorage.cxx
     src/dna/dnaStorage.h
+    src/dna/dnaStorage.I
     src/dna/dnaStreet.cxx
     src/dna/dnaStreet.h
+    src/dna/dnaStreet.I
     src/dna/dnaSuitEdge.cxx
     src/dna/dnaSuitEdge.h
+    src/dna/dnaSuitEdge.I
     src/dna/dnaSuitPath.cxx
     src/dna/dnaSuitPath.h
+    src/dna/dnaSuitPath.I
     src/dna/dnaSuitPoint.cxx
     src/dna/dnaSuitPoint.h
+    src/dna/dnaSuitPoint.I
     src/dna/dnaVisGroup.cxx
     src/dna/dnaVisGroup.h
     src/dna/loaderFileTypeDNA.cxx

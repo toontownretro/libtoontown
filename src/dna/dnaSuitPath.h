@@ -1,29 +1,64 @@
+// Filename: dnaSuitPath.h
+// Created by:  shochet (28Jan01)
+//
+////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include "dnabase.h"
+//#include "toontownbase.h"
+#include "config_dna.h"
+#include "typedObject.h"
+#include "pointerTo.h"
+#include "typedReferenceCount.h"
+#include "pvector.h"
+#include <algorithm>
+#include "vector_int.h"
 
-#include <luse.h>
-#include <typedReferenceCount.h>
-#include <vector_int.h>
-
+////////////////////////////////////////////////////////////////////
+//       Class : DNASuitPath
+// Description :
+////////////////////////////////////////////////////////////////////
 class EXPCL_TOONTOWN DNASuitPath : public TypedReferenceCount {
-    PUBLISHED:
-        DNASuitPath();
-        DNASuitPath(int reserve_length);
-        DNASuitPath(const DNASuitPath &path);
-        ~DNASuitPath();
 
-        void copy(const DNASuitPath &path);
-        int get_num_points();
-        int get_point_index(int i);
-        void output(std::ostream &out);
+PUBLISHED:
+  DNASuitPath();
+  DNASuitPath(int reserve_length);
+  DNASuitPath(const DNASuitPath &path);
+  INLINE int get_num_points() const;
+  void copy(const DNASuitPath &path);
+  INLINE int get_point_index(int i) const;
+  void output(std::ostream &out) const;
 
-    public:
-        void add_point(int point);
-        void reverse_path();
+public:
+  INLINE void add_point(int index);
+  INLINE void reverse_path();
 
-    private:
-        vector_int points;
+private:
+  vector_int _path;
 
-    TYPE_HANDLE(DNASuitPath, TypedReferenceCount);
+public:
+  static TypeHandle get_class_type() {
+    return _type_handle;
+  }
+  static void init_type() {
+    TypedReferenceCount::init_type();
+    register_type(_type_handle, "DNASuitPath",
+                  TypedReferenceCount::get_class_type()
+                  );
+  }
+  virtual TypeHandle get_type() const {
+    return get_class_type();
+  }
+  virtual TypeHandle force_init_type() {init_type(); return get_class_type();}
+
+private:
+  static TypeHandle _type_handle;
 };
+
+
+INLINE std::ostream &operator << (std::ostream &out, const DNASuitPath &path) {
+  path.output(out);
+  return out;
+}
+
+#include "dnaSuitPath.I"
