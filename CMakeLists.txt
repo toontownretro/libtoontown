@@ -54,6 +54,8 @@ set(DNALOADER_FILES
     src/dna/dnaBuildings.h
     src/dna/dnaBuildings.I
     src/dna/dnaConstants.h
+    src/dna/dnaCornice.cxx
+    src/dna/dnaCornice.h
     src/dna/dnaDoor.cxx
     src/dna/dnaDoor.h
     src/dna/dnaGroup.cxx
@@ -97,6 +99,11 @@ set(DNALOADER_FILES
     src/dna/dnaSuitPoint.I
     src/dna/dnaVisGroup.cxx
     src/dna/dnaVisGroup.h
+    src/dna/dnaWindow.cxx
+    src/dna/dnaWindow.h
+    src/dna/dnaWindow.I
+    src/dna/load_dna_file.cxx
+    src/dna/load_dna_file.h
     src/dna/loaderFileTypeDNA.cxx
     src/dna/loaderFileTypeDNA.h
 )

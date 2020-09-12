@@ -1,24 +1,48 @@
+// Filename: loaderFileTypeDNA.h
+// Created by:  drose (28Aug00)
+//
+////////////////////////////////////////////////////////////////////
+
 #pragma once
 
 #include "dnabase.h"
+//#include "toontownbase.h"
 
 #include "loaderFileType.h"
 
 class DNAStorage;
 
+////////////////////////////////////////////////////////////////////
+//       Class : LoaderFileTypeDNA
+// Description : This defines the Loader interface to read DNA files.
+////////////////////////////////////////////////////////////////////
 class EXPCL_TOONTOWN LoaderFileTypeDNA : public LoaderFileType {
-    public:
-        LoaderFileTypeDNA();
-        virtual ~LoaderFileTypeDNA();
+public:
+  LoaderFileTypeDNA();
 
-        virtual std::string get_name() const;
-        virtual std::string get_extension() const;
+  virtual std::string get_name() const;
+  virtual std::string get_extension() const;
 
-        virtual PT(PandaNode) load_file(const Filename &path, const LoaderOptions &options, BamCacheRecord *record) const;
+  virtual void resolve_filename(Filename &path) const;
+  virtual PT(PandaNode) load_file(const Filename &path, const LoaderOptions &options,
+                                  BamCacheRecord *record) const;
 
-        virtual void resolve_filename(Filename &filename) const;
+  static DNAStorage *_dna_store;
 
-        static DNAStorage *_dna_store;
+public:
+  static TypeHandle get_class_type() {
+    return _type_handle;
+  }
+  static void init_type() {
+    LoaderFileType::init_type();
+    register_type(_type_handle, "LoaderFileTypeDNA",
+                  LoaderFileType::get_class_type());
+  }
+  virtual TypeHandle get_type() const {
+    return get_class_type();
+  }
+  virtual TypeHandle force_init_type() {init_type(); return get_class_type();}
 
-    TYPE_HANDLE(LoaderFileTypeDNA, LoaderFileType);
+private:
+  static TypeHandle _type_handle;
 };
