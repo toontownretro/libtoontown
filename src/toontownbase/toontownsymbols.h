@@ -19,6 +19,12 @@
 #define temp_hpr_fix true
 #endif
 
+// These are removed legacy functions in more recent versions of Panda3d. However our DNA system supports old HPR when possible, So we need these.
+#ifndef new_to_old_hpr
+void compose_matrix_new_hpr(FLOATNAME(LMatrix3) &mat, const FLOATNAME(LVecBase3) &scale, const FLOATNAME(LVecBase3) &shear, const FLOATNAME(LVecBase3) &hpr, CoordinateSystem cs = CS_default);
+FLOATNAME(LVecBase3) new_to_old_hpr(const FLOATNAME(LVecBase3) &new_hpr);
+#endif
+
 #if PANDA_NUMERIC_VERSION >= 1008000
 #define Colorf LColorf
 #endif

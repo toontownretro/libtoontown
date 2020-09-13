@@ -114,12 +114,14 @@ set(DNALOADER_FILES
     src/dna/loaderFileTypeDNA.cxx
     src/dna/loaderFileTypeDNA.h
     src/dna/parser.cxx
-    src/dna/parser.hxx
+    src/dna/parser.h
+    src/dna/parserDefs.h
 )
     
 set(TOONTOWNBASE_FILES
     src/toontownbase/toontownbase.cxx
     src/toontownbase/toontownbase.h
+    src/toontownbase/toontownsymbols.cxx
     src/toontownbase/toontownsymbols.h
 )
 
@@ -151,6 +153,7 @@ if(MSVC)
     set(LIBPFX "lib")
     add_definitions(/wd4275)
     add_definitions(/DYY_NO_UNISTD_H)
+    add_definitions(/DYYERROR_VERBOSE)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")

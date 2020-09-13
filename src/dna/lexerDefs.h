@@ -28,4 +28,3 @@ int dnayylex();
 #define YY_NEVER_INTERACTIVE 1
 
 #endif
-

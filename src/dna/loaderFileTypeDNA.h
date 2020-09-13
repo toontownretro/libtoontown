@@ -5,8 +5,7 @@
 
 #pragma once
 
-#include "dnabase.h"
-//#include "toontownbase.h"
+#include "toontownbase.h"
 
 #include "loaderFileType.h"
 

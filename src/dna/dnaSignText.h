@@ -4,7 +4,7 @@
 ////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "dnabase.h"
+#include "toontownbase.h"
 
 #include "dnaNode.h"
 #include "dnaBuildings.h"
