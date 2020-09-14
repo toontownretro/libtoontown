@@ -26,15 +26,18 @@ if(PYTHON_VERSION_MAJOR EQUAL 2)
 else()
     set(PYTHON2_EXECUTABLE python2)
 endif()
+                    
 
 ### Panda3D dir ###
 if(APPLE)
     SET(PANDA_DIR "/Developer/Panda3D" CACHE STRING "Panda3D directory.")
+    SET(LIBOTP_DIR "/Developer/libotp" CACHE STRING "libotp directory.")
 endif()
 if(WIN32)
     SET(PANDA_DIR "C:/Panda3D-1.11.0-x64-astron" CACHE STRING "Panda3D directory.")
+    SET(LIBOTP_DIR "C:/libotp" CACHE STRING "libotp directory.")
 endif()
-execute_process(COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}")
+execute_process(COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src")
 
 ### Define core components ###
 set(DNALOADER_FILES
@@ -117,12 +120,26 @@ set(DNALOADER_FILES
     src/dna/parser.h
     src/dna/parserDefs.h
 )
-    
-set(TOONTOWNBASE_FILES
-    src/toontownbase/toontownbase.cxx
-    src/toontownbase/toontownbase.h
-    src/toontownbase/toontownsymbols.cxx
-    src/toontownbase/toontownsymbols.h
+
+set(PET_FILES
+    src/pets/config_pets.cxx
+    src/pets/config_pets.h
+    src/pets/cPetBrain.cxx
+    src/pets/cPetBrain.h
+    src/pets/cPetChase.cxx
+    src/pets/cPetChase.h
+    src/pets/cPetChase.I
+    src/pets/cPetFlee.cxx
+    src/pets/cPetFlee.h
+    src/pets/cPetFlee.I
+)
+
+set(SETTINGS_FILES
+    src/settings/serialization.h
+    src/settings/serialization.I
+    src/settings/settingsFile.cxx
+    src/settings/settingsFile.h
+    src/settings/settingsFile.I
 )
 
 set(SUIT_FILES
@@ -133,19 +150,33 @@ set(SUIT_FILES
     src/suit/suitLegList.h
     src/suit/suitLegList.I
 )
+    
+set(TOONTOWNBASE_FILES
+    src/toontownbase/toontownbase.cxx
+    src/toontownbase/toontownbase.h
+    src/toontownbase/toontownsymbols.cxx
+    src/toontownbase/toontownsymbols.h
+)
 
 set(IGATE_FILES
     src/dnaLoader_igate.cxx
+    src/pets_igate.cxx
     src/suit_igate.cxx
+    src/settings_igate.cxx
     src/libtoontown_module.cxx
 )
 
 include_directories(src/dna)
+include_directories(src/pets)
+include_directories(src/settings)
 include_directories(src/suit)
 include_directories(src/toontownbase)
 include_directories(${PANDA_DIR}/include)
+include_directories(${LIBOTP_DIR}/src/movement)
+include_directories(${LIBOTP_DIR}/src/otpbase)
 include_directories(${Python_INCLUDE_DIRS})
 include_directories(/usr/include/eigen3)
+link_directories(${LIBOTP_DIR}/build/)
 link_directories(${PANDA_DIR}/lib)
 
 set(LIBPFX "")
@@ -209,32 +240,36 @@ if(NOT BUILD_STATIC_LIB)
     else()
         message(STATUS "libp3pandatoolbase not found")
     endif()
-
+    
     if(WIN32)
         add_library(libtoontown SHARED
             ${DNALOADER_FILES}
             ${SUIT_FILES}
+            ${PET_FILES}
+            ${SETTINGS_FILES}
             ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
         SET_TARGET_PROPERTIES(libtoontown PROPERTIES SUFFIX ".pyd")
-        target_link_libraries(libtoontown ${PANDA_LIBS} ${Python_LIBRARIES})
+        target_link_libraries(libtoontown libotp ${PANDA_LIBS} ${Python_LIBRARIES})
         add_custom_command(TARGET libtoontown
                            PRE_BUILD
-                           COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}"
+                           COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src"
                            COMMENT "Interrogate")
 
     else()
         add_library(toontown MODULE
             ${DNALOADER_FILES}
             ${SUIT_FILES}
+            ${PET_FILES}
+            ${SETTINGS_FILES}
             ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
-        target_link_libraries(toontown ${PANDA_LIBS} ${Python_LIBRARIES})
+        target_link_libraries(toontown otp ${PANDA_LIBS} ${Python_LIBRARIES})
         add_custom_command(TARGET toontown
                            PRE_BUILD
-                           COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}"
+                           COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src"
                            COMMENT "Interrogate")
     endif()
 
@@ -244,24 +279,28 @@ else()
         add_library(libtoontown STATIC
             ${DNALOADER_FILES}
             ${SUIT_FILES}
+            ${PET_FILES}
+            ${SETTINGS_FILES}
             ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
         add_custom_command(TARGET libtoontown
                            PRE_BUILD
-                           COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}"
+                           COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src"
                            COMMENT "Interrogate")
 
     else()
         add_library(toontown STATIC
             ${DNALOADER_FILES}
             ${SUIT_FILES}
+            ${PET_FILES}
+            ${SETTINGS_FILES}
             ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
         add_custom_command(TARGET toontown
                            PRE_BUILD
-                           COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}"
+                           COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src"
                            COMMENT "Interrogate")
     endif()
 
@@ -269,6 +308,8 @@ endif()
 
 ### Setup source groups and defines for configurables ###
 source_group("dnaLoader" FILES ${DNALOADER_FILES})
+source_group("pets" FILES ${PET_FILES})
+source_group("settings" FILES ${SETTINGS_FILES})
 source_group("suit" FILES ${SUIT_FILES})
 source_group("toontownbase" FILES ${TOONTOWNBASE_FILES})
 source_group("interrogate_files" FILES ${IGATE_FILES})

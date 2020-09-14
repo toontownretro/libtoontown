@@ -21,7 +21,7 @@ def interrogate(module):
     print('Interrogating', module)
     cmd = os.path.join(pandadir, 'bin', 'interrogate')
     cmd += ' -D__inline -DCPPPARSER -DP3_INTERROGATE=1 -D__cplusplus -fnames -string -refcount -assert'
-    cmd += ' -S"%(pandadir)s/include/parser-inc" -S"%(pandadir)s/include" -I"%(pandadir)s/include" -I"%(srcdir)s/suit" -I"%(srcdir)s/dna"'
+    cmd += ' -S"%(pandadir)s/include/parser-inc" -S"%(pandadir)s/include" -I"%(pandadir)s/include" -I"%(srcdir)s/suit" -I"%(srcdir)s/settings" -I"%(srcdir)s/pets" -I"%(srcdir)s/dna"'
     cmd += ' -I"%(srcdir)s/toontownbase"'
     if module == 'dnaLoader':
         cmd += ' -srcdir "%(srcdir)s/dna"'
@@ -45,10 +45,10 @@ def interrogate(module):
     
     run_command(cmd)
 
-for module in ('suit', 'dnaLoader'):
+for module in ('dnaLoader', 'pets', 'settings', 'suit'):
     interrogate(module)
 
 os.chdir(srcdir)
 cmd = os.path.join(pandadir, 'bin', 'interrogate_module') + ' -python-native -oc libtoontown_module.cxx'
-cmd += ' -library libtoontown -module libtoontown libsuit.in libdnaLoader.in'
+cmd += ' -library libtoontown -module libtoontown libsuit.in libsettings.in libpets.in libdnaLoader.in'
 run_command(cmd)
