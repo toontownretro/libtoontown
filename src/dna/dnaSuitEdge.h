@@ -34,6 +34,7 @@ PUBLISHED:
   void output(std::ostream &out) const;
 
   virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
+  INLINE virtual void write(Datagram &datagram, DNAStorage *store) const;
 
 private:
   PT(DNASuitPoint) _start_point;

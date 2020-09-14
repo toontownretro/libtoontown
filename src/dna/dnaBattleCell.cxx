@@ -43,6 +43,19 @@ void DNABattleCell::write(std::ostream &out, DNAStorage *store, int indent_level
                             << " ]\n";
 }
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNABattleCell::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_stdfloat(_width);
+    datagram.add_stdfloat(_height);
+    datagram.add_stdfloat(_pos.get_x());
+    datagram.add_stdfloat(_pos.get_y());
+    datagram.add_stdfloat(_pos.get_z());
+}
+
 
 ////////////////////////////////////////////////////////////////////
 //     Function: DNABattleCell::output

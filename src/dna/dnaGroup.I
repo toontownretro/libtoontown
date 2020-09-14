@@ -11,8 +11,7 @@
 //  Description: Return the nth group in the vector
 ////////////////////////////////////////////////////////////////////
 INLINE PT(DNAGroup) DNAGroup::at(uint index) {
-  //nassertr(index < _group_vector.size(), (PT(DNAGroup))NULL);
-  nassertd(index < _group_vector.size())
+  nassertr(index < _group_vector.size(), (DNAGroup *)NULL);
   return _group_vector[index];
 }
 

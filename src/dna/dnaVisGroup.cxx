@@ -292,7 +292,81 @@ void DNAVisGroup::write(std::ostream &out, DNAStorage *store, int indent_level) 
   }
 
   indent(out, indent_level) << "]\n";
+}
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNAVisGroup::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_uint8(TYPECODE_DNAVISGROUP);
+    datagram.add_string(get_name());
+
+    // Write the vis info
+    datagram.add_uint32(_vis_vector.size());
+    pvector<std::string>::const_iterator i = _vis_vector.begin();
+    for(; i != _vis_vector.end(); ++i) {
+        datagram.add_string(*i);
+    }
+    
+    // Write the suit edges
+    datagram.add_uint32(_suit_edge_vector.size());
+    pvector<PT(DNASuitEdge)>::const_iterator e = _suit_edge_vector.begin();
+    for(; e != _suit_edge_vector.end(); ++e) {
+        PT(DNASuitEdge) edge = *e;
+        edge->write(datagram, store);
+    }
+
+    // Write the battle cells
+    datagram.add_uint32(_battle_cell_vector.size());
+    pvector<PT(DNABattleCell)>::const_iterator c = _battle_cell_vector.begin();
+    for(; c != _battle_cell_vector.end(); ++c) {
+        PT(DNABattleCell) cell = *c;
+        cell->write(datagram, store);
+    }
+
+    // Write all the children
+    pvector<PT(DNAGroup)>::const_iterator j = _group_vector.begin();
+    for(; j != _group_vector.end(); ++j) {
+        // Traverse each node in our vector
+        PT(DNAGroup) group = *j;
+        group->write(datagram, store);
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAVisGroup::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNAVisGroup::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    set_name(dgi.get_string());
+    
+    // Get all of our visibles.
+    uint32_t visible_count = dgi.get_uint32();
+    for(size_t i = 0; i < visible_count; ++i) {
+        add_visible(dgi.get_string());
+    }
+    
+    // Get all of our suit edges.
+    uint32_t suit_edge_count = dgi.get_uint32();
+    for(size_t i = 0; i < suit_edge_count; ++i) {
+        int _start_index = dgi.get_int32();
+        int _end_index = dgi.get_int32();
+        add_suit_edge(store->store_suit_edge(_start_index, _end_index, get_name()));
+    }
+    
+    // Get all of our battle cells.
+    uint32_t battle_cell_count = dgi.get_uint32();
+    for(size_t i = 0; i < battle_cell_count; ++i) {
+        float width = dgi.get_stdfloat();
+        float height = dgi.get_stdfloat();
+        LPoint3f pos(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat());
+        PT(DNABattleCell) cell = new DNABattleCell(width, height, pos);
+        add_battle_cell(cell);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////

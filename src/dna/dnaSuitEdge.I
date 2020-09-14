@@ -24,3 +24,13 @@ INLINE std::string DNASuitEdge::get_zone_id() const {
 INLINE void DNASuitEdge::set_zone_id(std::string zone_id) {
   _zone_id = zone_id;
 }
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNASuitEdge::write
+//       Access: Public
+//  Description: Writes the edge and properties to the Datagram.
+////////////////////////////////////////////////////////////////////
+INLINE void DNASuitEdge::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_int32(_start_point->get_index());
+    datagram.add_int32(_end_point->get_index());
+}
