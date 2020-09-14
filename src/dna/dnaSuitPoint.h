@@ -4,8 +4,8 @@
 ////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "dnabase.h"
-//#include "toontownbase.h"
+#include "toontownbase.h"
+#include "dnaConstants.h"
 
 #include "config_dna.h"
 #include "typedObject.h"
@@ -45,6 +45,8 @@ PUBLISHED:
   void output(std::ostream &out) const;
 
   virtual void write(std::ostream &out, int indent_level = 0) const;
+  virtual void write(Datagram &datagram) const;
+  virtual void make_from_dgi(DatagramIterator &dgi);
 
 private:
   int _index;

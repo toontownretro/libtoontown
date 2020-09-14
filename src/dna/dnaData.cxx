@@ -227,6 +227,30 @@ write(std::ostream &out, DNAStorage *store, int indent_level) const {
   out << std::flush;
 }
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNAData::write
+//       Access: Public, Virtual
+//  Description: Writes the dna data out to the indicated Datagram.
+////////////////////////////////////////////////////////////////////
+void DNAData::
+write(Datagram &datagram, DNAStorage *store) const {
+  // Write out anything the store wants to write
+  store->fixup();
+  //store->write(datagram);
+  
+  datagram.add_bool(datagram.get_stdfloat_double());
+
+  // Do not write out this group, just the children
+  // DNAGroup::write(out, store, indent_level);
+  // Write all the children
+  pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+  for(; i != _group_vector.end(); ++i) {
+    // Traverse each node in our vector
+    PT(DNAGroup) group = *i;
+    group->write(datagram, store);
+  }
+}
+
 
 ////////////////////////////////////////////////////////////////////
 //     Function: DNAData::make_copy

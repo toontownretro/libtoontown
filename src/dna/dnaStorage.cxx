@@ -1860,6 +1860,20 @@ void DNAStorage::write(std::ostream &out, int indent_level) const {
 }
 
 ////////////////////////////////////////////////////////////////////
+//     Function: write
+//       Access: Public
+//  Description: Write out to the datagram whatever the storage
+//               feels it needs to. For instance, the suit points.
+////////////////////////////////////////////////////////////////////
+void DNAStorage::write(Datagram &datagram) const {
+  for(SuitPointVector::const_iterator i = _suit_point_vector.begin();
+      i != _suit_point_vector.end();
+      ++i) {
+    (*i)->write(datagram);
+  }
+}
+
+////////////////////////////////////////////////////////////////////
 //     Function: DNAStorage::WorkingSuitPath::get_path
 //       Access: Public
 //  Description: Converts the temporary WorkingSuitPath construct to a

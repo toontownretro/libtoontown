@@ -162,6 +162,34 @@ void DNAGroup::write(std::ostream &out, DNAStorage *store, int indent_level) con
 
 }
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNAGroup::write(Datagram &datagram, DNAStorage *store) const {
+  datagram.add_uint8(TYPECODE_DNAGROUP);
+  datagram.add_string(get_name());
+  
+  // Write all the children
+  pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+  for(; i != _group_vector.end(); ++i) {
+    // Traverse each node in our vector
+    PT(DNAGroup) group = *i;
+    group->write(datagram, store);
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAGroup::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNAGroup::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    set_name(dgi.get_string());
+}
+
 
 ////////////////////////////////////////////////////////////////////
 //     Function: DNAGroup::ls

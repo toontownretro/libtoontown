@@ -9,13 +9,18 @@
 // Includes
 ////////////////////////////////////////////////////////////////////
 #include "toontownbase.h"
-#include "typedObject.h"
-#include "namable.h"
-#include "nodePath.h"
-#include "pvector.h"
+#include "dnaConstants.h"
+
+#include <typedObject.h>
+#include <namable.h>
+#include <nodePath.h>
+#include <pvector.h>
+#include <pointerTo.h>
+#include <typedReferenceCount.h>
+#include <datagram.h>
+#include <datagramIterator.h>
+
 #include <string>
-#include "pointerTo.h"
-#include "typedReferenceCount.h"
 
 class DNAStorage;
 
@@ -39,6 +44,8 @@ class EXPCL_TOONTOWN DNAGroup : public TypedReferenceCount, public Namable {
         INLINE PT(DNAGroup) get_parent() const;
 
         virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
+        virtual void write(Datagram &datagram, DNAStorage *store) const;
+        virtual void make_from_dgi(DatagramIterator &dgi, DNAStorage *store);
 
         void ls() const;
 

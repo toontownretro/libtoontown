@@ -53,6 +53,7 @@ PUBLISHED:
   INLINE DNAStorage *get_dna_storage();
 
   virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
+  virtual void write(Datagram &datagram, DNAStorage *store) const;
 
 private:
   virtual DNAGroup* make_copy();

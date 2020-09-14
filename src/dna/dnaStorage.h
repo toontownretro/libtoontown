@@ -212,6 +212,7 @@ PUBLISHED:
 
   void fixup();
   void write(std::ostream &out, int indent_level) const;
+  void write(Datagram &datagram) const;
 
 public:
 

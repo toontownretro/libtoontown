@@ -80,3 +80,40 @@ void DNASuitPoint::write(std::ostream &out, int indent_level) const {
                               << _pos << " ]\n";
   }
 }
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNASuitPoint::write
+//       Access: Public
+//  Description: write the suit point back out to the dna
+////////////////////////////////////////////////////////////////////
+void DNASuitPoint::write(Datagram &datagram) const {
+    datagram.add_uint8(TYPECODE_DNASUITPOINT);
+    datagram.add_uint8(_type);
+    datagram.add_bool(_lb_index >= 0);
+    if (_lb_index >= 0) {
+        datagram.add_int32(_lb_index);
+    }
+    datagram.add_int32(_index);
+    datagram.add_int32(_graph_id);
+    datagram.add_stdfloat(_pos.get_x());
+    datagram.add_stdfloat(_pos.get_y());
+    datagram.add_stdfloat(_pos.get_z());
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNASuitPoint::make_from_dgi
+//       Access: Public
+//  Description: Sets up the suit point from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNASuitPoint::make_from_dgi(DatagramIterator &dgi) {
+    _type = (DNASuitPointType)dgi.get_uint8();
+    bool has_lb_index = dgi.get_bool();
+    if (has_lb_index) {
+        _lb_index = dgi.get_int32();
+    }
+    _index = dgi.get_int32();
+    _graph_id = dgi.get_int32();
+    _pos.set_x(dgi.get_stdfloat());
+    _pos.set_y(dgi.get_stdfloat());
+    _pos.set_z(dgi.get_stdfloat());
+}
