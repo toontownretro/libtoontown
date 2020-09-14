@@ -184,7 +184,7 @@ if(MSVC)
     set(LIBPFX "lib")
     add_definitions(/wd4275)
     add_definitions(/DYY_NO_UNISTD_H)
-    add_definitions(/DYYERROR_VERBOSE)
+    #add_definitions(/DYYERROR_VERBOSE)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -203,8 +203,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_definitions(-std=c++11) # Enable the new C++ standard
     add_definitions(-Wno-ignored-attributes -Wno-deprecated-declarations)
 endif()
-
-add_definitions(-DBUILDING_TOONTOWN)
 
 if(NOT BUILD_STATIC_LIB)
     set(PANDA_LIBS
@@ -252,10 +250,15 @@ if(NOT BUILD_STATIC_LIB)
         )
         SET_TARGET_PROPERTIES(libtoontown PROPERTIES SUFFIX ".pyd")
         target_link_libraries(libtoontown libotp ${PANDA_LIBS} ${Python_LIBRARIES})
+        target_compile_definitions(libtoontown PRIVATE -DBUILDING_TOONTOWN)
         add_custom_command(TARGET libtoontown
                            PRE_BUILD
                            COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src"
                            COMMENT "Interrogate")
+        
+        add_executable(dnaTrans src/dnaprogs/dnaTrans.cxx)
+        target_link_directories(dnaTrans PUBLIC ${CMAKE_BINARY_DIR})
+        target_link_libraries(dnaTrans libtoontown ${PANDA_LIBS} ${Python_LIBRARIES})
 
     else()
         add_library(toontown MODULE
@@ -267,6 +270,7 @@ if(NOT BUILD_STATIC_LIB)
             ${IGATE_FILES}
         )
         target_link_libraries(toontown otp ${PANDA_LIBS} ${Python_LIBRARIES})
+        target_compile_definitions(libtoontown PRIVATE -DBUILDING_TOONTOWN)
         add_custom_command(TARGET toontown
                            PRE_BUILD
                            COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src"
@@ -284,10 +288,15 @@ else()
             ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
+        target_compile_definitions(libtoontown PRIVATE -DBUILDING_TOONTOWN)
         add_custom_command(TARGET libtoontown
                            PRE_BUILD
                            COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src"
                            COMMENT "Interrogate")
+                           
+        add_executable(dnaTrans src/dnaprogs/dnaTrans.cxx)
+        target_link_directories(dnaTrans PUBLIC ${CMAKE_BINARY_DIR})
+        target_link_libraries(dnaTrans libtoontown ${PANDA_LIBS} ${Python_LIBRARIES})
 
     else()
         add_library(toontown STATIC
@@ -298,6 +307,7 @@ else()
             ${TOONTOWNBASE_FILES}
             ${IGATE_FILES}
         )
+        target_compile_definitions(libtoontown PRIVATE -DBUILDING_TOONTOWN)
         add_custom_command(TARGET toontown
                            PRE_BUILD
                            COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src"

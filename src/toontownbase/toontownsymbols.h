@@ -16,7 +16,7 @@
 #include <string_utils.h>
 
 #ifndef temp_hpr_fix
-#define temp_hpr_fix true
+static bool temp_hpr_fix = true;
 #endif
 
 // These are removed legacy functions in more recent versions of Panda3d. However our DNA system supports old HPR when possible, So we need these.

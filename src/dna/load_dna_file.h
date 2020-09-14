@@ -35,6 +35,6 @@ EXPCL_TOONTOWN PT(PandaNode) load_DNA_file(DNAStorage *dna_store, const std::str
 //               Returns the DNAData object on success, or NULL if the
 //               file cannot be read for some reason.
 ////////////////////////////////////////////////////////////////////
-//EXPCL_TOONTOWN PT(DNAData) load_DNA_file_AI(DNAStorage *dna_store, const std::string &filename, CoordinateSystem cs = CS_default);
+EXPCL_TOONTOWN PT(DNAData) load_DNA_file_AI(DNAStorage *dna_store, const std::string &filename, CoordinateSystem cs = CS_default);
 
 END_PUBLISH
