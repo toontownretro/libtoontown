@@ -52,6 +52,12 @@
 #define street_street_tex 5201
 #define street_sidewalk_tex 5202
 
+////////////////////////////////////////////////////////////////////
+// Compressed DNA File Version
+////////////////////////////////////////////////////////////////////
+#define CDNA_VER_MAJOR 1
+#define CDNA_VER_MINOR 0
+#define CDNA_VER_VERY_MINOR 0
 
 ////////////////////////////////////////////////////////////////////
 // DNA Type Codes
@@ -77,4 +83,3 @@
 #define TYPECODE_DNAANIMBUILDING 19
 #define TYPECODE_DNASUITPOINT 20
 #define TYPECODE_RETURNMARKER 255
-

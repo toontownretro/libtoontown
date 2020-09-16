@@ -7,16 +7,17 @@
 
 #include "toontownbase.h"
 
-#include "typedReferenceCount.h"
-#include "filename.h"
-#include "coordinateSystem.h"
-#include "pnotify.h"
-#include "dSearchPath.h"
+#include <typedReferenceCount.h>
+#include <filename.h>
+#include <coordinateSystem.h>
+#include <pnotify.h>
+#include <dSearchPath.h>
 
 #include <string>
 
 #include "dnaGroup.h"
 #include "dnaStorage.h"
+#include "dnaConstants.h"
 
 static std::ostream &error_stream = nout;
 
