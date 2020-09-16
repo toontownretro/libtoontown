@@ -4,7 +4,7 @@
 ////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "dnabase.h"
+#include "toontownbase.h"
 
 #include "dnaNode.h"
 #include "dnaBuildings.h"
@@ -29,6 +29,8 @@ PUBLISHED:
 
   virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing=0);
   virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
+  virtual void write(Datagram &datagram, DNAStorage *store) const;
+  virtual void make_from_dgi(DatagramIterator &dgi, DNAStorage *store);
 
   INLINE void set_code(std::string code);
   INLINE std::string get_code() const;

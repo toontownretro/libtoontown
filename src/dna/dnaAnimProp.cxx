@@ -141,7 +141,92 @@ void DNAAnimProp::write(std::ostream &out, DNAStorage *store, int indent_level) 
 
   // We dont traverse our children because we do not have any
   indent(out, indent_level) << "]\n";
+}
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNAAnimProp::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNAAnimProp::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_uint8(TYPECODE_DNAANIMPROP);
+    bool write_pos = !_pos.almost_equal(LVecBase3f::zero());
+    bool write_hpr = !_hpr.almost_equal(LVecBase3f::zero());
+    bool write_scale = !_scale.almost_equal(LVecBase3f(1.0, 1.0, 1.0));
+    bool write_color = !_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0));
+    datagram.add_bool(write_pos);
+    datagram.add_bool(write_hpr);
+    datagram.add_bool(write_scale);
+    datagram.add_bool(write_color);
+    datagram.add_string(get_name());
+    datagram.add_string(get_code());
+    datagram.add_string(get_anim());
+    if (write_pos) {
+        datagram.add_stdfloat(_pos.get_x());
+        datagram.add_stdfloat(_pos.get_y());
+        datagram.add_stdfloat(_pos.get_z());
+    }
+    if (write_hpr) {
+        datagram.add_bool(temp_hpr_fix);
+        datagram.add_stdfloat(_hpr.get_x());
+        datagram.add_stdfloat(_hpr.get_y());
+        datagram.add_stdfloat(_hpr.get_z());
+    }
+    if (write_scale) {
+        datagram.add_stdfloat(_scale.get_x());
+        datagram.add_stdfloat(_scale.get_y());
+        datagram.add_stdfloat(_scale.get_z());
+    }
+     if (write_color) {
+        datagram.add_stdfloat(_color.get_x());
+        datagram.add_stdfloat(_color.get_y());
+        datagram.add_stdfloat(_color.get_z());
+        datagram.add_stdfloat(_color.get_w());
+     }
+  
+    // Write all the children
+    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+    for(; i != _group_vector.end(); ++i) {
+        // Traverse each node in our vector
+        PT(DNAGroup) group = *i;
+        group->write(datagram, store);
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAAnimProp::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNAAnimProp::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    bool wrote_pos = dgi.get_bool();
+    bool wrote_hpr = dgi.get_bool();
+    bool wrote_scale = dgi.get_bool();
+    bool wrote_color = dgi.get_bool();
+    set_name(dgi.get_string());
+    set_code(dgi.get_string());
+    set_anim(dgi.get_string());
+    if (wrote_pos) {
+        set_pos(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+    if (wrote_hpr) {
+        // Just because normally old hpr is scrapped, 
+        // Doesn't mean we don't want to convert it still.
+        bool is_hpr_fixed = dgi.get_bool();
+        if (temp_hpr_fix && !is_hpr_fixed) {
+            set_hpr(old_to_new_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+        } else if (!temp_hpr_fix && is_hpr_fixed) {
+            set_hpr(new_to_old_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+        } else {
+            set_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+        }
+    }
+    if (wrote_scale) {
+        set_scale(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+    if (wrote_color) {
+        set_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
 }
 
 

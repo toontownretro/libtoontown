@@ -123,7 +123,43 @@ void DNAWall::write(std::ostream &out, DNAStorage *store, int indent_level) cons
   }
 
   indent(out, indent_level) << "]\n";
+}
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNAWall::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNAWall::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_uint8(TYPECODE_DNAWALL);
+
+    datagram.add_string(get_name());
+    datagram.add_string(get_code());
+    datagram.add_stdfloat(_color.get_x());
+    datagram.add_stdfloat(_color.get_y());
+    datagram.add_stdfloat(_color.get_z());
+    datagram.add_stdfloat(_color.get_w());
+    datagram.add_stdfloat(_height);
+  
+    // Write all the children
+    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+    for(; i != _group_vector.end(); ++i) {
+        // Traverse each node in our vector
+        PT(DNAGroup) group = *i;
+        group->write(datagram, store);
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAWall::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNAWall::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    set_name(dgi.get_string());
+    set_code(dgi.get_string());
+    set_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    set_height(dgi.get_stdfloat());
 }
 
 
@@ -402,6 +438,52 @@ void DNAFlatBuilding::write(std::ostream &out, DNAStorage *store, int indent_lev
   indent(out, indent_level) << "]\n";
 }
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNAFlatBuilding::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNAFlatBuilding::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_uint8(TYPECODE_DNAFLATBUILDING);
+    
+    datagram.add_string(get_name());
+    datagram.add_bool(temp_hpr_fix);
+    datagram.add_stdfloat(_pos.get_x());
+    datagram.add_stdfloat(_pos.get_y());
+    datagram.add_stdfloat(_pos.get_z());
+    datagram.add_stdfloat(_hpr.get_x());
+    datagram.add_stdfloat(_hpr.get_y());
+    datagram.add_stdfloat(_hpr.get_z());
+    datagram.add_stdfloat(get_width());
+    
+    // Write all the children
+    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+    for(; i != _group_vector.end(); ++i) {
+        // Traverse each node in our vector
+        PT(DNAGroup) group = *i;
+        group->write(datagram, store);
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAFlatBuilding::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNAFlatBuilding::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    set_name(dgi.get_string());
+    bool is_hpr_fixed = dgi.get_bool();
+    set_pos(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    if (temp_hpr_fix && !is_hpr_fixed) {
+        set_hpr(old_to_new_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+    } else if (!temp_hpr_fix && is_hpr_fixed) {
+        set_hpr(new_to_old_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+    } else {
+        set_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+    set_width(dgi.get_stdfloat());
+}
+
 
 ////////////////////////////////////////////////////////////////////
 //     Function: DNAFlatBuilding::make_copy
@@ -595,6 +677,96 @@ void DNALandmarkBuilding::write(std::ostream &out, DNAStorage *store, int indent
   indent(out, indent_level) << "]\n";
 }
 
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNALandmarkBuilding::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNALandmarkBuilding::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_uint8(TYPECODE_DNALANDMARKBUILDING);
+    
+    bool write_article = !_article.empty();
+    // Do not write out color if it is white to save work
+    bool write_color = !_wall_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0));
+    bool write_building_type = !get_building_type().empty();
+    
+    // Set the bits in our bit flags. Each used bit corresponds to if
+    // something was written.
+    // The first bit is special as it designates if we're using the temp hpr fix or not.
+    uint8_t flags = 0; //0b00000000 - This is here for a bit reference.
+    flags |= temp_hpr_fix << 0;
+    flags |= write_article << 1;
+    flags |= write_color << 2;
+    flags |= write_building_type << 3;
+    
+    datagram.add_uint8(flags);
+    datagram.add_string(get_name());
+    datagram.add_string(get_code());
+    datagram.add_string(get_title());
+    if (write_article) {
+        datagram.add_string(get_article());
+    }
+    if (write_building_type) {
+        datagram.add_string(get_building_type());
+    }
+    datagram.add_stdfloat(_pos.get_x());
+    datagram.add_stdfloat(_pos.get_y());
+    datagram.add_stdfloat(_pos.get_z());
+    datagram.add_stdfloat(_hpr.get_x());
+    datagram.add_stdfloat(_hpr.get_y());
+    datagram.add_stdfloat(_hpr.get_z());
+    
+    if (write_color) {
+        datagram.add_stdfloat(_wall_color.get_x());
+        datagram.add_stdfloat(_wall_color.get_y());
+        datagram.add_stdfloat(_wall_color.get_z());
+        datagram.add_stdfloat(_wall_color.get_w());
+    }
+    
+    // Write all the children
+    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+    for(; i != _group_vector.end(); ++i) {
+        // Traverse each node in our vector
+        PT(DNAGroup) group = *i;
+        group->write(datagram, store);
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNALandmarkBuilding::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNALandmarkBuilding::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    // Read off what was written from the bit flags.
+    uint8_t flags = dgi.get_uint8();
+    bool is_hpr_fixed = (flags >> 0) & 1U;
+    bool wrote_article = (flags >> 1) & 1U;
+    bool wrote_color = (flags >> 2) & 1U;
+    bool wrote_building_type = (flags >> 3) & 1U;
+    
+    set_name(dgi.get_string());
+    set_code(dgi.get_string());
+    set_title(dgi.get_string());
+    if (wrote_article) {
+        set_article(dgi.get_string());
+    }
+    if (wrote_building_type) {
+        set_building_type(dgi.get_string());
+    }
+    set_pos(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    if (temp_hpr_fix && !is_hpr_fixed) {
+        set_hpr(old_to_new_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+    } else if (!temp_hpr_fix && is_hpr_fixed) {
+        set_hpr(new_to_old_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+    } else {
+        set_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+    if (wrote_color) {
+        set_wall_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+}
 
 ////////////////////////////////////////////////////////////////////
 //     Function: DNALandmarkBuilding::make_copy

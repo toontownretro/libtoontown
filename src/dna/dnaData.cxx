@@ -236,12 +236,14 @@ void DNAData::
 write(Datagram &datagram, DNAStorage *store) const {
   // Write out anything the store wants to write
   store->fixup();
-  //store->write(datagram);
+  store->write(datagram);
   
+  // We need to save if the Datagram has stdfloat double enabled for reading.
+  // Float sizes can vary in Panda3D and it's important to support it.
   datagram.add_bool(datagram.get_stdfloat_double());
 
   // Do not write out this group, just the children
-  // DNAGroup::write(out, store, indent_level);
+  // DNAGroup::write(datagram, store);
   // Write all the children
   pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
   for(; i != _group_vector.end(); ++i) {

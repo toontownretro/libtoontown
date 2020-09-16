@@ -222,7 +222,41 @@ void DNAWindows::write(std::ostream &out, DNAStorage *store, int indent_level) c
 
 }
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNAWindows::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNAWindows::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_uint8(TYPECODE_DNAWINDOWS);
+    datagram.add_string(get_name());
+    datagram.add_string(get_code());
+    datagram.add_stdfloat(_color[0]);
+    datagram.add_stdfloat(_color[1]);
+    datagram.add_stdfloat(_color[2]);
+    datagram.add_stdfloat(_color[3]);
+    datagram.add_int32(get_window_count());
 
+    // Write all the children
+    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+    for(; i != _group_vector.end(); ++i) {
+        // Traverse each node in our vector
+        PT(DNAGroup) group = *i;
+        group->write(datagram, store);
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAWindows::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNAWindows::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    set_name(dgi.get_string());
+    set_code(dgi.get_string());
+    set_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    set_window_count(dgi.get_int32());
+}
 
 ////////////////////////////////////////////////////////////////////
 //     Function: DNAWindows::make_copy

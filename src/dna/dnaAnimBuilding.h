@@ -18,37 +18,33 @@
 // Description : An animated building like a sneeizing building.
 ////////////////////////////////////////////////////////////////////
 class EXPCL_TOONTOWN DNAAnimBuilding : public DNALandmarkBuilding  {
-PUBLISHED:
-  DNAAnimBuilding(const std::string &initial_name = "");
-  DNAAnimBuilding(const DNAAnimBuilding &anim_building);
+    PUBLISHED:
+        DNAAnimBuilding(const std::string &initial_name = "");
+        DNAAnimBuilding(const DNAAnimBuilding &anim_building);
 
-  virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing=0);
-  virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
+        virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing=0);
+        virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
+        virtual void write(Datagram &datagram, DNAStorage *store) const;
+        virtual void make_from_dgi(DatagramIterator &dgi, DNAStorage *store);
 
-  INLINE void set_anim(std::string anim);
-  INLINE std::string get_anim() const;
+        INLINE void set_anim(std::string anim);
+        INLINE std::string get_anim() const;
 
-private:
-  virtual DNAGroup* make_copy();
-  std::string _anim;
+    private:
+        virtual DNAGroup* make_copy();
+        std::string _anim;
 
-public:
-  static TypeHandle get_class_type() {
-    return _type_handle;
-  }
-  static void init_type() {
-    DNANode::init_type();
-    register_type(_type_handle, "DNAAnimBuilding",
-                  DNANode::get_class_type()
-                  );
-  }
-  virtual TypeHandle get_type() const {
-    return get_class_type();
-  }
-  virtual TypeHandle force_init_type() {init_type(); return get_class_type();}
+    public:
+        static TypeHandle get_class_type() { return _type_handle; }
+        static void init_type() {
+          DNANode::init_type();
+          register_type(_type_handle, "DNAAnimBuilding", DNANode::get_class_type());
+        }
+        virtual TypeHandle get_type() const { return get_class_type(); }
+        virtual TypeHandle force_init_type() {init_type(); return get_class_type();}
 
-private:
-  static TypeHandle _type_handle;
+    private:
+        static TypeHandle _type_handle;
 };
 
 #include "dnaAnimBuilding.I"

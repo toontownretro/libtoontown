@@ -218,6 +218,39 @@ void DNADoor::write(std::ostream &out, DNAStorage *store, int indent_level) cons
 }
 
 ////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNADoor::write(Datagram &datagram, DNAStorage *store) const {
+  datagram.add_uint8(TYPECODE_DNADOOR);
+  datagram.add_string(get_code());
+  datagram.add_stdfloat(_color.get_x());
+  datagram.add_stdfloat(_color.get_y());
+  datagram.add_stdfloat(_color.get_z());
+  datagram.add_stdfloat(_color.get_w());
+  
+  // Write all the children
+  pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+  for(; i != _group_vector.end(); ++i) {
+    // Traverse each node in our vector
+    PT(DNAGroup) group = *i;
+    group->write(datagram, store);
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNADoor::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNADoor::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    set_code(dgi.get_string());
+    set_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+}
+
+////////////////////////////////////////////////////////////////////
 //     Function: DNADoor::make_copy
 //       Access: Public
 //  Description: Copies all the children into our own vector
@@ -289,6 +322,39 @@ void DNAFlatDoor::write(std::ostream &out, DNAStorage *store, int indent_level) 
 
   // We dont traverse our children because we do not have any
   indent(out, indent_level) << "]\n";
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAFlatDoor::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNAFlatDoor::write(Datagram &datagram, DNAStorage *store) const {
+  datagram.add_uint8(TYPECODE_DNAFLATDOOR);
+  datagram.add_string(get_code());
+  datagram.add_stdfloat(_color.get_x());
+  datagram.add_stdfloat(_color.get_y());
+  datagram.add_stdfloat(_color.get_z());
+  datagram.add_stdfloat(_color.get_w());
+  
+  // Write all the children
+  pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+  for(; i != _group_vector.end(); ++i) {
+    // Traverse each node in our vector
+    PT(DNAGroup) group = *i;
+    group->write(datagram, store);
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAFlatDoor::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNAFlatDoor::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    set_code(dgi.get_string());
+    set_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
 }
 
 

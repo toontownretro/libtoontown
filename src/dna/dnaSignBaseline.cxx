@@ -192,8 +192,7 @@ NodePath DNASignBaseline::traverse(NodePath &parent, DNAStorage *store, int edit
 //       Access: Public
 //  Description: Writes the group and all children to output
 ////////////////////////////////////////////////////////////////////
-void DNASignBaseline::write(std::ostream &out,
-    DNAStorage *store, int indent_level) const {
+void DNASignBaseline::write(std::ostream &out, DNAStorage *store, int indent_level) const {
   if (_group_vector.empty()) {
     // ...no text or graphics.
     // Don't write the baseline:
@@ -275,6 +274,177 @@ void DNASignBaseline::write(std::ostream &out,
   indent(out, indent_level) << "]\n";
 }
 
+////////////////////////////////////////////////////////////////////
+//     Function: DNASignBaseline::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNASignBaseline::write(Datagram &datagram, DNAStorage *store) const {
+    if (_group_vector.empty()) {
+        // ...no text or graphics.
+        // Don't write the baseline:
+        return;
+    }
+  
+    datagram.add_uint8(TYPECODE_DNASIGNBASELINE);
+    uint16_t flags = 0; //0b0000000000000000 - This is here for a bit reference.
+    bool write_code = !_code.empty();
+    bool write_flags = !_flags.empty();
+    bool write_pos = !_pos.almost_equal(LVecBase3f::zero());
+    bool write_hpr = !_hpr.almost_equal(LVecBase3f::zero());
+    bool write_scale = !_scale.almost_equal(LVecBase3f(1.0, 1.0, 1.0));
+    bool write_color = !_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0));
+
+    // Set the bits in our bit flags. Each used bit corresponds to if
+    // something was written.
+    flags |= write_code << 0;
+    flags |= write_flags << 1;
+    flags |= write_pos << 2;
+    flags |= write_hpr << 3;
+    flags |= write_scale << 4;
+    flags |= write_color << 5;
+    flags |= bool(_indent) << 6;
+    flags |= bool(_kern) << 7;
+    flags |= bool(_wiggle) << 8;
+    flags |= bool(_stumble) << 9;
+    flags |= bool(_stomp) << 10;
+    flags |= bool(_width) << 11;
+    flags |= bool(_height) << 12;
+
+    datagram.add_uint16(flags);
+    datagram.add_string(get_name());
+    if (write_code) {
+        datagram.add_string(get_code());
+    }
+    if (write_flags) {
+        datagram.add_string(get_flags());
+    }
+    if (write_pos) {
+        datagram.add_stdfloat(_pos.get_x());
+        datagram.add_stdfloat(_pos.get_y());
+        datagram.add_stdfloat(_pos.get_z());
+    }
+    if (write_hpr) {
+        datagram.add_bool(temp_hpr_fix);
+        datagram.add_stdfloat(_hpr.get_x());
+        datagram.add_stdfloat(_hpr.get_y());
+        datagram.add_stdfloat(_hpr.get_z());
+    }
+    if (write_scale) {
+        datagram.add_stdfloat(_scale.get_x());
+        datagram.add_stdfloat(_scale.get_y());
+        datagram.add_stdfloat(_scale.get_z());
+    }
+    if (write_color) {
+        datagram.add_stdfloat(_color.get_x());
+        datagram.add_stdfloat(_color.get_y());
+        datagram.add_stdfloat(_color.get_z());
+        datagram.add_stdfloat(_color.get_w());
+    }
+    if (_indent) {
+        datagram.add_stdfloat(_indent);
+    }
+    if (_kern) {
+        datagram.add_stdfloat(_kern);
+    }
+    if (_wiggle) {
+        datagram.add_stdfloat(_wiggle);
+    }
+    if (_stumble) {
+        datagram.add_stdfloat(_stumble);
+    }
+    if (_stomp) {
+        datagram.add_stdfloat(_stomp);
+    }
+    if (_width) {
+        datagram.add_stdfloat(_width);
+    }
+    if (_height) {
+        datagram.add_stdfloat(_height);
+    }
+  
+    // Write all the children
+    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+    for(; i != _group_vector.end(); ++i) {
+        // Traverse each node in our vector
+        PT(DNAGroup) group = *i;
+        group->write(datagram, store);
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNASignBaseline::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNASignBaseline::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    uint16_t flags = dgi.get_uint16();
+
+    // Read off what was written from the bit flags.
+    bool wrote_code = (flags >> 0) & 1U;
+    bool wrote_flags = (flags >> 1) & 1U;
+    bool wrote_pos = (flags >> 2) & 1U;
+    bool wrote_hpr = (flags >> 3) & 1U;
+    bool wrote_scale = (flags >> 4) & 1U;
+    bool wrote_color = (flags >> 5) & 1U;
+    bool wrote_indent = (flags >> 6) & 1U;
+    bool wrote_kern = (flags >> 7) & 1U;
+    bool wrote_wiggle = (flags >> 8) & 1U;
+    bool wrote_stumble = (flags >> 9) & 1U;
+    bool wrote_stomp = (flags >> 10) & 1U;
+    bool wrote_width = (flags >> 11) & 1U;
+    bool wrote_height = (flags >> 12) & 1U;
+
+    set_name(dgi.get_string());
+    if (wrote_code) {
+        set_code(dgi.get_string());
+    }
+    if (wrote_flags) {
+        set_flags(dgi.get_string());
+    }
+    if (wrote_pos) {
+        set_pos(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+    if (wrote_hpr) {
+        // Just because normally old hpr is scrapped, 
+        // Doesn't mean we don't want to convert it still.
+        bool is_hpr_fixed = dgi.get_bool();
+        if (temp_hpr_fix && !is_hpr_fixed) {
+            set_hpr(old_to_new_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+        } else if (!temp_hpr_fix && is_hpr_fixed) {
+            set_hpr(new_to_old_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+        } else {
+            set_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+        }
+    }
+    if (wrote_scale) {
+        set_scale(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+    if (wrote_color) {
+        set_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+    if (wrote_indent) {
+        set_indent(dgi.get_stdfloat());
+    }
+    if (wrote_kern) {
+        set_kern(dgi.get_stdfloat());
+    }
+    if (wrote_wiggle) {
+        set_wiggle(dgi.get_stdfloat());
+    }
+    if (wrote_stumble) {
+        set_stumble(dgi.get_stdfloat());
+    }
+    if (wrote_stomp) {
+        set_stomp(dgi.get_stdfloat());
+    }
+    if (wrote_width) {
+        set_width(dgi.get_stdfloat());
+    }
+    if (wrote_height) {
+        set_height(dgi.get_stdfloat());
+    }
+}
 
 ////////////////////////////////////////////////////////////////////
 //     Function: DNASignBaseline::center

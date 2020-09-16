@@ -25,6 +25,8 @@ PUBLISHED:
 
   virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing=0);
   virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
+  virtual void write(Datagram &datagram, DNAStorage *store) const;
+  virtual void make_from_dgi(DatagramIterator &dgi, DNAStorage *store);
 
   INLINE void set_anim(std::string anim);
   INLINE std::string get_anim() const;

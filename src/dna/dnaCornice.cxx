@@ -154,6 +154,41 @@ void DNACornice::write(std::ostream &out, DNAStorage *store, int indent_level) c
 }
 
 ////////////////////////////////////////////////////////////////////
+//     Function: DNACornice::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNACornice::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_uint8(TYPECODE_DNACORNICE);
+    datagram.add_string(get_name());
+    datagram.add_string(get_code());
+    datagram.add_stdfloat(_color.get_x());
+    datagram.add_stdfloat(_color.get_y());
+    datagram.add_stdfloat(_color.get_z());
+    datagram.add_stdfloat(_color.get_w());
+
+    // Write all the children
+    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+    for(; i != _group_vector.end(); ++i) {
+        // Traverse each node in our vector
+        PT(DNAGroup) group = *i;
+        group->write(datagram, store);
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNACornice::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNACornice::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    set_name(dgi.get_string());
+    set_code(dgi.get_string());
+    set_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+}
+
+////////////////////////////////////////////////////////////////////
 //     Function: DNACornice::make_copy
 //       Access: Public
 //  Description: Copies all the children into our own vector

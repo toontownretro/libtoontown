@@ -750,9 +750,7 @@ int DNAStorage::remove_battle_cell(PT(DNABattleCell) cell) {
 //               indexes in the suit start point map. These indexes
 //               better be stored in the suit_point_vector already
 ////////////////////////////////////////////////////////////////////
-PT(DNASuitEdge) DNAStorage::store_suit_edge(int start_index,
-                                            int end_index,
-                                            std::string zone_id) {
+PT(DNASuitEdge) DNAStorage::store_suit_edge(int start_index, int end_index, std::string zone_id) {
   PT(DNASuitPoint) start_point = get_suit_point_with_index(start_index);
   nassertr(start_point != (DNASuitPoint *)NULL, (DNASuitEdge *)NULL);
 
@@ -760,9 +758,8 @@ PT(DNASuitEdge) DNAStorage::store_suit_edge(int start_index,
   nassertr(end_point != (DNASuitPoint *)NULL, (DNASuitEdge *)NULL);
 
   // Make a brand new edge from start to std::endl in zone_id
-  PT(DNASuitEdge) edge = new DNASuitEdge(start_point,
-                                         end_point,
-                                         zone_id);
+  PT(DNASuitEdge) edge = new DNASuitEdge(start_point, end_point, zone_id);
+  
   // Now store that edge for real
   return store_suit_edge(edge);
 }

@@ -160,6 +160,79 @@ void DNAStreet::write(std::ostream &out, DNAStorage *store, int indent_level) co
 }
 
 ////////////////////////////////////////////////////////////////////
+//     Function: DNAStreet::write
+//       Access: Public
+//  Description: Writes the group to the Datagram.
+////////////////////////////////////////////////////////////////////
+void DNAStreet::write(Datagram &datagram, DNAStorage *store) const {
+    datagram.add_uint8(TYPECODE_DNASTREET);
+    bool write_colors = (!_street_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0))) || (!_sidewalk_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0))) || (!_curb_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0)));
+    datagram.add_bool(write_colors);
+    datagram.add_bool(temp_hpr_fix);
+    datagram.add_string(get_name());
+    datagram.add_string(get_code());
+    datagram.add_stdfloat(_pos[0]);
+    datagram.add_stdfloat(_pos[1]);
+    datagram.add_stdfloat(_pos[2]);
+    datagram.add_stdfloat(_hpr[0]);
+    datagram.add_stdfloat(_hpr[1]);
+    datagram.add_stdfloat(_hpr[2]);
+    if (write_colors) {
+        datagram.add_stdfloat(_street_color[0]);
+        datagram.add_stdfloat(_street_color[1]);
+        datagram.add_stdfloat(_street_color[2]);
+        datagram.add_stdfloat(_street_color[3]);
+        datagram.add_stdfloat(_sidewalk_color[0]);
+        datagram.add_stdfloat(_sidewalk_color[1]);
+        datagram.add_stdfloat(_sidewalk_color[2]);
+        datagram.add_stdfloat(_sidewalk_color[3]);
+        datagram.add_stdfloat(_curb_color[0]);
+        datagram.add_stdfloat(_curb_color[1]);
+        datagram.add_stdfloat(_curb_color[2]);
+        datagram.add_stdfloat(_curb_color[3]);
+    }
+    datagram.add_string(_street_texture);
+    datagram.add_string(_sidewalk_texture);
+    datagram.add_string(_curb_texture);
+
+    // Write all the children
+    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
+    for(; i != _group_vector.end(); ++i) {
+        // Traverse each node in our vector
+        PT(DNAGroup) group = *i;
+        group->write(datagram, store);
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAStreet::make_from_dgi
+//       Access: Public
+//  Description: Sets up the group from the Datagram Iterator.
+////////////////////////////////////////////////////////////////////
+void DNAStreet::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    bool wrote_colors = dgi.get_bool();
+    bool is_hpr_fixed = dgi.get_bool();
+    set_name(dgi.get_string());
+    set_code(dgi.get_string());
+    set_pos(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    if (temp_hpr_fix && !is_hpr_fixed) {
+        set_hpr(old_to_new_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+    } else if (!temp_hpr_fix && is_hpr_fixed) {
+        set_hpr(new_to_old_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
+    } else {
+        set_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+    if (wrote_colors) {
+        set_street_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+        set_sidewalk_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+        set_curb_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+    }
+    set_street_texture(dgi.get_string());
+    set_sidewalk_texture(dgi.get_string());
+    set_curb_texture(dgi.get_string());
+}
+
+////////////////////////////////////////////////////////////////////
 //     Function: DNAStreet::make_copy
 //       Access: Public
 //  Description: Copies all the children into our own vector

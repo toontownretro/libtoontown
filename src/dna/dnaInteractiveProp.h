@@ -24,6 +24,9 @@ PUBLISHED:
 
   virtual NodePath traverse(NodePath &parent, DNAStorage *store, int editing=0);
   virtual void write(std::ostream &out, DNAStorage *store, int indent_level = 0) const;
+  virtual void write(Datagram &datagram, DNAStorage *store) const;
+  virtual void make_from_dgi(DatagramIterator &dgi, DNAStorage *store);
+  
   INLINE void set_cell_id(int cell_id);
   INLINE int get_cell_id() const;
 
