@@ -184,7 +184,6 @@ if(MSVC)
     set(LIBPFX "lib")
     add_definitions(/wd4275)
     add_definitions(/DYY_NO_UNISTD_H)
-    #add_definitions(/DYYERROR_VERBOSE)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -250,7 +249,7 @@ if(NOT BUILD_STATIC_LIB)
         )
         SET_TARGET_PROPERTIES(libtoontown PROPERTIES SUFFIX ".pyd")
         target_link_libraries(libtoontown libotp ${PANDA_LIBS} ${Python_LIBRARIES})
-        target_compile_definitions(libtoontown PRIVATE -DBUILDING_TOONTOWN)
+        target_compile_definitions(libtoontown PRIVATE -DBUILDING_TOONTOWN -DYYERROR_VERBOSE)
         add_custom_command(TARGET libtoontown
                            PRE_BUILD
                            COMMAND ${PYTHON2_EXECUTABLE} "${CMAKE_SOURCE_DIR}/src/run_interrogate.py" "${PANDA_DIR}" "${LIBOTP_DIR}/src"
