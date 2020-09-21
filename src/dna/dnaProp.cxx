@@ -45,7 +45,6 @@ DNAProp::DNAProp(const DNAProp &prop) :
 //  Description:
 ////////////////////////////////////////////////////////////////////
 NodePath DNAProp::traverse(NodePath &parent, DNAStorage *store, int editing) {
-
   NodePath prop_node_path;
 
   // A code of DCS means an empty reference node

@@ -62,7 +62,6 @@ DNAWindows::DNAWindows(const DNAWindows &windows) :
 //  Description:
 ////////////////////////////////////////////////////////////////////
 NodePath DNAWindows::traverse(NodePath &parent, DNAStorage *store, int editing) {
-
   // No windows
   if (_window_count == 0) {
     return parent;
@@ -93,16 +92,15 @@ NodePath DNAWindows::traverse(NodePath &parent, DNAStorage *store, int editing) 
   if (_window_count == 1) {
     // Parent the new windows node to the parent
     window_node_path = (store->find_node(_code)).copy_to(parent);
+    nassertr(!window_node_path.is_empty(), parent);
     // window_node_path.node()->set_name("window");
     // Set the colors
     window_node_path.set_color(_color);
 
     // Position the window
-    window_node_path.set_scale(NodePath(), scale);
-    window_node_path.set_pos(LVector3f((0.5 + rand_pos_jitter),
-                                       0.0,
-                                       (0.5 + rand_pos_jitter)));
+    window_node_path.set_pos(LVector3f((0.5 + rand_pos_jitter), 0.0, (0.5 + rand_pos_jitter)));
     window_node_path.set_hpr(hpr);
+    window_node_path.set_scale(NodePath(""), scale);
   }
 
   // 2 windows, center them and mirror them to face each other
@@ -119,16 +117,15 @@ NodePath DNAWindows::traverse(NodePath &parent, DNAStorage *store, int editing) 
       }
       // Parent the new windows node to the parent
       window_node_path = (store->find_node(mirror_code)).copy_to(parent);
+      nassertr(!window_node_path.is_empty(), parent);
       // window_node_path.node()->set_name("window");
       // Set the colors
       window_node_path.set_color(_color);
 
       // Position the window
-      window_node_path.set_scale(NodePath(), scale);
-      window_node_path.set_pos(LVector3f(((i / (float)(_window_count+1)) + rand_pos_jitter),
-                                         0.0,
-                                         (0.5 + rand_pos_jitter)));
+      window_node_path.set_pos(LVector3f(((i / (float)(_window_count+1)) + rand_pos_jitter), 0.0, (0.5 + rand_pos_jitter)));
       window_node_path.set_hpr(hpr);
+      window_node_path.set_scale(NodePath(""), scale);
     }
   }
 
@@ -139,12 +136,12 @@ NodePath DNAWindows::traverse(NodePath &parent, DNAStorage *store, int editing) 
 
       // Parent the new windows node to the parent
       window_node_path = (store->find_node(_code)).copy_to(parent);
+      nassertr(!window_node_path.is_empty(), parent);
       // window_node_path.node()->set_name("window");
       // Set the colors
       window_node_path.set_color(_color);
 
       // Position the window
-      window_node_path.set_scale(NodePath(), scale);
       if (i == 1) {
         window_node_path.set_pos(LVector3f(0.33 + rand_pos_jitter, 0.0, 0.66 + rand_pos_jitter));
       } else if (i == 2) {
@@ -153,6 +150,7 @@ NodePath DNAWindows::traverse(NodePath &parent, DNAStorage *store, int editing) 
         window_node_path.set_pos(LVector3f(0.66 + rand_pos_jitter, 0.0, 0.66 + rand_pos_jitter));
       }
       window_node_path.set_hpr(hpr);
+      window_node_path.set_scale(NodePath(""), scale);
     }
   }
 
@@ -162,12 +160,12 @@ NodePath DNAWindows::traverse(NodePath &parent, DNAStorage *store, int editing) 
 
       // Parent the new windows node to the parent
       window_node_path = (store->find_node(_code)).copy_to(parent);
+      nassertr(!window_node_path.is_empty(), parent);
       // node_path.node()->set_name("window");
       // Set the colors
       window_node_path.set_color(_color);
 
       // Position the window
-      window_node_path.set_scale(NodePath(), scale);
       if (i == 1) {
         window_node_path.set_pos(LVector3f(0.33 + rand_pos_jitter, 0.0, 0.75 + rand_pos_jitter));
       } else if (i == 2) {
@@ -179,6 +177,7 @@ NodePath DNAWindows::traverse(NodePath &parent, DNAStorage *store, int editing) 
       }
 
       window_node_path.set_hpr(hpr);
+      window_node_path.set_scale(NodePath(""), scale);
     }
   }
 
@@ -189,7 +188,7 @@ NodePath DNAWindows::traverse(NodePath &parent, DNAStorage *store, int editing) 
     // Remember that this nodepath is associated with this dna group
     store->store_DNAGroup(window_node_path.node(), this);
   }
-
+  
   return parent;
 }
 
@@ -229,7 +228,6 @@ void DNAWindows::write(std::ostream &out, DNAStorage *store, int indent_level) c
 ////////////////////////////////////////////////////////////////////
 void DNAWindows::write(Datagram &datagram, DNAStorage *store) const {
     datagram.add_uint8(TYPECODE_DNAWINDOWS);
-    datagram.add_string(get_name());
     datagram.add_string(get_code());
     datagram.add_stdfloat(_color[0]);
     datagram.add_stdfloat(_color[1]);
@@ -252,7 +250,6 @@ void DNAWindows::write(Datagram &datagram, DNAStorage *store) const {
 //  Description: Sets up the group from the Datagram Iterator.
 ////////////////////////////////////////////////////////////////////
 void DNAWindows::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
-    set_name(dgi.get_string());
     set_code(dgi.get_string());
     set_color(LColorf(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
     set_window_count(dgi.get_int32());

@@ -52,7 +52,6 @@ DNAGroup::DNAGroup(const DNAGroup &copy) :
 ////////////////////////////////////////////////////////////////////
 NodePath DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing) {
   // Make a new node for this group
-
   PT(PandaNode) new_node = new PandaNode(get_name());
   NodePath group_node_path = parent.attach_new_node(new_node);
 
@@ -67,7 +66,7 @@ NodePath DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing) {
     // Remember that this nodepath is associated with this dna group
     store->store_DNAGroup(group_node_path.node(), this);
   }
-
+  
   return group_node_path;
 }
 
@@ -79,7 +78,6 @@ NodePath DNAGroup::traverse(NodePath &parent, DNAStorage *store, int editing) {
 ////////////////////////////////////////////////////////////////////
 NodePath DNAGroup::top_level_traverse(NodePath &parent, DNAStorage *store, int editing) {
   // Make a new node for this group
-
   PT(PandaNode) new_node = new PandaNode(get_name());
   NodePath group_node_path = parent.attach_new_node(new_node);
 

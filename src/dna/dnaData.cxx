@@ -12,6 +12,25 @@
 #include "dSearchPath.h"
 #include "virtualFileSystem.h"
 
+// Import any needed files for CDNA reading.
+#include "dnaAnimBuilding.h"
+#include "dnaAnimProp.h"
+#include "dnaBattleCell.h"
+#include "dnaBuildings.h"
+#include "dnaCornice.h"
+#include "dnaDoor.h"
+#include "dnaInteractiveProp.h"
+#include "dnaNode.h"
+#include "dnaProp.h"
+#include "dnaSign.h"
+#include "dnaSignBaseline.h"
+#include "dnaSignGraphic.h"
+#include "dnaSignText.h"
+#include "dnaStreet.h"
+#include "dnaSuitPoint.h"
+#include "dnaVisGroup.h"
+#include "dnaWindow.h"
+
 extern int dnayyparse(void);
 #include "parserDefs.h"
 #include "lexerDefs.h"
@@ -37,7 +56,10 @@ resolve_dna_filename(Filename &dna_filename, const DSearchPath &searchpath) {
   
   vfs->resolve_filename(dna_filename, searchpath, "dna") ||
     vfs->resolve_filename(dna_filename, get_dna_path(), "dna") ||
-    vfs->resolve_filename(dna_filename, get_model_path(), "dna");
+    vfs->resolve_filename(dna_filename, get_model_path(), "dna") ||
+    vfs->resolve_filename(dna_filename, searchpath, "cdna") ||
+    vfs->resolve_filename(dna_filename, get_dna_path(), "cdna") ||
+    vfs->resolve_filename(dna_filename, get_model_path(), "cdna");
   return vfs->exists(dna_filename);
 }
 
@@ -70,7 +92,10 @@ read(Filename filename, std::ostream &error) {
     error << "Unable to open " << filename << "\n";
     return false;
   }
-
+  
+  if (filename.get_extension().compare("cdna") == 0) {
+      return read_compressed(file, error);
+  }
   return read(file, error);
 }
 
@@ -83,21 +108,201 @@ read(Filename filename, std::ostream &error) {
 //               completely valid DNA file, false if there were some
 //               errors, in which case the data may be partially read.
 ////////////////////////////////////////////////////////////////////
-bool DNAData::
-read(std::istream &in, std::ostream &error) {
-  // First, dispense with any children we had previously.  We will
-  // replace them with the new data.
-  dna_cat.debug() << "start of dnData.read\n";
-  _group_vector.clear();
+bool DNAData::read(std::istream &in, std::ostream &error) {
+    // First, dispense with any children we had previously.  We will
+    // replace them with the new data.
+    dna_cat.debug() << "start of dnaData.read\n";
+    _group_vector.clear();
 
-  dna_init_parser(in, error, get_dna_filename(), this);
-  dnayyparse();
-  dna_cleanup_parser();
+    dna_init_parser(in, error, get_dna_filename(), this);
+    dnayyparse();
+    dna_cleanup_parser();
 
-  post_read(error);
+    post_read(error);
 
-  dna_cat.debug() << "end of DNAData.read\n";
-  return (dna_error_count() == 0);
+    dna_cat.debug() << "end of DNAData.read\n";
+    return (dna_error_count() == 0);
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAData::read_compressed
+//       Access: Public
+//  Description: Parses the CDNA data contained in the indicated
+//               input stream.  Returns true if the stream was a
+//               completely valid CDNA file, false if there were some
+//               errors, in which case the data may be partially read.
+////////////////////////////////////////////////////////////////////
+bool DNAData::read_compressed(std::istream &in, std::ostream &error) {
+    // First, dispense with any children we had previously.  We will
+    // replace them with the new data.
+    dna_cat.debug() << "start of dnaData.read_compressed\n";
+    _group_vector.clear();
+    
+    const char *header = "CDNA\n";
+    char *read_header = new char[7];
+    in.read(read_header, 6);
+    
+    if (memcmp(header, read_header, 6)) {
+        dna_cat.error() << "Invalid header for .cdna file!" << std::endl;
+        return 0;
+    }
+    
+    delete[] read_header;
+    
+    // Now let's read out the written version.
+    uint8_t major_ver = 0;
+    uint8_t minor_ver = 0;
+    uint8_t very_minor_ver = 0;
+    in.get((char &)major_ver);
+    in.get((char &)minor_ver);
+    in.get((char &)very_minor_ver);
+
+    // Get the stdfloat double mode for the datagram.
+    bool stdfloat_double = 0;
+    in.get((char&)stdfloat_double);
+
+    dna_cat.debug() << "CDNA version is: " << uint32_t(major_ver) << "." << uint32_t(minor_ver) << "." << uint32_t(very_minor_ver) << std::endl;
+
+    dna_cat.debug() << "Stdfloat double mode is: " << uint32_t(stdfloat_double) << std::endl;
+    
+    // Get the size of the remaining data.
+    size_t current_size = in.tellg();
+    //dna_cat.debug() << "Pre-Calc Length: " << current_size << std::endl;
+    in.seekg(0, in.end);
+    size_t length = in.tellg();
+    in.seekg (0, in.beg);
+    in.seekg(current_size);
+    //dna_cat.debug() << "Full Length: " << length << std::endl;
+    length = length - current_size;
+    //dna_cat.debug() << "Current Length: " << length << std::endl;
+    
+    // Read out the data.
+    char *data = new char[length + 1];
+    data[length + 1] = 0;
+    in.read(data, length);
+    
+    // Create our Datagram and it's Iterator.
+    Datagram dg((void *)data, length);
+    // Set the stdfloat double mode.
+    dg.set_stdfloat_double(stdfloat_double);
+    DatagramIterator dgi(dg);
+    
+    // Parse the Iterator.
+    PT(DNAGroup) current_group = this;
+    while(dgi.get_remaining_size()) {
+        uint8_t typecode = dgi.get_uint8();
+        dna_cat.spam() << "Current Typecode: " << uint32_t(typecode) << std::endl;
+        PT(DNAGroup) new_group;
+        PT(DNASuitPoint) new_point;
+        
+        if (typecode == TYPECODE_RETURNMARKER) {
+            nassertr(current_group != nullptr, 0);
+            dna_cat.debug() << "TYPECODE_RETURNMARKER: " << std::endl;
+            PT(DNAGroup) parent = current_group->get_parent();
+            dna_cat.debug() << "Current Group: " << current_group->get_name() << ", New Group: " << (parent ? parent->get_name() : "nullptr") << std::endl;
+            if (parent != nullptr) {
+                current_group = parent;
+            } else {
+                nassertr(current_group->get_name() == "loader_data", 0);
+            }
+        } else {
+            switch (typecode) {
+                case TYPECODE_DNAGROUP:
+                    new_group = new DNAGroup("unnamed_group");
+                    break;
+                case TYPECODE_DNAVISGROUP:
+                    new_group = new DNAVisGroup("unnamed_group");
+                    break;
+                case TYPECODE_DNANODE:
+                    new_group = new DNANode("unnamed_group");
+                    break;
+                case TYPECODE_DNAPROP:
+                    new_group = new DNAProp("unnamed_group");
+                    break;
+                case TYPECODE_DNASIGN:
+                    new_group = new DNASign("unnamed_group");
+                    break;
+                case TYPECODE_DNASIGNBASELINE:
+                    new_group = new DNASignBaseline("unnamed_group");
+                    break;
+                case TYPECODE_DNASIGNTEXT:
+                    new_group = new DNASignText("unnamed_group");
+                    break;
+                case TYPECODE_DNASIGNGRAPHIC:
+                    new_group = new DNASignGraphic("unnamed_group");
+                    break;
+                case TYPECODE_DNAWALL:
+                    new_group = new DNAWall("unnamed_group");
+                    break;
+                case TYPECODE_DNAWINDOWS:
+                    new_group = new DNAWindows("unnamed_group");
+                    break;
+                case TYPECODE_DNACORNICE:
+                    new_group = new DNACornice("unnamed_group");
+                    break;
+                case TYPECODE_DNADOOR:
+                    new_group = new DNADoor("unnamed_group");
+                    break;
+                case TYPECODE_DNAFLATDOOR:
+                    new_group = new DNAFlatDoor("unnamed_group");
+                    break;
+                case TYPECODE_DNASTREET:
+                    new_group = new DNAStreet("unnamed_group");
+                    break;
+                case TYPECODE_DNAFLATBUILDING:
+                    new_group = new DNAFlatBuilding("unnamed_group");
+                    break;
+                case TYPECODE_DNALANDMARKBUILDING:
+                    new_group = new DNALandmarkBuilding("unnamed_group");
+                    break;
+                case TYPECODE_DNAINTERACTIVEPROP:
+                    new_group = new DNAInteractiveProp("unnamed_group");
+                    break;
+                case TYPECODE_DNAANIMPROP:
+                    new_group = new DNAAnimProp("unnamed_group");
+                    break;
+                case TYPECODE_DNAANIMBUILDING:
+                    new_group = new DNAAnimBuilding("unnamed_group");
+                    break;
+                case TYPECODE_DNASUITPOINT:
+                    new_point = new DNASuitPoint();
+                    new_point->make_from_dgi(dgi);
+                    _dna_store->store_suit_point(new_point);
+                    new_group = nullptr; // We set it to nullptr so it does another loop.
+                    break;
+                default:
+                    dna_cat.fatal() << "Invalid Type Code: " << uint32_t(typecode) << std::endl;
+                    return 0;
+            }
+            if (new_group == nullptr) {
+                continue;
+            }
+            new_group->make_from_dgi(dgi, _dna_store);
+            
+            if (current_group) {
+                new_group->set_parent(current_group);
+                current_group->add(new_group);
+            }
+            
+            if (!new_group->is_of_type(DNAWindows::get_class_type()) && 
+                !new_group->is_of_type(DNACornice::get_class_type()) && 
+                !new_group->is_of_type(DNADoor::get_class_type()) && 
+                !new_group->is_of_type(DNAFlatDoor::get_class_type()) &&
+                !new_group->is_of_type(DNAStreet::get_class_type()) &&
+                !new_group->is_of_type(DNASignGraphic::get_class_type()) &&
+                !new_group->is_of_type(DNASignText::get_class_type()))
+            {
+                current_group = new_group;
+            }
+        }
+    }
+    
+    delete[] data;
+
+    post_read(error);
+
+    dna_cat.debug() << "end of DNAData.read_compressed\n";
+    return (dna_error_count() == 0);
 }
 
 

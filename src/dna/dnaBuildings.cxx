@@ -91,7 +91,6 @@ NodePath DNAWall::traverse(NodePath &parent, DNAStorage *store, int editing) {
 
   // Update the current_wall_height so the next wall will be on top
   current_wall_height += _height;
-
   return wall_node_path;
 }
 
@@ -300,6 +299,7 @@ NodePath DNAFlatBuilding::traverse(NodePath &parent, DNAStorage *store, int edit
   pvector<PT(DNAGroup)>::iterator i = _group_vector.begin();
   for(; i != _group_vector.end(); ++i) {
     PT(DNAGroup) group = *i;
+    dna_cat.spam() << "Traversing wall child in " << get_name() << std::endl;
     // Walls go under the internal_node_path because they need to pick up
     // the scaled width, everything else goes under the building node path
     // because they do not want that scale
@@ -401,7 +401,7 @@ NodePath DNAFlatBuilding::traverse(NodePath &parent, DNAStorage *store, int edit
     // Now flatten everything again
     gr.flatten(building_node_path.node(), ~0);
   }
-
+  
   return building_node_path;
 }
 
@@ -595,6 +595,7 @@ NodePath DNALandmarkBuilding::traverse(NodePath &parent, DNAStorage *store, int 
   pvector<PT(DNAGroup)>::iterator i = _group_vector.begin();
   for(; i != _group_vector.end(); ++i) {
     PT(DNAGroup) group = *i;
+    dna_cat.spam() << "Traversing child: " << group->get_name() << std::endl;
     group->traverse(building_node_path, store, editing);
   }
 
@@ -621,6 +622,7 @@ NodePath DNALandmarkBuilding::traverse(NodePath &parent, DNAStorage *store, int 
       sign_origin.remove_node();
     }
   }
+  
   return building_node_path;
 }
 

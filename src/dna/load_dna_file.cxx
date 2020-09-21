@@ -23,44 +23,47 @@
 //               Begin the filename with ./ to prevent this behavior.
 ////////////////////////////////////////////////////////////////////
 PT(PandaNode) load_DNA_file(DNAStorage *dna_store, const std::string &filename, CoordinateSystem cs, int editing) {
-  // We use binary mode to avoid Windows' end-of-line convention.
-  Filename dna_filename = Filename::binary_filename(filename);
-  if (!dna_filename.is_fully_qualified()) {
-    if (!DNAData::resolve_dna_filename(dna_filename)) {
-      dna_cat.error() << "load_DNA_file could not find " << filename
-        <<"\n    in dna_path: "<<get_dna_path()
-        <<"\n    or model_path: "<<get_model_path()<<"\n";
-      return (PandaNode *)NULL;
+    // We use binary mode to avoid Windows' end-of-line convention.
+    Filename dna_filename = Filename::binary_filename(filename);
+    if (!dna_filename.is_fully_qualified()) {
+      if (!DNAData::resolve_dna_filename(dna_filename)) {
+          dna_cat.error() << "load_DNA_file could not find " << filename
+            <<"\n    in dna_path: "<<get_dna_path()
+            <<"\n    or model_path: "<<get_model_path()<<"\n";
+          return (PandaNode *)NULL;
+      }
     }
-  }
 
-  dna_cat.info() << "Reading " << dna_filename << "\n";
+    dna_cat.info() << "Reading " << dna_filename << "\n";
 
-  DNALoader loader;
-  loader._data->set_dna_filename(dna_filename);
-  loader._data->set_dna_storage(dna_store);
-  if (cs != CS_default) {
-    loader._data->set_coordinate_system(cs);
-  }
-  bool ok_flag;
+    DNALoader loader;
+    loader._data->set_dna_filename(dna_filename);
+    loader._data->set_dna_storage(dna_store);
+    if (cs != CS_default) {
+        loader._data->set_coordinate_system(cs);
+    }
+    bool ok_flag;
 
-  VirtualFileSystem *vfs = VirtualFileSystem::get_global_ptr();
-  std::istream *istr = vfs->open_read_file(dna_filename, true);
-  if (istr == (std::istream *)NULL) {
-    dna_cat.error()
-      << "Could not open " << dna_filename << " for reading.\n";
-    return (PandaNode *)NULL;
-  }
-  ok_flag = loader._data->read(*istr);
-  vfs->close_read_file(istr);
+    VirtualFileSystem *vfs = VirtualFileSystem::get_global_ptr();
+    std::istream *istr = vfs->open_read_file(dna_filename, true);
+    if (istr == (std::istream *)NULL) {
+        dna_cat.error() << "Could not open " << dna_filename << " for reading.\n";
+        return (PandaNode *)NULL;
+    }
+    if (dna_filename.get_extension().compare("cdna") == 0) {
+        ok_flag = loader._data->read_compressed(*istr);
+    } else {
+        ok_flag = loader._data->read(*istr);
+    }
+    vfs->close_read_file(istr);
 
-  if (!ok_flag) {
-    dna_cat.error() << "Error reading " << dna_filename << "\n";
-    return (PandaNode *)NULL;
-  }
+    if (!ok_flag) {
+        dna_cat.error() << "Error reading " << dna_filename << "\n";
+        return (PandaNode *)NULL;
+    }
 
-  dna_cat.debug() << "About to call loader.build_graph\n";
-  return loader.build_graph(dna_store, editing);
+    dna_cat.debug() << "About to call loader.build_graph\n";
+    return loader.build_graph(dna_store, editing);
 }
 
 
@@ -70,39 +73,42 @@ PT(PandaNode) load_DNA_file(DNAStorage *dna_store, const std::string &filename, 
 //               geometry.  Returns the DNAData loaded, or NULL.
 ////////////////////////////////////////////////////////////////////
 PT(DNAData) load_DNA_file_AI(DNAStorage *dna_store, const std::string &filename, CoordinateSystem cs) {
-  Filename dna_filename = Filename::text_filename(filename);
-  if (!DNAData::resolve_dna_filename(dna_filename)) {
-    dna_cat.error() << "load_DNA_file_AI could not find " << filename
-      <<"\n    in dna_path: "<<get_dna_path()
-      <<"\n    or model_path: "<<get_model_path()<<"\n";
-    return NULL;
-  }
+    Filename dna_filename = Filename::text_filename(filename);
+    if (!DNAData::resolve_dna_filename(dna_filename)) {
+        dna_cat.error() << "load_DNA_file_AI could not find " << filename
+          <<"\n    in dna_path: "<<get_dna_path()
+          <<"\n    or model_path: "<<get_model_path()<<"\n";
+        return NULL;
+    }
 
-  dna_cat.info() << "Reading " << dna_filename << "\n";
+    dna_cat.info() << "Reading " << dna_filename << "\n";
 
-  DNALoader loader;
-  loader._data->set_dna_filename(dna_filename);
-  loader._data->set_dna_storage(dna_store);
-  if (cs != CS_default) {
-    loader._data->set_coordinate_system(cs);
-  }
-  bool ok_flag;
+    DNALoader loader;
+    loader._data->set_dna_filename(dna_filename);
+    loader._data->set_dna_storage(dna_store);
+    if (cs != CS_default) {
+        loader._data->set_coordinate_system(cs);
+    }
+    bool ok_flag;
 
-  VirtualFileSystem *vfs = VirtualFileSystem::get_global_ptr();
-  std::istream *istr = vfs->open_read_file(dna_filename, true);
-  if (istr == (std::istream *)NULL) {
-    dna_cat.error()
-      << "Could not open " << dna_filename << " for reading.\n";
-    return NULL;
-  }
-  ok_flag = loader._data->read(*istr);
-  vfs->close_read_file(istr);
+    VirtualFileSystem *vfs = VirtualFileSystem::get_global_ptr();
+    std::istream *istr = vfs->open_read_file(dna_filename, true);
+    if (istr == (std::istream *)NULL) {
+        dna_cat.error() << "Could not open " << dna_filename << " for reading.\n";
+        return NULL;
+    }
+    if (dna_filename.get_extension().compare("cdna") == 0) {
+        ok_flag = loader._data->read_compressed(*istr);
+    } else {
+        ok_flag = loader._data->read(*istr);
+    }
+    vfs->close_read_file(istr);
 
-  if (!ok_flag) {
-    dna_cat.error() << "Error reading " << dna_filename << "\n";
-    return NULL;
-  }
+    if (!ok_flag) {
+        dna_cat.error() << "Error reading " << dna_filename << "\n";
+        return NULL;
+    }
 
-  // Success!
-  return loader._data;
+    // Success!
+    return loader._data;
 }
