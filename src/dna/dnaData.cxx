@@ -183,7 +183,9 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
         PT(DNAGroup) new_group;
         PT(DNASuitPoint) new_point;
 
+        // Vis group related stuff
         PT(DNAVisGroup) visgroup;
+        std::string g_current_zone_name;
         
         if (typecode == TYPECODE_RETURNMARKER) {
             nassertr(current_group != nullptr, 0);
@@ -202,7 +204,9 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
                     break;
                 case TYPECODE_DNAVISGROUP:
                     visgroup = new DNAVisGroup("unnamed_visgroup");
-                    dna_cat.debug() << "current_zone " << visgroup->get_name() << "\n";
+                    // Store our vis group name for later use.
+                    g_current_zone_name = visgroup->get_name();
+                    dna_cat.debug() << "current_zone " << g_current_zone_name << "\n";
 
                     // To be able to store the vis group, It has to be
                     // the proper typing. So we cast back from a vis group
@@ -282,6 +286,11 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
             if (current_group) {
                 new_group->set_parent(current_group);
                 current_group->add(new_group);
+            }
+
+            // If we just made and stored a landmark or animated building. We want to also store the block number.
+            if (new_group->is_of_type(DNALandmarkBuilding::get_class_type()) || new_group->is_of_type(DNAAnimBuilding::get_class_type())) {
+                _dna_store->store_block_number(new_group->get_name(), g_current_zone_name);
             }
             
             // If our class matches any of these, We can not parent stuff to it.
