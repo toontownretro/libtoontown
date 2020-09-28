@@ -54,6 +54,9 @@ void DNABattleCell::write(Datagram &datagram, DNAStorage *store) const {
     datagram.add_stdfloat(_pos.get_z());
     datagram.add_stdfloat(_pos.get_y());
     datagram.add_stdfloat(_pos.get_x());
+
+    // Make sure we are stored in the passed DNAStorage.
+    store->store_battle_cell((DNABattleCell *)this);
 }
 
 

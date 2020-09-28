@@ -241,7 +241,11 @@ void DNAAnimBuilding::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
         set_article(dgi.get_string());
     }
     if (wrote_building_type) {
-        set_building_type(dgi.get_string());
+        std::string building_type = dgi.get_string();
+        set_building_type(building_type);
+
+        // Record this headquarter at this block in the storage
+        store->store_block_building_type(get_name(), building_type);
     }
     set_pos(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
     if (temp_hpr_fix && !is_hpr_fixed) {
