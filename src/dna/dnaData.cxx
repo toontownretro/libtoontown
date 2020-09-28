@@ -177,15 +177,15 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
     
     // Parse the Iterator.
     PT(DNAGroup) current_group = this;
+    std::string g_current_zone_name = "no_zone";
+
     while(dgi.get_remaining_size()) {
         uint8_t typecode = dgi.get_uint8();
         dna_cat.spam() << "Current Typecode: " << uint32_t(typecode) << std::endl;
-        PT(DNAGroup) new_group;
-        PT(DNASuitPoint) new_point;
 
-        // Vis group related stuff
-        PT(DNAVisGroup) visgroup;
-        std::string g_current_zone_name;
+        PT(DNAGroup) new_group = nullptr;
+        PT(DNASuitPoint) new_point = nullptr;
+        PT(DNAVisGroup) visgroup = nullptr;
         
         if (typecode == TYPECODE_RETURNMARKER) {
             nassertr(current_group != nullptr, 0);
@@ -204,18 +204,11 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
                     break;
                 case TYPECODE_DNAVISGROUP:
                     visgroup = new DNAVisGroup("unnamed_visgroup");
-                    // Store our vis group name for later use.
-                    g_current_zone_name = visgroup->get_name();
-                    dna_cat.debug() << "current_zone " << g_current_zone_name << "\n";
 
                     // To be able to store the vis group, It has to be
                     // the proper typing. So we cast back from a vis group
                     // into a normal group instead of the other way around.
                     new_group = visgroup;
-
-                    // This dna vis group needs to be stored now before we traverse
-                    // because the AI does not ever traverse but needs the vis groups
-                    _dna_store->store_DNAVisGroupAI(visgroup);
                     break;
                 case TYPECODE_DNANODE:
                     new_group = new DNANode("unnamed_node");
@@ -286,6 +279,20 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
             if (current_group) {
                 new_group->set_parent(current_group);
                 current_group->add(new_group);
+            }
+
+            // If we just loaded a visgrop, We have some extra things to do.
+            if (new_group->is_of_type(DNAVisGroup::get_class_type())) {
+                // Store our vis group name for later use.
+                g_current_zone_name = visgroup->get_name();
+                dna_cat.debug() << "current_zone " << g_current_zone_name << "\n";
+
+                // This dna vis group needs to be stored now before we traverse
+                // because the AI does not ever traverse but needs the vis groups
+                _dna_store->store_DNAVisGroupAI(visgroup);
+
+                // Now we null this out so the visgroup isn't bound to the function lifespan anymore.
+                visgroup = nullptr;
             }
 
             // If we just made and stored a landmark or animated building. We want to also store the block number.
