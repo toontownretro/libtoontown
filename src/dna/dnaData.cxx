@@ -182,6 +182,8 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
         dna_cat.spam() << "Current Typecode: " << uint32_t(typecode) << std::endl;
         PT(DNAGroup) new_group;
         PT(DNASuitPoint) new_point;
+
+        PT(DNAVisGroup) visgroup;
         
         if (typecode == TYPECODE_RETURNMARKER) {
             nassertr(current_group != nullptr, 0);
@@ -199,7 +201,17 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
                     new_group = new DNAGroup("unnamed_group");
                     break;
                 case TYPECODE_DNAVISGROUP:
-                    new_group = new DNAVisGroup("unnamed_visgroup");
+                    visgroup = new DNAVisGroup("unnamed_visgroup");
+                    dna_cat.debug() << "current_zone " << new_group->get_name() << "\n";
+
+                    // To be able to store the vis group, It has to be
+                    // the proper typing. So we cast back from a vis group
+                    // into a normal group instead of the other way around.
+                    new_group = visgroup;
+
+                    // This dna vis group needs to be stored now before we traverse
+                    // because the AI does not ever traverse but needs the vis groups
+                    _dna_store->store_DNAVisGroupAI(visgroup);
                     break;
                 case TYPECODE_DNANODE:
                     new_group = new DNANode("unnamed_node");
