@@ -187,9 +187,9 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
         
         if (typecode == TYPECODE_RETURNMARKER) {
             nassertr(current_group != nullptr, 0);
-            dna_cat.debug() << "TYPECODE_RETURNMARKER: " << std::endl;
+            dna_cat.spam() << "TYPECODE_RETURNMARKER: " << std::endl;
             PT(DNAGroup) parent = current_group->get_parent();
-            dna_cat.debug() << "Current Group: " << current_group->get_name() << ", New Group: " << (parent ? parent->get_name() : "nullptr") << std::endl;
+            dna_cat.spam() << "Current Group: " << current_group->get_name() << ", New Group: " << (parent ? parent->get_name() : "nullptr") << std::endl;
             if (parent != nullptr) {
                 current_group = parent;
             } else {
@@ -202,7 +202,7 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
                     break;
                 case TYPECODE_DNAVISGROUP:
                     visgroup = new DNAVisGroup("unnamed_visgroup");
-                    dna_cat.debug() << "current_zone " << new_group->get_name() << "\n";
+                    dna_cat.debug() << "current_zone " << visgroup->get_name() << "\n";
 
                     // To be able to store the vis group, It has to be
                     // the proper typing. So we cast back from a vis group
