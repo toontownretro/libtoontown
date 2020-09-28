@@ -199,58 +199,58 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
                     new_group = new DNAGroup("unnamed_group");
                     break;
                 case TYPECODE_DNAVISGROUP:
-                    new_group = new DNAVisGroup("unnamed_group");
+                    new_group = new DNAVisGroup("unnamed_visgroup");
                     break;
                 case TYPECODE_DNANODE:
-                    new_group = new DNANode("unnamed_group");
+                    new_group = new DNANode("unnamed_node");
                     break;
                 case TYPECODE_DNAPROP:
-                    new_group = new DNAProp("unnamed_group");
+                    new_group = new DNAProp("unnamed_prop");
                     break;
                 case TYPECODE_DNASIGN:
-                    new_group = new DNASign("unnamed_group");
+                    new_group = new DNASign("unnamed_sign");
                     break;
                 case TYPECODE_DNASIGNBASELINE:
-                    new_group = new DNASignBaseline("unnamed_group");
+                    new_group = new DNASignBaseline("unnamed_signbaseline");
                     break;
                 case TYPECODE_DNASIGNTEXT:
-                    new_group = new DNASignText("unnamed_group");
+                    new_group = new DNASignText("unnamed_signtext");
                     break;
                 case TYPECODE_DNASIGNGRAPHIC:
-                    new_group = new DNASignGraphic("unnamed_group");
+                    new_group = new DNASignGraphic("unnamed_signgraphic");
                     break;
                 case TYPECODE_DNAWALL:
-                    new_group = new DNAWall("unnamed_group");
+                    new_group = new DNAWall("unnamed_wall");
                     break;
                 case TYPECODE_DNAWINDOWS:
-                    new_group = new DNAWindows("unnamed_group");
+                    new_group = new DNAWindows("unnamed_windows");
                     break;
                 case TYPECODE_DNACORNICE:
-                    new_group = new DNACornice("unnamed_group");
+                    new_group = new DNACornice("unnamed_cornice");
                     break;
                 case TYPECODE_DNADOOR:
-                    new_group = new DNADoor("unnamed_group");
+                    new_group = new DNADoor("unnamed_door");
                     break;
                 case TYPECODE_DNAFLATDOOR:
-                    new_group = new DNAFlatDoor("unnamed_group");
+                    new_group = new DNAFlatDoor("unnamed_flatdoor");
                     break;
                 case TYPECODE_DNASTREET:
-                    new_group = new DNAStreet("unnamed_group");
+                    new_group = new DNAStreet("unnamed_street");
                     break;
                 case TYPECODE_DNAFLATBUILDING:
-                    new_group = new DNAFlatBuilding("unnamed_group");
+                    new_group = new DNAFlatBuilding("unnamed_flatbuilding");
                     break;
                 case TYPECODE_DNALANDMARKBUILDING:
-                    new_group = new DNALandmarkBuilding("unnamed_group");
+                    new_group = new DNALandmarkBuilding("unnamed_landmarkbuilding");
                     break;
                 case TYPECODE_DNAINTERACTIVEPROP:
-                    new_group = new DNAInteractiveProp("unnamed_group");
+                    new_group = new DNAInteractiveProp("unnamed_interactiveprop");
                     break;
                 case TYPECODE_DNAANIMPROP:
-                    new_group = new DNAAnimProp("unnamed_group");
+                    new_group = new DNAAnimProp("unnamed_animprop");
                     break;
                 case TYPECODE_DNAANIMBUILDING:
-                    new_group = new DNAAnimBuilding("unnamed_group");
+                    new_group = new DNAAnimBuilding("unnamed_animbuilding");
                     break;
                 case TYPECODE_DNASUITPOINT:
                     new_point = new DNASuitPoint();
@@ -316,7 +316,7 @@ resolve_externals(const std::string &searchpath, std::ostream &error) {
 ////////////////////////////////////////////////////////////////////
 //     Function: DNAData::write_dna
 //       Access: Public
-//  Description: The main interface for writing complete dna files.
+//  Description: The main interface for writing complete dna or cdna files.
 ////////////////////////////////////////////////////////////////////
 bool DNAData::
 write_dna(Filename filename, std::ostream &error, DNAStorage *store) {
@@ -329,8 +329,12 @@ write_dna(Filename filename, std::ostream &error, DNAStorage *store) {
     error << "Unable to open " << filename << " for writing.\n";
     return false;
   }
-
-  return write_dna(file, error, store);
+  
+  if (filename.get_extension().compare("cdna") == 0) {
+      return write_cdna(file, error, store);
+  } else {
+      return write_dna(file, error, store);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -342,6 +346,32 @@ bool DNAData::
 write_dna(std::ostream &out, std::ostream &error, DNAStorage *store) {
   pre_write();
   write(out, store, 0);
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////
+//     Function: DNAData::write_cdna
+//       Access: Public
+//  Description: The main interface for writing complete cdna files.
+////////////////////////////////////////////////////////////////////
+bool DNAData::
+write_cdna(std::ostream &out, std::ostream &error, DNAStorage *store) {
+  Datagram datagram = Datagram();
+  write(datagram, store);
+  
+  DatagramIterator dgi(datagram, 0);
+  // Grab the size for the data we just worked on.
+  size_t size = dgi.get_remaining_size();
+  nassertr(size > 0, false);
+  // Create our string to store our data.
+  std::string data;
+  data.resize(size);
+  // Extract our bytes out into the string.
+  dgi.extract_bytes((unsigned char *)data.data(), size);
+  // Now we finally add the data to our main datagram.
+  datagram.append_data(data.data(), data.size());
+  // Finally write our data to the file.
+  out << data << std::flush;
   return true;
 }
 
@@ -429,6 +459,7 @@ write(std::ostream &out, DNAStorage *store, int indent_level) const {
 ////////////////////////////////////////////////////////////////////
 void DNAData::
 write(Datagram &datagram, DNAStorage *store) const {
+    dna_cat.debug() << "Writing CDNA file...." << std::endl;
     // Write our header. This is will be checked on read.
     datagram.append_data("CDNA\n", 6);
     
@@ -440,12 +471,22 @@ write(Datagram &datagram, DNAStorage *store) const {
     
     // We need to save if the Datagram has stdfloat double enabled for reading.
     // Float sizes can vary in Panda3D and it's important to support it.
-    datagram.add_bool(datagram.get_stdfloat_double());
+    bool stdfloat_double = datagram.get_stdfloat_double();
+    datagram.add_bool(stdfloat_double);
 
     // For now, We compress by default. Some files above a certain size should
     // probably require compression in the future.
-    bool compressed = 1;
-    datagram.add_bool(compressed);
+    bool compress = compress_cdna.get_value();
+    datagram.add_bool(compress);
+
+    int compression_level = std::min(std::max(cdna_compression_level.get_value(), 0), 9);
+
+    dna_cat.debug() << "CDNA version: " << uint32_t(CDNA_VER_MAJOR) << "." << uint32_t(CDNA_VER_MINOR) << "." << uint32_t(CDNA_VER_VERY_MINOR) << std::endl;
+    dna_cat.debug() << "Stdfloat Doubles: " << uint32_t(stdfloat_double) << std::endl;
+    dna_cat.debug() << "Compression: " << uint32_t(compress) << std::endl;
+    if (compress) {
+        dna_cat.debug() << "Compression Level: " << compression_level << std::endl;
+    }
     
     // Create a working Datagram to seperate our dna data from our header data.
     Datagram workDg = Datagram();
@@ -474,8 +515,8 @@ write(Datagram &datagram, DNAStorage *store) const {
     // Extract our bytes out into the string.
     dgi.extract_bytes((unsigned char *)data.data(), size);
     // If we're compressing the data, Use Panda3d's built in compress string to compress it.
-    if (compressed) {
-        data = compress_string(data, 9);
+    if (compress) {
+        data = compress_string(data, compression_level);
     }
     // Now we finally add the data to our main datagram.
     datagram.append_data(data.data(), data.size());

@@ -40,6 +40,9 @@ NotifyCategoryDef(dna, "");
 ConfigVariableList dna_preload("dna-preload");
 ConfigVariableSearchPath dna_path("dna-path");
 
+ConfigVariableBool compress_cdna("compress-cdna", true, PRC_DESC("Set this true to compress written .cdna files."));
+ConfigVariableInt cdna_compression_level("cdna-compression-level", "9");
+
 ConfigureFn(config_dna) {
     init_libdnaLoader();
 }

@@ -10,7 +10,9 @@
 #include <pandabase.h>
 #include <notifyCategoryProxy.h>
 #include <config_linmath.h>
+#include <configVariableBool.h>
 #include <configVariableList.h>
+#include <configVariableInt.h>
 #include <configVariableSearchPath.h>
 #include <coordinateSystem.h>
 #include <pandaNode.h>
@@ -20,6 +22,9 @@ class DSearchPath;
 
 extern ConfigVariableList dna_preload;
 extern ConfigVariableSearchPath dna_path;
+
+extern ConfigVariableBool compress_cdna;
+extern ConfigVariableInt cdna_compression_level;
 
 NotifyCategoryDecl(dna, EXPCL_TOONTOWN, EXPTP_TOONTOWN);
 extern void init_libdnaLoader();

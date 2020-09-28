@@ -48,6 +48,8 @@ PUBLISHED:
 
   bool write_dna(Filename filename, std::ostream &error, DNAStorage *store);
   bool write_dna(std::ostream &out, std::ostream &error, DNAStorage *store);
+  
+  bool write_cdna(std::ostream &out, std::ostream &error, DNAStorage *store);
 
   void set_coordinate_system(CoordinateSystem coordsys);
   INLINE CoordinateSystem get_coordinate_system() const;
