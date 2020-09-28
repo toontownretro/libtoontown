@@ -94,7 +94,7 @@ read(Filename filename, std::ostream &error) {
   }
   
   if (filename.get_extension().compare("cdna") == 0) {
-      return read_compressed(file, error);
+      return read_compressed(filename, error);
   }
   return read(file, error);
 }
@@ -132,57 +132,45 @@ bool DNAData::read(std::istream &in, std::ostream &error) {
 //               completely valid CDNA file, false if there were some
 //               errors, in which case the data may be partially read.
 ////////////////////////////////////////////////////////////////////
-bool DNAData::read_compressed(std::istream &in, std::ostream &error) {
+bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
     // First, dispense with any children we had previously.  We will
     // replace them with the new data.
     dna_cat.debug() << "start of dnaData.read_compressed\n";
     _group_vector.clear();
     
-    const char *header = "CDNA\n";
-    char *read_header = new char[7];
-    in.read(read_header, 6);
+    static VirtualFileSystem* vfs = VirtualFileSystem::get_global_ptr();
+    Filename found(filename);
     
-    if (memcmp(header, read_header, 6)) {
-        dna_cat.error() << "Invalid header for .cdna file!" << std::endl;
-        return 0;
-    }
+    std::string data;
+    vfs->read_file(found, data, true);
     
-    delete[] read_header;
+    nassertr(data.size() > 7, false);
+    nassertr(data.substr(0, 5) == "CDNA\n", false);
+    data = data.substr(6);
     
     // Now let's read out the written version.
-    uint8_t major_ver = 0;
-    uint8_t minor_ver = 0;
-    uint8_t very_minor_ver = 0;
-    in.get((char &)major_ver);
-    in.get((char &)minor_ver);
-    in.get((char &)very_minor_ver);
+    uint8_t major_ver = (uint8_t)data[0];
+    uint8_t minor_ver = (uint8_t)data[1];
+    uint8_t very_minor_ver = (uint8_t)data[2];
+    data = data.substr(3);
 
     // Get the stdfloat double mode for the datagram.
-    bool stdfloat_double = 0;
-    in.get((char&)stdfloat_double);
+    bool stdfloat_double = (data[0] != 0);
+    // Is the rest of our data compressed?
+    bool compressed = (data[1] != 0);
+    data = data.substr(2);
 
-    dna_cat.debug() << "CDNA version is: " << uint32_t(major_ver) << "." << uint32_t(minor_ver) << "." << uint32_t(very_minor_ver) << std::endl;
+    dna_cat.debug() << "CDNA version: " << uint32_t(major_ver) << "." << uint32_t(minor_ver) << "." << uint32_t(very_minor_ver) << std::endl;
+    dna_cat.debug() << "Stdfloat Doubles: " << uint32_t(stdfloat_double) << std::endl;
+    dna_cat.debug() << "Compressed: " << uint32_t(compressed) << std::endl;
 
-    dna_cat.debug() << "Stdfloat double mode is: " << uint32_t(stdfloat_double) << std::endl;
-    
-    // Get the size of the remaining data.
-    size_t current_size = in.tellg();
-    //dna_cat.debug() << "Pre-Calc Length: " << current_size << std::endl;
-    in.seekg(0, in.end);
-    size_t length = in.tellg();
-    in.seekg (0, in.beg);
-    in.seekg(current_size);
-    //dna_cat.debug() << "Full Length: " << length << std::endl;
-    length = length - current_size;
-    //dna_cat.debug() << "Current Length: " << length << std::endl;
-    
-    // Read out the data.
-    char *data = new char[length + 1];
-    data[length + 1] = 0;
-    in.read(data, length);
+    // If our data is compressed, Decompress it with Panda3d's built in decompress string.
+    if (compressed) {
+        data = decompress_string(data);
+    }
     
     // Create our Datagram and it's Iterator.
-    Datagram dg((void *)data, length);
+    Datagram dg(data.data(), data.size());
     // Set the stdfloat double mode.
     dg.set_stdfloat_double(stdfloat_double);
     DatagramIterator dgi(dg);
@@ -284,20 +272,22 @@ bool DNAData::read_compressed(std::istream &in, std::ostream &error) {
                 current_group->add(new_group);
             }
             
-            if (!new_group->is_of_type(DNAWindows::get_class_type()) && 
-                !new_group->is_of_type(DNACornice::get_class_type()) && 
-                !new_group->is_of_type(DNADoor::get_class_type()) && 
+            // If our class matches any of these, We can not parent stuff to it.
+            // It will cause reading errors. There might be better way to do this.
+            // If so we cn remove this in the future.
+            if (!new_group->is_of_type(DNACornice::get_class_type()) &&
+                !new_group->is_of_type(DNADoor::get_class_type()) &&
                 !new_group->is_of_type(DNAFlatDoor::get_class_type()) &&
-                !new_group->is_of_type(DNAStreet::get_class_type()) &&
                 !new_group->is_of_type(DNASignGraphic::get_class_type()) &&
-                !new_group->is_of_type(DNASignText::get_class_type()))
+                !new_group->is_of_type(DNASignText::get_class_type()) &&
+                !new_group->is_of_type(DNAStreet::get_class_type()) &&
+                !new_group->is_of_type(DNAWindows::get_class_type()))
             {
+                //dna_cat.debug() << "Changing Parent:" << current_group->get_name() << " -> " << new_group->get_name() << std::endl;
                 current_group = new_group;
             }
         }
     }
-    
-    delete[] data;
 
     post_read(error);
 
@@ -452,9 +442,17 @@ write(Datagram &datagram, DNAStorage *store) const {
     // Float sizes can vary in Panda3D and it's important to support it.
     datagram.add_bool(datagram.get_stdfloat_double());
 
+    // For now, We compress by default. Some files above a certain size should
+    // probably require compression in the future.
+    bool compressed = 1;
+    datagram.add_bool(compressed);
+    
+    // Create a working Datagram to seperate our dna data from our header data.
+    Datagram workDg = Datagram();
+
     // Write out anything the store wants to write
     store->fixup();
-    store->write(datagram);
+    store->write(workDg);
 
     // Do not write out this group, just the children
     // DNAGroup::write(datagram, store);
@@ -463,8 +461,24 @@ write(Datagram &datagram, DNAStorage *store) const {
     for(; i != _group_vector.end(); ++i) {
         // Traverse each node in our vector
         PT(DNAGroup) group = *i;
-        group->write(datagram, store);
+        group->write(workDg, store);
     }
+    
+
+    DatagramIterator dgi(workDg, 0);
+    // Grab the size for the data we just worked on.
+    size_t size = dgi.get_remaining_size();
+    // Create our string to store our data.
+    std::string data;
+    data.resize(size);
+    // Extract our bytes out into the string.
+    dgi.extract_bytes((unsigned char *)data.data(), size);
+    // If we're compressing the data, Use Panda3d's built in compress string to compress it.
+    if (compressed) {
+        data = compress_string(data, 9);
+    }
+    // Now we finally add the data to our main datagram.
+    datagram.append_data(data.data(), data.size());
 }
 
 

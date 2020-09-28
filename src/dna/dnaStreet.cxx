@@ -171,25 +171,25 @@ void DNAStreet::write(Datagram &datagram, DNAStorage *store) const {
     datagram.add_bool(temp_hpr_fix);
     datagram.add_string(get_name());
     datagram.add_string(get_code());
-    datagram.add_stdfloat(_pos[0]);
-    datagram.add_stdfloat(_pos[1]);
-    datagram.add_stdfloat(_pos[2]);
-    datagram.add_stdfloat(_hpr[0]);
-    datagram.add_stdfloat(_hpr[1]);
-    datagram.add_stdfloat(_hpr[2]);
+    datagram.add_stdfloat(_pos.get_z());
+    datagram.add_stdfloat(_pos.get_y());
+    datagram.add_stdfloat(_pos.get_x());
+    datagram.add_stdfloat(_hpr.get_z());
+    datagram.add_stdfloat(_hpr.get_y());
+    datagram.add_stdfloat(_hpr.get_x());
     if (write_colors) {
-        datagram.add_stdfloat(_street_color[0]);
-        datagram.add_stdfloat(_street_color[1]);
-        datagram.add_stdfloat(_street_color[2]);
-        datagram.add_stdfloat(_street_color[3]);
-        datagram.add_stdfloat(_sidewalk_color[0]);
-        datagram.add_stdfloat(_sidewalk_color[1]);
-        datagram.add_stdfloat(_sidewalk_color[2]);
-        datagram.add_stdfloat(_sidewalk_color[3]);
-        datagram.add_stdfloat(_curb_color[0]);
-        datagram.add_stdfloat(_curb_color[1]);
-        datagram.add_stdfloat(_curb_color[2]);
-        datagram.add_stdfloat(_curb_color[3]);
+        datagram.add_stdfloat(_street_color.get_w());
+        datagram.add_stdfloat(_street_color.get_z());
+        datagram.add_stdfloat(_street_color.get_y());
+        datagram.add_stdfloat(_street_color.get_x());
+        datagram.add_stdfloat(_sidewalk_color.get_w());
+        datagram.add_stdfloat(_sidewalk_color.get_z());
+        datagram.add_stdfloat(_sidewalk_color.get_y());
+        datagram.add_stdfloat(_sidewalk_color.get_x());
+        datagram.add_stdfloat(_curb_color.get_w());
+        datagram.add_stdfloat(_curb_color.get_z());
+        datagram.add_stdfloat(_curb_color.get_y());
+        datagram.add_stdfloat(_curb_color.get_x());
     }
     datagram.add_string(_street_texture);
     datagram.add_string(_sidewalk_texture);
@@ -201,6 +201,12 @@ void DNAStreet::write(Datagram &datagram, DNAStorage *store) const {
         // Traverse each node in our vector
         PT(DNAGroup) group = *i;
         group->write(datagram, store);
+    }
+
+    // We add a return marker to inform our dna reader that this grouping is over, 
+    // But only if we actually HAVE children.
+    if (_group_vector.size() > 0) {
+        datagram.add_uint8(TYPECODE_RETURNMARKER);
     }
 }
 

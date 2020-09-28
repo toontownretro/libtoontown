@@ -162,26 +162,26 @@ void DNAAnimProp::write(Datagram &datagram, DNAStorage *store) const {
     datagram.add_string(get_code());
     datagram.add_string(get_anim());
     if (write_pos) {
-        datagram.add_stdfloat(_pos.get_x());
-        datagram.add_stdfloat(_pos.get_y());
         datagram.add_stdfloat(_pos.get_z());
+        datagram.add_stdfloat(_pos.get_y());
+        datagram.add_stdfloat(_pos.get_x());
     }
     if (write_hpr) {
         datagram.add_bool(temp_hpr_fix);
-        datagram.add_stdfloat(_hpr.get_x());
-        datagram.add_stdfloat(_hpr.get_y());
         datagram.add_stdfloat(_hpr.get_z());
+        datagram.add_stdfloat(_hpr.get_y());
+        datagram.add_stdfloat(_hpr.get_x());
     }
     if (write_scale) {
-        datagram.add_stdfloat(_scale.get_x());
-        datagram.add_stdfloat(_scale.get_y());
         datagram.add_stdfloat(_scale.get_z());
+        datagram.add_stdfloat(_scale.get_y());
+        datagram.add_stdfloat(_scale.get_x());
     }
      if (write_color) {
-        datagram.add_stdfloat(_color.get_x());
-        datagram.add_stdfloat(_color.get_y());
-        datagram.add_stdfloat(_color.get_z());
         datagram.add_stdfloat(_color.get_w());
+        datagram.add_stdfloat(_color.get_z());
+        datagram.add_stdfloat(_color.get_y());
+        datagram.add_stdfloat(_color.get_x());
      }
   
     // Write all the children
@@ -191,6 +191,9 @@ void DNAAnimProp::write(Datagram &datagram, DNAStorage *store) const {
         PT(DNAGroup) group = *i;
         group->write(datagram, store);
     }
+
+    // We add a return marker to inform our dna reader that this grouping is over.
+    datagram.add_uint8(TYPECODE_RETURNMARKER);
 }
 
 ////////////////////////////////////////////////////////////////////

@@ -51,7 +51,7 @@ PT(PandaNode) load_DNA_file(DNAStorage *dna_store, const std::string &filename, 
         return (PandaNode *)NULL;
     }
     if (dna_filename.get_extension().compare("cdna") == 0) {
-        ok_flag = loader._data->read_compressed(*istr);
+        ok_flag = loader._data->read_compressed(dna_filename);
     } else {
         ok_flag = loader._data->read(*istr);
     }
@@ -98,7 +98,7 @@ PT(DNAData) load_DNA_file_AI(DNAStorage *dna_store, const std::string &filename,
         return NULL;
     }
     if (dna_filename.get_extension().compare("cdna") == 0) {
-        ok_flag = loader._data->read_compressed(*istr);
+        ok_flag = loader._data->read_compressed(dna_filename);
     } else {
         ok_flag = loader._data->read(*istr);
     }

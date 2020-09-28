@@ -333,6 +333,9 @@ void DNAVisGroup::write(Datagram &datagram, DNAStorage *store) const {
         PT(DNAGroup) group = *j;
         group->write(datagram, store);
     }
+
+    // We add a return marker to inform our dna reader that this grouping is over.
+    datagram.add_uint8(TYPECODE_RETURNMARKER);
 }
 
 

@@ -172,26 +172,26 @@ void DNASignGraphic::write(Datagram &datagram, DNAStorage *store) const {
     datagram.add_string(get_name());
     datagram.add_string(get_code());
     if (write_pos) {
-        datagram.add_stdfloat(_pos.get_x());
-        datagram.add_stdfloat(_pos.get_y());
         datagram.add_stdfloat(_pos.get_z());
+        datagram.add_stdfloat(_pos.get_y());
+        datagram.add_stdfloat(_pos.get_x());
     }
     if (write_hpr) {
         datagram.add_bool(temp_hpr_fix);
-        datagram.add_stdfloat(_hpr.get_x());
-        datagram.add_stdfloat(_hpr.get_y());
         datagram.add_stdfloat(_hpr.get_z());
+        datagram.add_stdfloat(_hpr.get_y());
+        datagram.add_stdfloat(_hpr.get_x());
     }
     if (write_scale) {
-        datagram.add_stdfloat(_scale.get_x());
-        datagram.add_stdfloat(_scale.get_y());
         datagram.add_stdfloat(_scale.get_z());
+        datagram.add_stdfloat(_scale.get_y());
+        datagram.add_stdfloat(_scale.get_x());
     }
      if (write_color) {
-        datagram.add_stdfloat(_color.get_x());
-        datagram.add_stdfloat(_color.get_y());
-        datagram.add_stdfloat(_color.get_z());
         datagram.add_stdfloat(_color.get_w());
+        datagram.add_stdfloat(_color.get_z());
+        datagram.add_stdfloat(_color.get_y());
+        datagram.add_stdfloat(_color.get_x());
      }
      if (write_width) {
         datagram.add_stdfloat(_width);
@@ -199,14 +199,6 @@ void DNASignGraphic::write(Datagram &datagram, DNAStorage *store) const {
      if (write_height) {
         datagram.add_stdfloat(_height);
      }
-  
-    // Write all the children
-    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
-    for(; i != _group_vector.end(); ++i) {
-        // Traverse each node in our vector
-        PT(DNAGroup) group = *i;
-        group->write(datagram, store);
-    }
 }
 
 ////////////////////////////////////////////////////////////////////

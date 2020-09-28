@@ -58,7 +58,7 @@ class EXPCL_TOONTOWN DNASuitPoint : public TypedReferenceCount {
         // the suit point may belong to.
         int _graph_id;
         // Index of landmark building if this is a door point
-        int _lb_index;
+        int _lb_index = -1;
 
     public:
         static TypeHandle get_class_type() { return _type_handle; }

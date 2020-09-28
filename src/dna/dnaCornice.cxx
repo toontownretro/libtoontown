@@ -162,18 +162,10 @@ void DNACornice::write(Datagram &datagram, DNAStorage *store) const {
     datagram.add_uint8(TYPECODE_DNACORNICE);
     datagram.add_string(get_name());
     datagram.add_string(get_code());
-    datagram.add_stdfloat(_color.get_x());
-    datagram.add_stdfloat(_color.get_y());
-    datagram.add_stdfloat(_color.get_z());
     datagram.add_stdfloat(_color.get_w());
-
-    // Write all the children
-    pvector<PT(DNAGroup)>::const_iterator i = _group_vector.begin();
-    for(; i != _group_vector.end(); ++i) {
-        // Traverse each node in our vector
-        PT(DNAGroup) group = *i;
-        group->write(datagram, store);
-    }
+    datagram.add_stdfloat(_color.get_z());
+    datagram.add_stdfloat(_color.get_y());
+    datagram.add_stdfloat(_color.get_x());
 }
 
 

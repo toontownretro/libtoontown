@@ -120,15 +120,15 @@ void DNANode::write(Datagram &datagram, DNAStorage *store) const {
     datagram.add_bool(write_properties);
     if (write_properties) {
         datagram.add_bool(temp_hpr_fix);
-        datagram.add_stdfloat(_pos.get_x());
-        datagram.add_stdfloat(_pos.get_y());
         datagram.add_stdfloat(_pos.get_z());
-        datagram.add_stdfloat(_hpr.get_x());
-        datagram.add_stdfloat(_hpr.get_y());
+        datagram.add_stdfloat(_pos.get_y());
+        datagram.add_stdfloat(_pos.get_x());
         datagram.add_stdfloat(_hpr.get_z());
-        datagram.add_stdfloat(_scale.get_x());
-        datagram.add_stdfloat(_scale.get_y());
+        datagram.add_stdfloat(_hpr.get_y());
+        datagram.add_stdfloat(_hpr.get_x());
         datagram.add_stdfloat(_scale.get_z());
+        datagram.add_stdfloat(_scale.get_y());
+        datagram.add_stdfloat(_scale.get_x());
     }
   
     // Write all the children
@@ -138,6 +138,9 @@ void DNANode::write(Datagram &datagram, DNAStorage *store) const {
         PT(DNAGroup) group = *i;
         group->write(datagram, store);
     }
+
+    // We add a return marker to inform our dna reader that this grouping is over.
+    datagram.add_uint8(TYPECODE_RETURNMARKER);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -150,7 +153,9 @@ void DNANode::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
     bool wrote_properties = dgi.get_bool();
     if (wrote_properties) {
         bool is_hpr_fixed = dgi.get_bool();
+        
         set_pos(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
+
         // Just because normally old hpr is scrapped, 
         // Doesn't mean we don't want to convert it still.
         if (temp_hpr_fix && !is_hpr_fixed) {

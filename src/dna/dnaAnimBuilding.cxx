@@ -194,18 +194,18 @@ void DNAAnimBuilding::write(Datagram &datagram, DNAStorage *store) const {
     if (write_building_type) {
         datagram.add_string(get_building_type());
     }
-    datagram.add_stdfloat(_pos.get_x());
-    datagram.add_stdfloat(_pos.get_y());
     datagram.add_stdfloat(_pos.get_z());
-    datagram.add_stdfloat(_hpr.get_x());
-    datagram.add_stdfloat(_hpr.get_y());
+    datagram.add_stdfloat(_pos.get_y());
+    datagram.add_stdfloat(_pos.get_x());
     datagram.add_stdfloat(_hpr.get_z());
+    datagram.add_stdfloat(_hpr.get_y());
+    datagram.add_stdfloat(_hpr.get_x());
 
     if (write_color) {
-        datagram.add_stdfloat(_wall_color.get_x());
-        datagram.add_stdfloat(_wall_color.get_y());
-        datagram.add_stdfloat(_wall_color.get_z());
         datagram.add_stdfloat(_wall_color.get_w());
+        datagram.add_stdfloat(_wall_color.get_z());
+        datagram.add_stdfloat(_wall_color.get_y());
+        datagram.add_stdfloat(_wall_color.get_x());
     }
 
     // Write all the children
@@ -215,6 +215,9 @@ void DNAAnimBuilding::write(Datagram &datagram, DNAStorage *store) const {
         PT(DNAGroup) group = *i;
         group->write(datagram, store);
     }
+
+    // We add a return marker to inform our dna reader that this grouping is over.
+    datagram.add_uint8(TYPECODE_RETURNMARKER);
 }
 
 ////////////////////////////////////////////////////////////////////

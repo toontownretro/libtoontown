@@ -14,6 +14,7 @@
 #include <dSearchPath.h>
 #include <datagram.h>
 #include <datagramIterator.h>
+#include <compress_string.h>
 
 #include <string>
 
@@ -40,7 +41,7 @@ PUBLISHED:
   bool read(Filename filename, std::ostream &error = error_stream);
   bool read(std::istream &in, std::ostream &error = error_stream);
   
-  bool read_compressed(std::istream &in, std::ostream &error = error_stream);
+  bool read_compressed(const Filename &filename, std::ostream &error = error_stream);
 
   static bool resolve_dna_filename(Filename &dna_filename, const DSearchPath &searchpath = DSearchPath());
   bool resolve_externals(const std::string &searchpath, std::ostream &error = error_stream);

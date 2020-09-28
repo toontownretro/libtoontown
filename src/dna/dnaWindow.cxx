@@ -229,10 +229,10 @@ void DNAWindows::write(std::ostream &out, DNAStorage *store, int indent_level) c
 void DNAWindows::write(Datagram &datagram, DNAStorage *store) const {
     datagram.add_uint8(TYPECODE_DNAWINDOWS);
     datagram.add_string(get_code());
-    datagram.add_stdfloat(_color[0]);
-    datagram.add_stdfloat(_color[1]);
-    datagram.add_stdfloat(_color[2]);
-    datagram.add_stdfloat(_color[3]);
+    datagram.add_stdfloat(_color.get_w());
+    datagram.add_stdfloat(_color.get_z());
+    datagram.add_stdfloat(_color.get_y());
+    datagram.add_stdfloat(_color.get_x());
     datagram.add_int32(get_window_count());
 
     // Write all the children
@@ -241,6 +241,12 @@ void DNAWindows::write(Datagram &datagram, DNAStorage *store) const {
         // Traverse each node in our vector
         PT(DNAGroup) group = *i;
         group->write(datagram, store);
+    }
+
+    // We add a return marker to inform our dna reader that this grouping is over, 
+    // But only if we actually HAVE children.
+    if (_group_vector.size() > 0) {
+        datagram.add_uint8(TYPECODE_RETURNMARKER);
     }
 }
 

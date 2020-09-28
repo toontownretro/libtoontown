@@ -139,8 +139,7 @@ NodePath DNASignBaseline::traverse(NodePath &parent, DNAStorage *store, int edit
   if (!_code.empty()) {
     _font = store->find_font(_code);
     if (_font.is_null()) {
-      dna_cat.error()
-        << "unable to find baseline font " << _code << std::endl;
+      dna_cat.error() << "unable to find baseline font " << _code << std::endl;
     }
   }
 
@@ -320,26 +319,26 @@ void DNASignBaseline::write(Datagram &datagram, DNAStorage *store) const {
         datagram.add_string(get_flags());
     }
     if (write_pos) {
-        datagram.add_stdfloat(_pos.get_x());
-        datagram.add_stdfloat(_pos.get_y());
         datagram.add_stdfloat(_pos.get_z());
+        datagram.add_stdfloat(_pos.get_y());
+        datagram.add_stdfloat(_pos.get_x());
     }
     if (write_hpr) {
         datagram.add_bool(temp_hpr_fix);
-        datagram.add_stdfloat(_hpr.get_x());
-        datagram.add_stdfloat(_hpr.get_y());
         datagram.add_stdfloat(_hpr.get_z());
+        datagram.add_stdfloat(_hpr.get_y());
+        datagram.add_stdfloat(_hpr.get_x());
     }
     if (write_scale) {
-        datagram.add_stdfloat(_scale.get_x());
-        datagram.add_stdfloat(_scale.get_y());
         datagram.add_stdfloat(_scale.get_z());
+        datagram.add_stdfloat(_scale.get_y());
+        datagram.add_stdfloat(_scale.get_x());
     }
     if (write_color) {
-        datagram.add_stdfloat(_color.get_x());
-        datagram.add_stdfloat(_color.get_y());
-        datagram.add_stdfloat(_color.get_z());
         datagram.add_stdfloat(_color.get_w());
+        datagram.add_stdfloat(_color.get_z());
+        datagram.add_stdfloat(_color.get_y());
+        datagram.add_stdfloat(_color.get_x());
     }
     if (_indent) {
         datagram.add_stdfloat(_indent);
@@ -369,6 +368,12 @@ void DNASignBaseline::write(Datagram &datagram, DNAStorage *store) const {
         // Traverse each node in our vector
         PT(DNAGroup) group = *i;
         group->write(datagram, store);
+    }
+
+    // We add a return marker to inform our dna reader that this grouping is over, 
+    // But only if we actually HAVE children.
+    if (_group_vector.size() > 0) {
+        datagram.add_uint8(TYPECODE_RETURNMARKER);
     }
 }
 
