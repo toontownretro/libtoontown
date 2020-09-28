@@ -6,7 +6,7 @@ import os
 srcdir = os.path.abspath(os.path.dirname(__file__))
 pandadir = os.path.abspath(sys.argv[1])
 
-ignoredFiles = ["parser.yxx", "parser.cxx", "parser.hxx", "lexer.cxx", "lexer.lxx"]
+ignoredFiles = ["parser.yxx", "parser.cxx", "parser.hxx", "parser.h", "lexer.cxx", "lexer.lxx"]
 
 def run_command(cmd):
     p = subprocess.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, shell=True)

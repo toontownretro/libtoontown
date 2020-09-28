@@ -5,9 +5,16 @@
 
 %{
 
-#include "toontownbase.h"
+// #define DO_YYDEBUG
+#ifdef DO_YYDEBUG
+#define YYDEBUG 1
+#endif
+
 #include "parserDefs.h"
 #include "lexerDefs.h"
+#include "parser.hxx"
+
+#include "toontownbase.h"
 #include "dnaLoader.h"
 #include "dnaGroup.h"
 #include "dnaVisGroup.h"
@@ -42,6 +49,18 @@
 #include "string_utils.h"
 #include "pvector.h"
 
+using std::istream;
+using std::ostringstream;
+using std::string;
+
+// Because our token type contains objects of type string, which
+// require correct copy construction (and not simply memcpying), we
+// cannot use bison's built-in auto-stack-grow feature.  As an easy
+// solution, we ensure here that we have enough yacc stack to start
+// with, and that it doesn't ever try to grow.
+#define YYINITDEPTH 1000
+#define YYMAXDEPTH 1000
+
 ////////////////////////////////////////////////////////////////////
 // Defining the interface to the parser.
 ////////////////////////////////////////////////////////////////////
@@ -74,8 +93,10 @@ dna_init_parser(std::istream &in,
                 std::ostream &err,
                 const std::string &filename,
                 DNAData* top_node) {
+#ifdef DO_YYDEBUG
+  dnayydebug = 1;
+#endif
   dna_init_lexer(in, err, filename);
-
   dna_stack.clear();
   dna_stack.push_back(top_node);
   dna_top_node = top_node;
@@ -136,8 +157,8 @@ dna_cleanup_parser() {
 
 %type <_string> required_name
 %type <_string> required_string
-%type <_string> std::string
-// %type <_bool> bool
+%type <_string> string
+//%type <_bool> bool
 
 %type <_string> code
 %type <_string> anim
@@ -263,12 +284,12 @@ vis:
 
 // The vis list must always at least contain the name of the current group
 vis_list:
-        std::string
+        string
 {
   DNAVisGroup *visgroup = DCAST(DNAVisGroup, dna_stack.back());
   visgroup->add_visible($1);
 }
-        | vis_list std::string
+        | vis_list string
 {
   DNAVisGroup *visgroup = DCAST(DNAVisGroup, dna_stack.back());
   visgroup->add_visible($2);
@@ -1496,7 +1517,7 @@ article:
         ;
 
 building_type:
-        BUILDING_TYPE '[' std::string ']'
+        BUILDING_TYPE '[' string ']'
 {
   $$ = $3;
 }
@@ -1618,9 +1639,9 @@ store_node_list:
 
 // Store a node: parameters are category, code_string, node, code
 store_node:
-       STORE_NODE '[' std::string std::string std::string ']'
+       STORE_NODE '[' string string string ']'
 {
-  // If the std::string is empty std::string that means use the top node of the model
+  // If the string is empty string that means use the top node of the model
   if ($5 == "") {
     // If this model is neighborhood specific, store it in the hood map
     if (current_model_hood) {
@@ -1652,8 +1673,8 @@ store_node:
 
 }
 
-// Shortcut if the dna std::string is the same name as the node
-       | STORE_NODE '[' std::string std::string ']'
+// Shortcut if the dna string is the same name as the node
+       | STORE_NODE '[' string string ']'
 {
   std::string find_string = $4;
   NodePath node = current_model.find(find_string.insert(0, "**/"));
@@ -1677,7 +1698,7 @@ store_node:
 
 // Store a texture: parameters are category, code_string, filename
 store_texture:
-       STORE_TEXTURE '[' std::string std::string std::string ']'
+       STORE_TEXTURE '[' string string string ']'
 {
   PT(Texture) texture = TexturePool::load_texture($5);
   if (texture == (Texture *)NULL) {
@@ -1693,7 +1714,7 @@ store_texture:
 
 // Store a font: parameters are category, code_string, filename
 store_font:
-       STORE_FONT '[' std::string std::string std::string ']'
+       STORE_FONT '[' string string string ']'
 {
   Filename model = $5;
   if (model.get_extension() == "") {
@@ -1780,7 +1801,7 @@ suit_point_type:
  * required_name
  *
  * enter:
- * exit: Returns a nonempty std::string as the name of an DnaObject.
+ * exit: Returns a nonempty string as the name of an DnaObject.
  *
  */
 required_name:
@@ -1789,7 +1810,7 @@ required_name:
   dnayyerror("Name required.");
   $$ = "";
 }
-        | std::string
+        | string
         ;
 
 
@@ -1798,7 +1819,7 @@ required_name:
  * required_string
  *
  * enter:
- * exit: Returns a nonempty std::string.
+ * exit: Returns a nonempty string.
  *
  */
 required_string:
@@ -1807,21 +1828,20 @@ required_string:
   dnayyerror("String required.");
   $$ = "";
 }
-        | std::string
+        | string
         ;
 
 /*
- * std::string
+ * string
  *
  * enter:
- * exit: Returns a nonempty std::string.  This is different from required_string
+ * exit: Returns a nonempty string.  This is different from required_string
  *       in that the grammar requires it to be nonempty, so that: (a)
  *       error messages are more obtuse, and (b) the grammar is less
  *       ambiguous.  Use it whenever required_string does not work.
  *
  */
-string:
-        NUMBER
+string: NUMBER
 {
   $$ = $<_string>1;
 }

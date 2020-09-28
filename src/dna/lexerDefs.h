@@ -3,8 +3,7 @@
 //
 ////////////////////////////////////////////////////////////////////
 
-#ifndef LEXERDEFS_H
-#define LEXERDEFS_H
+#pragma once
 
 #include "toontownbase.h"
 
@@ -26,5 +25,3 @@ int dnayylex();
 
 // we never read .dna files from the terminal, always from files
 #define YY_NEVER_INTERACTIVE 1
-
-#endif

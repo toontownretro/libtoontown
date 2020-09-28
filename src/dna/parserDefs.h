@@ -3,8 +3,7 @@
 //
 ////////////////////////////////////////////////////////////////////
 
-#ifndef PARSERDEFS_H
-#define PARSERDEFS_H
+#pragma once
 
 #include "toontownbase.h"
 
@@ -36,17 +35,14 @@ void dna_cleanup_parser();
 #define YYSTYPE DNAYYSTYPE
 
 class YYSTYPE {
-public:
-  double _number;
-  std::string _string;
-  StringVector _string_vector;
-  PTA_double _number_list;
-  LVecBase3f _v3;
-  LColorf _color;
-  bool _bool;
-  PT(DNAGroup) _dna_group;
-  DNASuitPoint::DNASuitPointType _suit_point_type;
+    public:
+        double _number;
+        std::string _string;
+        StringVector _string_vector;
+        PTA_double _number_list;
+        LVecBase3f _v3;
+        LColorf _color;
+        bool _bool;
+        PT(DNAGroup) _dna_group;
+        DNASuitPoint::DNASuitPointType _suit_point_type;
 };
-
-
-#endif
