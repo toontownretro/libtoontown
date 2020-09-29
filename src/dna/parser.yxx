@@ -12,7 +12,7 @@
 
 #include "parserDefs.h"
 #include "lexerDefs.h"
-#include "parser.hxx"
+#include "parser.hxx.prebuilt"
 
 #include "toontownbase.h"
 #include "dnaLoader.h"

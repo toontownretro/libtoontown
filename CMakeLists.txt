@@ -110,14 +110,14 @@ set(DNALOADER_FILES
     src/dna/dnaWindow.cxx
     src/dna/dnaWindow.h
     src/dna/dnaWindow.I
-    src/dna/lexer.cxx
+    src/dna/lexer.cxx.prebuilt
     src/dna/lexerDefs.h
     src/dna/load_dna_file.cxx
     src/dna/load_dna_file.h
     src/dna/loaderFileTypeDNA.cxx
     src/dna/loaderFileTypeDNA.h
-    src/dna/parser.cxx
-    src/dna/parser.hxx
+    src/dna/parser.cxx.prebuilt
+    src/dna/parser.hxx.prebuilt
     src/dna/parserDefs.h
 )
 
@@ -178,6 +178,9 @@ include_directories(${Python_INCLUDE_DIRS})
 include_directories(/usr/include/eigen3)
 link_directories(${LIBOTP_DIR}/build/)
 link_directories(${PANDA_DIR}/lib)
+
+# Make sure the parser prebuilt files compile.
+set_source_files_properties(${DNALOADER_FILES} PROPERTIES LANGUAGE CXX)
 
 set(LIBPFX "")
 if(MSVC)

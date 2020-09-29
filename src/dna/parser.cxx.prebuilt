@@ -84,7 +84,7 @@
 
 #include "parserDefs.h"
 #include "lexerDefs.h"
-#include "parser.hxx"
+#include "parser.hxx.prebuilt"
 
 #include "toontownbase.h"
 #include "dnaLoader.h"
@@ -187,7 +187,7 @@ dna_cleanup_parser() {
 #define yyvsp dnayyvsp
 
 
-#line 191 "parser.cxx"
+#line 191 "parser.cxx.prebuilt"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -210,7 +210,7 @@ dna_cleanup_parser() {
 #  endif
 # endif
 
-#include "parser.hxx"
+#include "parser.hxx.prebuilt"
 /* Symbol kind.  */
 enum yysymbol_kind_t
 {
@@ -1769,7 +1769,7 @@ yyreduce:
 {
   dna_stack.back()->add((yyvsp[0]._dna_group));
 }
-#line 1773 "parser.cxx"
+#line 1773 "parser.cxx.prebuilt"
     break;
 
   case 28: /* $@1: %empty  */
@@ -1777,7 +1777,7 @@ yyreduce:
 {
   dna_stack.push_back(new DNAGroup((yyvsp[-1]._string)));
 }
-#line 1781 "parser.cxx"
+#line 1781 "parser.cxx.prebuilt"
     break;
 
   case 29: /* group: DNAGROUP required_name '[' $@1 group_body ']'  */
@@ -1786,14 +1786,14 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 1790 "parser.cxx"
+#line 1790 "parser.cxx.prebuilt"
     break;
 
   case 30: /* group_body: internal_node_list  */
 #line 244 "parser.yxx"
 {
 }
-#line 1797 "parser.cxx"
+#line 1797 "parser.cxx.prebuilt"
     break;
 
   case 31: /* $@2: %empty  */
@@ -1811,7 +1811,7 @@ yyreduce:
   // because the AI does not ever traverse but needs the vis groups
   dna_top_node->get_dna_storage()->store_DNAVisGroupAI(vis_group);
 }
-#line 1815 "parser.cxx"
+#line 1815 "parser.cxx.prebuilt"
     break;
 
   case 32: /* visgroup: VISGROUP required_name '[' $@2 visgroup_body ']'  */
@@ -1820,21 +1820,21 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 1824 "parser.cxx"
+#line 1824 "parser.cxx.prebuilt"
     break;
 
   case 33: /* visgroup_body: vis suit_edge_list battle_cell_list internal_node_list  */
 #line 274 "parser.yxx"
 {
 }
-#line 1831 "parser.cxx"
+#line 1831 "parser.cxx.prebuilt"
     break;
 
   case 34: /* vis: VIS '[' vis_list ']'  */
 #line 281 "parser.yxx"
 {
 }
-#line 1838 "parser.cxx"
+#line 1838 "parser.cxx.prebuilt"
     break;
 
   case 35: /* vis_list: string  */
@@ -1843,7 +1843,7 @@ yyreduce:
   DNAVisGroup *visgroup = DCAST(DNAVisGroup, dna_stack.back());
   visgroup->add_visible((yyvsp[0]._string));
 }
-#line 1847 "parser.cxx"
+#line 1847 "parser.cxx.prebuilt"
     break;
 
   case 36: /* vis_list: vis_list string  */
@@ -1852,14 +1852,14 @@ yyreduce:
   DNAVisGroup *visgroup = DCAST(DNAVisGroup, dna_stack.back());
   visgroup->add_visible((yyvsp[0]._string));
 }
-#line 1856 "parser.cxx"
+#line 1856 "parser.cxx.prebuilt"
     break;
 
   case 38: /* suit_edge_list: suit_edge_list suit_edge  */
 #line 302 "parser.yxx"
 {
 }
-#line 1863 "parser.cxx"
+#line 1863 "parser.cxx.prebuilt"
     break;
 
   case 39: /* suit_edge: SUIT_EDGE '[' integer integer ']'  */
@@ -1877,14 +1877,14 @@ yyreduce:
   // Record this edge with the current vis group in case he needs to write it back out
   vis_group->add_suit_edge(edge);
 }
-#line 1881 "parser.cxx"
+#line 1881 "parser.cxx.prebuilt"
     break;
 
   case 41: /* battle_cell_list: battle_cell_list battle_cell  */
 #line 331 "parser.yxx"
 {
 }
-#line 1888 "parser.cxx"
+#line 1888 "parser.cxx.prebuilt"
     break;
 
   case 42: /* battle_cell: BATTLE_CELL '[' real real real real real ']'  */
@@ -1901,7 +1901,7 @@ yyreduce:
   DNAVisGroup *vis_group = DCAST(DNAVisGroup, dna_stack.back());
   vis_group->add_battle_cell(cell);
 }
-#line 1905 "parser.cxx"
+#line 1905 "parser.cxx.prebuilt"
     break;
 
   case 43: /* $@3: %empty  */
@@ -1909,7 +1909,7 @@ yyreduce:
 {
   dna_stack.push_back(new DNANode((yyvsp[-1]._string)));
 }
-#line 1913 "parser.cxx"
+#line 1913 "parser.cxx.prebuilt"
     break;
 
   case 44: /* node: NODE required_name '[' $@3 node_body ']'  */
@@ -1918,7 +1918,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 1922 "parser.cxx"
+#line 1922 "parser.cxx.prebuilt"
     break;
 
   case 45: /* node_body: pos hpr scale internal_node_list  */
@@ -1929,14 +1929,14 @@ yyreduce:
   node->set_hpr((yyvsp[-2]._v3));
   node->set_scale((yyvsp[-1]._v3));
 }
-#line 1933 "parser.cxx"
+#line 1933 "parser.cxx.prebuilt"
     break;
 
   case 46: /* node_body: internal_node_list  */
 #line 375 "parser.yxx"
 {
 }
-#line 1940 "parser.cxx"
+#line 1940 "parser.cxx.prebuilt"
     break;
 
   case 47: /* $@4: %empty  */
@@ -1944,7 +1944,7 @@ yyreduce:
 {
   dna_stack.push_back(new DNAFlatBuilding((yyvsp[-1]._string)));
 }
-#line 1948 "parser.cxx"
+#line 1948 "parser.cxx.prebuilt"
     break;
 
   case 48: /* flat_building: FLAT_BUILDING required_name '[' $@4 flat_building_body ']'  */
@@ -1953,7 +1953,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 1957 "parser.cxx"
+#line 1957 "parser.cxx.prebuilt"
     break;
 
   case 49: /* flat_building_body: pos hpr width wall_list prop_list  */
@@ -1964,7 +1964,7 @@ yyreduce:
   building->set_hpr((yyvsp[-3]._v3));
   building->set_width((yyvsp[-2]._number));
 }
-#line 1968 "parser.cxx"
+#line 1968 "parser.cxx.prebuilt"
     break;
 
   case 52: /* $@5: %empty  */
@@ -1974,7 +1974,7 @@ yyreduce:
   dna_stack.back()->add(wall);
   dna_stack.push_back(wall);
 }
-#line 1978 "parser.cxx"
+#line 1978 "parser.cxx.prebuilt"
     break;
 
   case 53: /* wall: WALL '[' $@5 wall_body ']'  */
@@ -1983,7 +1983,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 1987 "parser.cxx"
+#line 1987 "parser.cxx.prebuilt"
     break;
 
   case 59: /* wall_body: height code color wall_node_list prop_list  */
@@ -1994,7 +1994,7 @@ yyreduce:
   wall->set_code((yyvsp[-3]._string));
   wall->set_color((yyvsp[-2]._color));
 }
-#line 1998 "parser.cxx"
+#line 1998 "parser.cxx.prebuilt"
     break;
 
   case 60: /* width: WIDTH '[' real ']'  */
@@ -2002,7 +2002,7 @@ yyreduce:
 {
   (yyval._number) = (yyvsp[-1]._number);
 }
-#line 2006 "parser.cxx"
+#line 2006 "parser.cxx.prebuilt"
     break;
 
   case 61: /* height: HEIGHT '[' real ']'  */
@@ -2010,7 +2010,7 @@ yyreduce:
 {
   (yyval._number) = (yyvsp[-1]._number);
 }
-#line 2014 "parser.cxx"
+#line 2014 "parser.cxx.prebuilt"
     break;
 
   case 62: /* $@6: %empty  */
@@ -2020,7 +2020,7 @@ yyreduce:
   dna_top_node->get_dna_storage()->store_block_number((yyvsp[-1]._string), g_current_zone_name);
   dna_stack.push_back(new DNALandmarkBuilding((yyvsp[-1]._string)));
 }
-#line 2024 "parser.cxx"
+#line 2024 "parser.cxx.prebuilt"
     break;
 
   case 63: /* landmark_building: LANDMARK_BUILDING required_name '[' $@6 landmark_building_body ']'  */
@@ -2029,7 +2029,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2033 "parser.cxx"
+#line 2033 "parser.cxx.prebuilt"
     break;
 
   case 64: /* landmark_building_body: code article title pos hpr color door prop_list  */
@@ -2043,7 +2043,7 @@ yyreduce:
   building->set_hpr((yyvsp[-3]._v3));
   building->set_wall_color((yyvsp[-2]._color));
 }
-#line 2047 "parser.cxx"
+#line 2047 "parser.cxx.prebuilt"
     break;
 
   case 65: /* landmark_building_body: code article title pos hpr color door prop_list sign prop_list  */
@@ -2057,7 +2057,7 @@ yyreduce:
   building->set_hpr((yyvsp[-5]._v3));
   building->set_wall_color((yyvsp[-4]._color));
 }
-#line 2061 "parser.cxx"
+#line 2061 "parser.cxx.prebuilt"
     break;
 
   case 66: /* landmark_building_body: code article title pos hpr door prop_list  */
@@ -2070,7 +2070,7 @@ yyreduce:
   building->set_pos((yyvsp[-3]._v3));
   building->set_hpr((yyvsp[-2]._v3));
 }
-#line 2074 "parser.cxx"
+#line 2074 "parser.cxx.prebuilt"
     break;
 
   case 67: /* landmark_building_body: code building_type article title pos hpr door prop_list  */
@@ -2088,7 +2088,7 @@ yyreduce:
   building->set_pos((yyvsp[-3]._v3));
   building->set_hpr((yyvsp[-2]._v3));
 }
-#line 2092 "parser.cxx"
+#line 2092 "parser.cxx.prebuilt"
     break;
 
   case 68: /* landmark_building_body: code article title pos hpr door prop_list sign prop_list  */
@@ -2101,7 +2101,7 @@ yyreduce:
   building->set_pos((yyvsp[-5]._v3));
   building->set_hpr((yyvsp[-4]._v3));
 }
-#line 2105 "parser.cxx"
+#line 2105 "parser.cxx.prebuilt"
     break;
 
   case 69: /* landmark_building_body: code building_type article title pos hpr door prop_list sign prop_list  */
@@ -2118,7 +2118,7 @@ yyreduce:
   building->set_pos((yyvsp[-5]._v3));
   building->set_hpr((yyvsp[-4]._v3));
 }
-#line 2122 "parser.cxx"
+#line 2122 "parser.cxx.prebuilt"
     break;
 
   case 70: /* landmark_building_body: code building_type article title pos hpr color prop_list  */
@@ -2137,7 +2137,7 @@ yyreduce:
   building->set_hpr((yyvsp[-2]._v3));
   building->set_wall_color((yyvsp[-1]._color));
 }
-#line 2141 "parser.cxx"
+#line 2141 "parser.cxx.prebuilt"
     break;
 
   case 71: /* landmark_building_body: code building_type article title pos hpr color prop_list sign prop_list  */
@@ -2156,7 +2156,7 @@ yyreduce:
   building->set_hpr((yyvsp[-4]._v3));
   building->set_wall_color((yyvsp[-3]._color));
 }
-#line 2160 "parser.cxx"
+#line 2160 "parser.cxx.prebuilt"
     break;
 
   case 72: /* landmark_building_body: code building_type article title pos hpr prop_list  */
@@ -2174,7 +2174,7 @@ yyreduce:
   building->set_pos((yyvsp[-2]._v3));
   building->set_hpr((yyvsp[-1]._v3));
 }
-#line 2178 "parser.cxx"
+#line 2178 "parser.cxx.prebuilt"
     break;
 
   case 73: /* landmark_building_body: code building_type article title pos hpr prop_list sign prop_list  */
@@ -2192,7 +2192,7 @@ yyreduce:
   building->set_pos((yyvsp[-4]._v3));
   building->set_hpr((yyvsp[-3]._v3));
 }
-#line 2196 "parser.cxx"
+#line 2196 "parser.cxx.prebuilt"
     break;
 
   case 74: /* $@7: %empty  */
@@ -2202,7 +2202,7 @@ yyreduce:
   dna_top_node->get_dna_storage()->store_block_number((yyvsp[-1]._string), g_current_zone_name);
   dna_stack.push_back(new DNAAnimBuilding((yyvsp[-1]._string)));
 }
-#line 2206 "parser.cxx"
+#line 2206 "parser.cxx.prebuilt"
     break;
 
   case 75: /* anim_building: ANIM_BUILDING required_name '[' $@7 anim_building_body ']'  */
@@ -2211,7 +2211,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2215 "parser.cxx"
+#line 2215 "parser.cxx.prebuilt"
     break;
 
   case 76: /* anim_building_body: code article title anim pos hpr color door prop_list  */
@@ -2226,7 +2226,7 @@ yyreduce:
   building->set_hpr((yyvsp[-3]._v3));
   building->set_wall_color((yyvsp[-2]._color));
 }
-#line 2230 "parser.cxx"
+#line 2230 "parser.cxx.prebuilt"
     break;
 
   case 77: /* anim_building_body: code article title anim pos hpr color door prop_list sign prop_list  */
@@ -2241,7 +2241,7 @@ yyreduce:
   building->set_hpr((yyvsp[-5]._v3));
   building->set_wall_color((yyvsp[-4]._color));
 }
-#line 2245 "parser.cxx"
+#line 2245 "parser.cxx.prebuilt"
     break;
 
   case 78: /* anim_building_body: code article title anim pos hpr door prop_list  */
@@ -2255,7 +2255,7 @@ yyreduce:
   building->set_pos((yyvsp[-3]._v3));
   building->set_hpr((yyvsp[-2]._v3));
 }
-#line 2259 "parser.cxx"
+#line 2259 "parser.cxx.prebuilt"
     break;
 
   case 79: /* anim_building_body: code building_type article title anim pos hpr door prop_list  */
@@ -2274,7 +2274,7 @@ yyreduce:
   building->set_pos((yyvsp[-3]._v3));
   building->set_hpr((yyvsp[-2]._v3));
 }
-#line 2278 "parser.cxx"
+#line 2278 "parser.cxx.prebuilt"
     break;
 
   case 80: /* anim_building_body: code article title anim pos hpr door prop_list sign prop_list  */
@@ -2288,7 +2288,7 @@ yyreduce:
   building->set_pos((yyvsp[-5]._v3));
   building->set_hpr((yyvsp[-4]._v3));
 }
-#line 2292 "parser.cxx"
+#line 2292 "parser.cxx.prebuilt"
     break;
 
   case 81: /* anim_building_body: code building_type article title anim pos hpr door prop_list sign prop_list  */
@@ -2306,7 +2306,7 @@ yyreduce:
   building->set_pos((yyvsp[-5]._v3));
   building->set_hpr((yyvsp[-4]._v3));
 }
-#line 2310 "parser.cxx"
+#line 2310 "parser.cxx.prebuilt"
     break;
 
   case 82: /* anim_building_body: code building_type article title anim pos hpr color prop_list  */
@@ -2326,7 +2326,7 @@ yyreduce:
   building->set_hpr((yyvsp[-2]._v3));
   building->set_wall_color((yyvsp[-1]._color));
 }
-#line 2330 "parser.cxx"
+#line 2330 "parser.cxx.prebuilt"
     break;
 
   case 83: /* anim_building_body: code building_type article title anim pos hpr color prop_list sign prop_list  */
@@ -2346,7 +2346,7 @@ yyreduce:
   building->set_hpr((yyvsp[-4]._v3));
   building->set_wall_color((yyvsp[-3]._color));
 }
-#line 2350 "parser.cxx"
+#line 2350 "parser.cxx.prebuilt"
     break;
 
   case 84: /* anim_building_body: code building_type article title anim pos hpr prop_list  */
@@ -2365,7 +2365,7 @@ yyreduce:
   building->set_pos((yyvsp[-2]._v3));
   building->set_hpr((yyvsp[-1]._v3));
 }
-#line 2369 "parser.cxx"
+#line 2369 "parser.cxx.prebuilt"
     break;
 
   case 85: /* anim_building_body: code building_type article title anim pos hpr prop_list sign prop_list  */
@@ -2384,7 +2384,7 @@ yyreduce:
   building->set_pos((yyvsp[-4]._v3));
   building->set_hpr((yyvsp[-3]._v3));
 }
-#line 2388 "parser.cxx"
+#line 2388 "parser.cxx.prebuilt"
     break;
 
   case 86: /* $@8: %empty  */
@@ -2394,7 +2394,7 @@ yyreduce:
   dna_stack.back()->add(windows);
   dna_stack.push_back(windows);
 }
-#line 2398 "parser.cxx"
+#line 2398 "parser.cxx.prebuilt"
     break;
 
   case 87: /* windows: WINDOWS '[' $@8 windows_body ']'  */
@@ -2403,7 +2403,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2407 "parser.cxx"
+#line 2407 "parser.cxx.prebuilt"
     break;
 
   case 88: /* windows_body: code color count  */
@@ -2414,7 +2414,7 @@ yyreduce:
   windows->set_color((yyvsp[-1]._color));
   windows->set_window_count((int)(yyvsp[0]._number));
 }
-#line 2418 "parser.cxx"
+#line 2418 "parser.cxx.prebuilt"
     break;
 
   case 89: /* $@9: %empty  */
@@ -2424,7 +2424,7 @@ yyreduce:
   dna_stack.back()->add(door);
   dna_stack.push_back(door);
 }
-#line 2428 "parser.cxx"
+#line 2428 "parser.cxx.prebuilt"
     break;
 
   case 90: /* door: DOOR '[' $@9 door_body ']'  */
@@ -2433,7 +2433,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2437 "parser.cxx"
+#line 2437 "parser.cxx.prebuilt"
     break;
 
   case 91: /* door_body: code color  */
@@ -2443,7 +2443,7 @@ yyreduce:
   door->set_code((yyvsp[-1]._string));
   door->set_color((yyvsp[0]._color));
 }
-#line 2447 "parser.cxx"
+#line 2447 "parser.cxx.prebuilt"
     break;
 
   case 92: /* $@10: %empty  */
@@ -2453,7 +2453,7 @@ yyreduce:
   dna_stack.back()->add(door);
   dna_stack.push_back(door);
 }
-#line 2457 "parser.cxx"
+#line 2457 "parser.cxx.prebuilt"
     break;
 
   case 93: /* flat_door: FLAT_DOOR '[' $@10 flat_door_body ']'  */
@@ -2462,7 +2462,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2466 "parser.cxx"
+#line 2466 "parser.cxx.prebuilt"
     break;
 
   case 94: /* flat_door_body: code color  */
@@ -2472,7 +2472,7 @@ yyreduce:
   door->set_code((yyvsp[-1]._string));
   door->set_color((yyvsp[0]._color));
 }
-#line 2476 "parser.cxx"
+#line 2476 "parser.cxx.prebuilt"
     break;
 
   case 95: /* $@11: %empty  */
@@ -2482,7 +2482,7 @@ yyreduce:
   dna_stack.back()->add(sign);
   dna_stack.push_back(sign);
 }
-#line 2486 "parser.cxx"
+#line 2486 "parser.cxx.prebuilt"
     break;
 
   case 96: /* sign: SIGN '[' $@11 sign_list baseline_list ']'  */
@@ -2491,7 +2491,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2495 "parser.cxx"
+#line 2495 "parser.cxx.prebuilt"
     break;
 
   case 99: /* sign_node: code  */
@@ -2500,7 +2500,7 @@ yyreduce:
   DNASign *sign = DCAST(DNASign, dna_stack.back());
   sign->set_code((yyvsp[0]._string));
 }
-#line 2504 "parser.cxx"
+#line 2504 "parser.cxx.prebuilt"
     break;
 
   case 100: /* sign_node: color  */
@@ -2509,7 +2509,7 @@ yyreduce:
   DNASign *sign = DCAST(DNASign, dna_stack.back());
   sign->set_color((yyvsp[0]._color));
 }
-#line 2513 "parser.cxx"
+#line 2513 "parser.cxx.prebuilt"
     break;
 
   case 101: /* sign_node: pos  */
@@ -2518,7 +2518,7 @@ yyreduce:
   DNASign *sign = DCAST(DNASign, dna_stack.back());
   sign->set_pos((yyvsp[0]._v3));
 }
-#line 2522 "parser.cxx"
+#line 2522 "parser.cxx.prebuilt"
     break;
 
   case 102: /* sign_node: hpr  */
@@ -2527,7 +2527,7 @@ yyreduce:
   DNASign *sign = DCAST(DNASign, dna_stack.back());
   sign->set_hpr((yyvsp[0]._v3));
 }
-#line 2531 "parser.cxx"
+#line 2531 "parser.cxx.prebuilt"
     break;
 
   case 103: /* sign_node: scale  */
@@ -2536,7 +2536,7 @@ yyreduce:
   DNASign *sign = DCAST(DNASign, dna_stack.back());
   sign->set_scale((yyvsp[0]._v3));
 }
-#line 2540 "parser.cxx"
+#line 2540 "parser.cxx.prebuilt"
     break;
 
   case 106: /* $@12: %empty  */
@@ -2546,7 +2546,7 @@ yyreduce:
   dna_stack.back()->add(baseline);
   dna_stack.push_back(baseline);
 }
-#line 2550 "parser.cxx"
+#line 2550 "parser.cxx.prebuilt"
     break;
 
   case 107: /* baseline: BASELINE '[' $@12 baseline_body ']'  */
@@ -2555,7 +2555,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2559 "parser.cxx"
+#line 2559 "parser.cxx.prebuilt"
     break;
 
   case 111: /* baseline_body_node: code  */
@@ -2564,7 +2564,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_code((yyvsp[0]._string));
 }
-#line 2568 "parser.cxx"
+#line 2568 "parser.cxx.prebuilt"
     break;
 
   case 112: /* baseline_body_node: color  */
@@ -2573,7 +2573,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_color((yyvsp[0]._color));
 }
-#line 2577 "parser.cxx"
+#line 2577 "parser.cxx.prebuilt"
     break;
 
   case 113: /* baseline_body_node: pos  */
@@ -2582,7 +2582,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_pos((yyvsp[0]._v3));
 }
-#line 2586 "parser.cxx"
+#line 2586 "parser.cxx.prebuilt"
     break;
 
   case 114: /* baseline_body_node: hpr  */
@@ -2591,7 +2591,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_hpr((yyvsp[0]._v3));
 }
-#line 2595 "parser.cxx"
+#line 2595 "parser.cxx.prebuilt"
     break;
 
   case 115: /* baseline_body_node: scale  */
@@ -2600,7 +2600,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_scale((yyvsp[0]._v3));
 }
-#line 2604 "parser.cxx"
+#line 2604 "parser.cxx.prebuilt"
     break;
 
   case 121: /* baseline_body_node: width  */
@@ -2609,7 +2609,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_width((yyvsp[0]._number));
 }
-#line 2613 "parser.cxx"
+#line 2613 "parser.cxx.prebuilt"
     break;
 
   case 122: /* baseline_body_node: height  */
@@ -2618,7 +2618,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_height((yyvsp[0]._number));
 }
-#line 2622 "parser.cxx"
+#line 2622 "parser.cxx.prebuilt"
     break;
 
   case 123: /* baseline_body_node: FLAGS '[' required_string ']'  */
@@ -2627,7 +2627,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_flags((yyvsp[-1]._string));
 }
-#line 2631 "parser.cxx"
+#line 2631 "parser.cxx.prebuilt"
     break;
 
   case 128: /* $@13: %empty  */
@@ -2637,7 +2637,7 @@ yyreduce:
   dna_stack.back()->add(graphic);
   dna_stack.push_back(graphic);
 }
-#line 2641 "parser.cxx"
+#line 2641 "parser.cxx.prebuilt"
     break;
 
   case 129: /* sign_graphic: GRAPHIC '[' $@13 graphic_node_list ']'  */
@@ -2645,7 +2645,7 @@ yyreduce:
 {
   dna_stack.pop_back();
 }
-#line 2649 "parser.cxx"
+#line 2649 "parser.cxx.prebuilt"
     break;
 
   case 132: /* sign_graphic_node: scale  */
@@ -2654,7 +2654,7 @@ yyreduce:
   DNASignGraphic *graphic = DCAST(DNASignGraphic, dna_stack.back());
   graphic->set_scale((yyvsp[0]._v3));
 }
-#line 2658 "parser.cxx"
+#line 2658 "parser.cxx.prebuilt"
     break;
 
   case 133: /* sign_graphic_node: pos  */
@@ -2663,7 +2663,7 @@ yyreduce:
   DNASignGraphic *graphic = DCAST(DNASignGraphic, dna_stack.back());
   graphic->set_pos((yyvsp[0]._v3));
 }
-#line 2667 "parser.cxx"
+#line 2667 "parser.cxx.prebuilt"
     break;
 
   case 134: /* sign_graphic_node: hpr  */
@@ -2672,7 +2672,7 @@ yyreduce:
   DNASignGraphic *graphic = DCAST(DNASignGraphic, dna_stack.back());
   graphic->set_hpr((yyvsp[0]._v3));
 }
-#line 2676 "parser.cxx"
+#line 2676 "parser.cxx.prebuilt"
     break;
 
   case 135: /* sign_graphic_node: code  */
@@ -2681,7 +2681,7 @@ yyreduce:
   DNASignGraphic *graphic = DCAST(DNASignGraphic, dna_stack.back());
   graphic->set_code((yyvsp[0]._string));
 }
-#line 2685 "parser.cxx"
+#line 2685 "parser.cxx.prebuilt"
     break;
 
   case 136: /* sign_graphic_node: color  */
@@ -2690,7 +2690,7 @@ yyreduce:
   DNASignGraphic *graphic = DCAST(DNASignGraphic, dna_stack.back());
   graphic->set_color((yyvsp[0]._color));
 }
-#line 2694 "parser.cxx"
+#line 2694 "parser.cxx.prebuilt"
     break;
 
   case 137: /* sign_graphic_node: width  */
@@ -2699,7 +2699,7 @@ yyreduce:
   DNASignGraphic *graphic = DCAST(DNASignGraphic, dna_stack.back());
   graphic->set_width((yyvsp[0]._number));
 }
-#line 2703 "parser.cxx"
+#line 2703 "parser.cxx.prebuilt"
     break;
 
   case 138: /* sign_graphic_node: height  */
@@ -2708,7 +2708,7 @@ yyreduce:
   DNASignGraphic *graphic = DCAST(DNASignGraphic, dna_stack.back());
   graphic->set_height((yyvsp[0]._number));
 }
-#line 2712 "parser.cxx"
+#line 2712 "parser.cxx.prebuilt"
     break;
 
   case 139: /* $@14: %empty  */
@@ -2718,7 +2718,7 @@ yyreduce:
   dna_stack.back()->add(text);
   dna_stack.push_back(text);
 }
-#line 2722 "parser.cxx"
+#line 2722 "parser.cxx.prebuilt"
     break;
 
   case 140: /* sign_text: TEXT_ '[' $@14 text_node_list ']'  */
@@ -2726,7 +2726,7 @@ yyreduce:
 {
   dna_stack.pop_back();
 }
-#line 2730 "parser.cxx"
+#line 2730 "parser.cxx.prebuilt"
     break;
 
   case 143: /* text_node: scale  */
@@ -2735,7 +2735,7 @@ yyreduce:
   DNASignText *text = DCAST(DNASignText, dna_stack.back());
   text->set_scale((yyvsp[0]._v3));
 }
-#line 2739 "parser.cxx"
+#line 2739 "parser.cxx.prebuilt"
     break;
 
   case 144: /* text_node: pos  */
@@ -2744,7 +2744,7 @@ yyreduce:
   DNASignText *text = DCAST(DNASignText, dna_stack.back());
   text->set_pos((yyvsp[0]._v3));
 }
-#line 2748 "parser.cxx"
+#line 2748 "parser.cxx.prebuilt"
     break;
 
   case 145: /* text_node: hpr  */
@@ -2753,7 +2753,7 @@ yyreduce:
   DNASignText *text = DCAST(DNASignText, dna_stack.back());
   text->set_hpr((yyvsp[0]._v3));
 }
-#line 2757 "parser.cxx"
+#line 2757 "parser.cxx.prebuilt"
     break;
 
   case 146: /* text_node: code  */
@@ -2762,7 +2762,7 @@ yyreduce:
   DNASignText *text = DCAST(DNASignText, dna_stack.back());
   text->set_code((yyvsp[0]._string));
 }
-#line 2766 "parser.cxx"
+#line 2766 "parser.cxx.prebuilt"
     break;
 
   case 147: /* text_node: color  */
@@ -2771,7 +2771,7 @@ yyreduce:
   DNASignText *text = DCAST(DNASignText, dna_stack.back());
   text->set_color((yyvsp[0]._color));
 }
-#line 2775 "parser.cxx"
+#line 2775 "parser.cxx.prebuilt"
     break;
 
   case 148: /* text_node: letters  */
@@ -2780,7 +2780,7 @@ yyreduce:
   DNASignText *text = DCAST(DNASignText, dna_stack.back());
   text->set_letters((yyvsp[0]._string));
 }
-#line 2784 "parser.cxx"
+#line 2784 "parser.cxx.prebuilt"
     break;
 
   case 149: /* letters: LETTERS '[' required_string ']'  */
@@ -2788,7 +2788,7 @@ yyreduce:
 {
   (yyval._string) = (yyvsp[-1]._string);
 }
-#line 2792 "parser.cxx"
+#line 2792 "parser.cxx.prebuilt"
     break;
 
   case 150: /* baseline_indent: INDENT '[' real ']'  */
@@ -2797,7 +2797,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_indent((yyvsp[-1]._number));
 }
-#line 2801 "parser.cxx"
+#line 2801 "parser.cxx.prebuilt"
     break;
 
   case 151: /* baseline_kern: KERN '[' real ']'  */
@@ -2806,7 +2806,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_kern((yyvsp[-1]._number));
 }
-#line 2810 "parser.cxx"
+#line 2810 "parser.cxx.prebuilt"
     break;
 
   case 152: /* baseline_wiggle: WIGGLE '[' real ']'  */
@@ -2815,7 +2815,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_wiggle((yyvsp[-1]._number));
 }
-#line 2819 "parser.cxx"
+#line 2819 "parser.cxx.prebuilt"
     break;
 
   case 153: /* baseline_stumble: STUMBLE '[' real ']'  */
@@ -2824,7 +2824,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_stumble((yyvsp[-1]._number));
 }
-#line 2828 "parser.cxx"
+#line 2828 "parser.cxx.prebuilt"
     break;
 
   case 154: /* baseline_stomp: STOMP '[' real ']'  */
@@ -2833,7 +2833,7 @@ yyreduce:
   DNASignBaseline *baseline = DCAST(DNASignBaseline, dna_stack.back());
   baseline->set_stomp((yyvsp[-1]._number));
 }
-#line 2837 "parser.cxx"
+#line 2837 "parser.cxx.prebuilt"
     break;
 
   case 155: /* $@15: %empty  */
@@ -2843,7 +2843,7 @@ yyreduce:
   dna_stack.back()->add(cornice);
   dna_stack.push_back(cornice);
 }
-#line 2847 "parser.cxx"
+#line 2847 "parser.cxx.prebuilt"
     break;
 
   case 156: /* cornice: CORNICE '[' $@15 cornice_body ']'  */
@@ -2852,7 +2852,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2856 "parser.cxx"
+#line 2856 "parser.cxx.prebuilt"
     break;
 
   case 157: /* cornice_body: code color  */
@@ -2862,7 +2862,7 @@ yyreduce:
   cornice->set_code((yyvsp[-1]._string));
   cornice->set_color((yyvsp[0]._color));
 }
-#line 2866 "parser.cxx"
+#line 2866 "parser.cxx.prebuilt"
     break;
 
   case 158: /* $@16: %empty  */
@@ -2870,7 +2870,7 @@ yyreduce:
 {
   dna_stack.push_back(new DNAStreet((yyvsp[-1]._string)));
 }
-#line 2874 "parser.cxx"
+#line 2874 "parser.cxx.prebuilt"
     break;
 
   case 159: /* street: STREET required_name '[' $@16 street_body ']'  */
@@ -2879,7 +2879,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2883 "parser.cxx"
+#line 2883 "parser.cxx.prebuilt"
     break;
 
   case 160: /* street_body: code pos hpr texture texture prop_list  */
@@ -2894,7 +2894,7 @@ yyreduce:
   // No curb texture specified, just use the sidewalk texture
   street->set_curb_texture((yyvsp[-1]._string));
 }
-#line 2898 "parser.cxx"
+#line 2898 "parser.cxx.prebuilt"
     break;
 
   case 161: /* street_body: code pos hpr texture texture texture prop_list  */
@@ -2908,7 +2908,7 @@ yyreduce:
   street->set_sidewalk_texture((yyvsp[-2]._string));
   street->set_curb_texture((yyvsp[-1]._string));
 }
-#line 2912 "parser.cxx"
+#line 2912 "parser.cxx.prebuilt"
     break;
 
   case 162: /* street_body: code pos hpr color color texture texture prop_list  */
@@ -2927,7 +2927,7 @@ yyreduce:
   // No curb texture specified, just use sidewalk texture
   street->set_curb_texture((yyvsp[-1]._string));
 }
-#line 2931 "parser.cxx"
+#line 2931 "parser.cxx.prebuilt"
     break;
 
   case 163: /* street_body: code pos hpr color color color texture texture texture prop_list  */
@@ -2944,7 +2944,7 @@ yyreduce:
   street->set_sidewalk_texture((yyvsp[-2]._string));
   street->set_curb_texture((yyvsp[-1]._string));
 }
-#line 2948 "parser.cxx"
+#line 2948 "parser.cxx.prebuilt"
     break;
 
   case 165: /* prop_list: prop_list prop  */
@@ -2953,7 +2953,7 @@ yyreduce:
   // Parent this prop to whatever the top of the stack is
   dna_stack.back()->add((yyvsp[0]._dna_group));
 }
-#line 2957 "parser.cxx"
+#line 2957 "parser.cxx.prebuilt"
     break;
 
   case 166: /* prop_list: prop_list anim_prop  */
@@ -2962,7 +2962,7 @@ yyreduce:
   // Parent this prop to whatever the top of the stack is
   dna_stack.back()->add((yyvsp[0]._dna_group));
 }
-#line 2966 "parser.cxx"
+#line 2966 "parser.cxx.prebuilt"
     break;
 
   case 167: /* $@17: %empty  */
@@ -2970,7 +2970,7 @@ yyreduce:
 {
   dna_stack.push_back(new DNAProp((yyvsp[-1]._string)));
 }
-#line 2974 "parser.cxx"
+#line 2974 "parser.cxx.prebuilt"
     break;
 
   case 168: /* prop: PROP required_name '[' $@17 prop_body ']'  */
@@ -2979,7 +2979,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 2983 "parser.cxx"
+#line 2983 "parser.cxx.prebuilt"
     break;
 
   case 169: /* prop_body: code pos hpr  */
@@ -2990,7 +2990,7 @@ yyreduce:
   prop->set_pos((yyvsp[-1]._v3));
   prop->set_hpr((yyvsp[0]._v3));
 }
-#line 2994 "parser.cxx"
+#line 2994 "parser.cxx.prebuilt"
     break;
 
   case 170: /* prop_body: code pos hpr scale  */
@@ -3002,7 +3002,7 @@ yyreduce:
   prop->set_hpr((yyvsp[-1]._v3));
   prop->set_scale((yyvsp[0]._v3));
 }
-#line 3006 "parser.cxx"
+#line 3006 "parser.cxx.prebuilt"
     break;
 
   case 171: /* prop_body: code pos hpr color  */
@@ -3014,7 +3014,7 @@ yyreduce:
   prop->set_hpr((yyvsp[-1]._v3));
   prop->set_color((yyvsp[0]._color));
 }
-#line 3018 "parser.cxx"
+#line 3018 "parser.cxx.prebuilt"
     break;
 
   case 172: /* prop_body: code pos hpr scale color  */
@@ -3027,7 +3027,7 @@ yyreduce:
   prop->set_scale((yyvsp[-1]._v3));
   prop->set_color((yyvsp[0]._color));
 }
-#line 3031 "parser.cxx"
+#line 3031 "parser.cxx.prebuilt"
     break;
 
   case 173: /* prop_body: code pos hpr sign  */
@@ -3038,7 +3038,7 @@ yyreduce:
   prop->set_pos((yyvsp[-2]._v3));
   prop->set_hpr((yyvsp[-1]._v3));
 }
-#line 3042 "parser.cxx"
+#line 3042 "parser.cxx.prebuilt"
     break;
 
   case 174: /* prop_body: code pos hpr scale sign  */
@@ -3050,7 +3050,7 @@ yyreduce:
   prop->set_hpr((yyvsp[-2]._v3));
   prop->set_scale((yyvsp[-1]._v3));
 }
-#line 3054 "parser.cxx"
+#line 3054 "parser.cxx.prebuilt"
     break;
 
   case 175: /* prop_body: code pos hpr color sign  */
@@ -3062,7 +3062,7 @@ yyreduce:
   prop->set_hpr((yyvsp[-2]._v3));
   prop->set_color((yyvsp[-1]._color));
 }
-#line 3066 "parser.cxx"
+#line 3066 "parser.cxx.prebuilt"
     break;
 
   case 176: /* prop_body: code pos hpr scale color sign  */
@@ -3075,7 +3075,7 @@ yyreduce:
   prop->set_scale((yyvsp[-2]._v3));
   prop->set_color((yyvsp[-1]._color));
 }
-#line 3079 "parser.cxx"
+#line 3079 "parser.cxx.prebuilt"
     break;
 
   case 177: /* $@18: %empty  */
@@ -3084,7 +3084,7 @@ yyreduce:
   dna_stack.push_back(new DNAAnimProp((yyvsp[-1]._string)));
   dna_cat.debug() << "anim prop " << (yyvsp[-1]._string) <<"\n";
 }
-#line 3088 "parser.cxx"
+#line 3088 "parser.cxx.prebuilt"
     break;
 
   case 178: /* anim_prop: ANIM_PROP required_name '[' $@18 anim_prop_body ']'  */
@@ -3093,7 +3093,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 3097 "parser.cxx"
+#line 3097 "parser.cxx.prebuilt"
     break;
 
   case 179: /* anim_prop_body: code anim pos hpr  */
@@ -3105,7 +3105,7 @@ yyreduce:
   anim_prop->set_pos((yyvsp[-1]._v3));
   anim_prop->set_hpr((yyvsp[0]._v3));
 }
-#line 3109 "parser.cxx"
+#line 3109 "parser.cxx.prebuilt"
     break;
 
   case 180: /* anim_prop_body: code anim pos hpr scale  */
@@ -3118,7 +3118,7 @@ yyreduce:
   anim_prop->set_hpr((yyvsp[-1]._v3));
   anim_prop->set_scale((yyvsp[0]._v3));
 }
-#line 3122 "parser.cxx"
+#line 3122 "parser.cxx.prebuilt"
     break;
 
   case 181: /* anim_prop_body: code anim pos hpr color  */
@@ -3131,7 +3131,7 @@ yyreduce:
   anim_prop->set_hpr((yyvsp[-1]._v3));
   anim_prop->set_color((yyvsp[0]._color));
 }
-#line 3135 "parser.cxx"
+#line 3135 "parser.cxx.prebuilt"
     break;
 
   case 182: /* anim_prop_body: code anim pos hpr scale color  */
@@ -3145,7 +3145,7 @@ yyreduce:
   anim_prop->set_scale((yyvsp[-1]._v3));
   anim_prop->set_color((yyvsp[0]._color));
 }
-#line 3149 "parser.cxx"
+#line 3149 "parser.cxx.prebuilt"
     break;
 
   case 183: /* anim_prop_body: code anim pos hpr sign  */
@@ -3157,7 +3157,7 @@ yyreduce:
   anim_prop->set_pos((yyvsp[-2]._v3));
   anim_prop->set_hpr((yyvsp[-1]._v3));
 }
-#line 3161 "parser.cxx"
+#line 3161 "parser.cxx.prebuilt"
     break;
 
   case 184: /* anim_prop_body: code anim pos hpr scale sign  */
@@ -3170,7 +3170,7 @@ yyreduce:
   anim_prop->set_hpr((yyvsp[-2]._v3));
   anim_prop->set_scale((yyvsp[-1]._v3));
 }
-#line 3174 "parser.cxx"
+#line 3174 "parser.cxx.prebuilt"
     break;
 
   case 185: /* anim_prop_body: code anim pos hpr color sign  */
@@ -3183,7 +3183,7 @@ yyreduce:
   anim_prop->set_hpr((yyvsp[-2]._v3));
   anim_prop->set_color((yyvsp[-1]._color));
 }
-#line 3187 "parser.cxx"
+#line 3187 "parser.cxx.prebuilt"
     break;
 
   case 186: /* anim_prop_body: code anim pos hpr scale color sign  */
@@ -3197,7 +3197,7 @@ yyreduce:
   anim_prop->set_scale((yyvsp[-2]._v3));
   anim_prop->set_color((yyvsp[-1]._color));
 }
-#line 3201 "parser.cxx"
+#line 3201 "parser.cxx.prebuilt"
     break;
 
   case 187: /* $@19: %empty  */
@@ -3206,7 +3206,7 @@ yyreduce:
   dna_stack.push_back(new DNAInteractiveProp((yyvsp[-1]._string)));
   dna_cat.debug() << "interactive prop " << (yyvsp[-1]._string) <<"\n";
 }
-#line 3210 "parser.cxx"
+#line 3210 "parser.cxx.prebuilt"
     break;
 
   case 188: /* interactive_prop: INTERACTIVE_PROP required_name '[' $@19 interactive_prop_body ']'  */
@@ -3215,7 +3215,7 @@ yyreduce:
   (yyval._dna_group) = dna_stack.back();
   dna_stack.pop_back();
 }
-#line 3219 "parser.cxx"
+#line 3219 "parser.cxx.prebuilt"
     break;
 
   case 189: /* interactive_prop_body: code anim cell_id pos hpr  */
@@ -3228,7 +3228,7 @@ yyreduce:
   interactive_prop->set_pos((yyvsp[-1]._v3));
   interactive_prop->set_hpr((yyvsp[0]._v3));
 }
-#line 3232 "parser.cxx"
+#line 3232 "parser.cxx.prebuilt"
     break;
 
   case 190: /* interactive_prop_body: code anim cell_id pos hpr scale  */
@@ -3242,7 +3242,7 @@ yyreduce:
   interactive_prop->set_hpr((yyvsp[-1]._v3));
   interactive_prop->set_scale((yyvsp[0]._v3));
 }
-#line 3246 "parser.cxx"
+#line 3246 "parser.cxx.prebuilt"
     break;
 
   case 191: /* interactive_prop_body: code anim cell_id pos hpr color  */
@@ -3256,7 +3256,7 @@ yyreduce:
   interactive_prop->set_hpr((yyvsp[-1]._v3));
   interactive_prop->set_color((yyvsp[0]._color));
 }
-#line 3260 "parser.cxx"
+#line 3260 "parser.cxx.prebuilt"
     break;
 
   case 192: /* interactive_prop_body: code anim cell_id pos hpr scale color  */
@@ -3271,7 +3271,7 @@ yyreduce:
   interactive_prop->set_scale((yyvsp[-1]._v3));
   interactive_prop->set_color((yyvsp[0]._color));
 }
-#line 3275 "parser.cxx"
+#line 3275 "parser.cxx.prebuilt"
     break;
 
   case 193: /* interactive_prop_body: code anim cell_id pos hpr sign  */
@@ -3284,7 +3284,7 @@ yyreduce:
   interactive_prop->set_pos((yyvsp[-2]._v3));
   interactive_prop->set_hpr((yyvsp[-1]._v3));
 }
-#line 3288 "parser.cxx"
+#line 3288 "parser.cxx.prebuilt"
     break;
 
   case 194: /* interactive_prop_body: code anim cell_id pos hpr scale sign  */
@@ -3298,7 +3298,7 @@ yyreduce:
   interactive_prop->set_hpr((yyvsp[-2]._v3));
   interactive_prop->set_scale((yyvsp[-1]._v3));
 }
-#line 3302 "parser.cxx"
+#line 3302 "parser.cxx.prebuilt"
     break;
 
   case 195: /* interactive_prop_body: code anim cell_id pos hpr color sign  */
@@ -3312,7 +3312,7 @@ yyreduce:
   interactive_prop->set_hpr((yyvsp[-2]._v3));
   interactive_prop->set_color((yyvsp[-1]._color));
 }
-#line 3316 "parser.cxx"
+#line 3316 "parser.cxx.prebuilt"
     break;
 
   case 196: /* interactive_prop_body: code anim cell_id pos hpr scale color sign  */
@@ -3327,7 +3327,7 @@ yyreduce:
   interactive_prop->set_scale((yyvsp[-2]._v3));
   interactive_prop->set_color((yyvsp[-1]._color));
 }
-#line 3331 "parser.cxx"
+#line 3331 "parser.cxx.prebuilt"
     break;
 
   case 197: /* anim: ANIM '[' required_string ']'  */
@@ -3335,7 +3335,7 @@ yyreduce:
 {
   (yyval._string) = (yyvsp[-1]._string);
 }
-#line 3339 "parser.cxx"
+#line 3339 "parser.cxx.prebuilt"
     break;
 
   case 198: /* cell_id: CELL_ID '[' integer ']'  */
@@ -3343,7 +3343,7 @@ yyreduce:
 {
   (yyval._number) = (yyvsp[-1]._number);
 }
-#line 3347 "parser.cxx"
+#line 3347 "parser.cxx.prebuilt"
     break;
 
   case 199: /* code: CODE '[' required_string ']'  */
@@ -3351,7 +3351,7 @@ yyreduce:
 {
   (yyval._string) = (yyvsp[-1]._string);
 }
-#line 3355 "parser.cxx"
+#line 3355 "parser.cxx.prebuilt"
     break;
 
   case 200: /* count: COUNT '[' integer ']'  */
@@ -3359,7 +3359,7 @@ yyreduce:
 {
   (yyval._number) = (yyvsp[-1]._number);
 }
-#line 3363 "parser.cxx"
+#line 3363 "parser.cxx.prebuilt"
     break;
 
   case 201: /* title: TITLE '[' required_string ']'  */
@@ -3367,7 +3367,7 @@ yyreduce:
 {
   (yyval._string) = (yyvsp[-1]._string);
 }
-#line 3371 "parser.cxx"
+#line 3371 "parser.cxx.prebuilt"
     break;
 
   case 202: /* article: ARTICLE '[' required_string ']'  */
@@ -3375,7 +3375,7 @@ yyreduce:
 {
   (yyval._string) = (yyvsp[-1]._string);
 }
-#line 3379 "parser.cxx"
+#line 3379 "parser.cxx.prebuilt"
     break;
 
   case 203: /* article: empty  */
@@ -3383,7 +3383,7 @@ yyreduce:
 {
   (yyval._string) = "";
 }
-#line 3387 "parser.cxx"
+#line 3387 "parser.cxx.prebuilt"
     break;
 
   case 204: /* building_type: BUILDING_TYPE '[' string ']'  */
@@ -3391,7 +3391,7 @@ yyreduce:
 {
   (yyval._string) = (yyvsp[-1]._string);
 }
-#line 3395 "parser.cxx"
+#line 3395 "parser.cxx.prebuilt"
     break;
 
   case 205: /* pos: POS '[' real real real ']'  */
@@ -3403,7 +3403,7 @@ yyreduce:
   // Fortunately, this is functionally equivalent:
   (yyval._v3).set((yyvsp[-3]._number), (yyvsp[-2]._number), (yyvsp[-1]._number));
 }
-#line 3407 "parser.cxx"
+#line 3407 "parser.cxx.prebuilt"
     break;
 
   case 206: /* hpr: NHPR '[' real real real ']'  */
@@ -3416,7 +3416,7 @@ yyreduce:
     (yyval._v3) = new_to_old_hpr(LVecBase3f((yyvsp[-3]._number), (yyvsp[-2]._number), (yyvsp[-1]._number)));
   }
 }
-#line 3420 "parser.cxx"
+#line 3420 "parser.cxx.prebuilt"
     break;
 
   case 207: /* hpr: HPR '[' real real real ']'  */
@@ -3429,7 +3429,7 @@ yyreduce:
     (yyval._v3).set((yyvsp[-3]._number), (yyvsp[-2]._number), (yyvsp[-1]._number));
   }
 }
-#line 3433 "parser.cxx"
+#line 3433 "parser.cxx.prebuilt"
     break;
 
   case 208: /* scale: SCALE '[' real real real ']'  */
@@ -3437,7 +3437,7 @@ yyreduce:
 {
   (yyval._v3).set((yyvsp[-3]._number), (yyvsp[-2]._number), (yyvsp[-1]._number));
 }
-#line 3441 "parser.cxx"
+#line 3441 "parser.cxx.prebuilt"
     break;
 
   case 209: /* color: COLOR '[' real real real real ']'  */
@@ -3445,7 +3445,7 @@ yyreduce:
 {
   (yyval._color).set((yyvsp[-4]._number), (yyvsp[-3]._number), (yyvsp[-2]._number), (yyvsp[-1]._number));
 }
-#line 3449 "parser.cxx"
+#line 3449 "parser.cxx.prebuilt"
     break;
 
   case 210: /* texture: TEXTURE '[' required_string ']'  */
@@ -3453,7 +3453,7 @@ yyreduce:
 {
   (yyval._string) = (yyvsp[-1]._string);
 }
-#line 3457 "parser.cxx"
+#line 3457 "parser.cxx.prebuilt"
     break;
 
   case 211: /* $@20: %empty  */
@@ -3466,7 +3466,7 @@ yyreduce:
   model.set_extension("bam");
   current_model = NodePath(loader.load_sync(model));
 }
-#line 3470 "parser.cxx"
+#line 3470 "parser.cxx.prebuilt"
     break;
 
   case 213: /* $@21: %empty  */
@@ -3481,7 +3481,7 @@ yyreduce:
   model.set_extension("bam");
   current_model = NodePath(loader.load_sync(model, options));
 }
-#line 3485 "parser.cxx"
+#line 3485 "parser.cxx.prebuilt"
     break;
 
   case 215: /* $@22: %empty  */
@@ -3496,7 +3496,7 @@ yyreduce:
   model.set_extension("bam");
   current_model = NodePath(loader.load_sync(model, options));
 }
-#line 3500 "parser.cxx"
+#line 3500 "parser.cxx.prebuilt"
     break;
 
   case 219: /* store_node: STORE_NODE '[' string string string ']'  */
@@ -3533,7 +3533,7 @@ yyreduce:
   dna_top_node->get_dna_storage()->store_catalog_string((yyvsp[-3]._string), (yyvsp[-2]._string));
 
 }
-#line 3537 "parser.cxx"
+#line 3537 "parser.cxx.prebuilt"
     break;
 
   case 220: /* store_node: STORE_NODE '[' string string ']'  */
@@ -3555,7 +3555,7 @@ yyreduce:
   dna_top_node->get_dna_storage()->store_catalog_string((yyvsp[-2]._string), (yyvsp[-1]._string));
 
 }
-#line 3559 "parser.cxx"
+#line 3559 "parser.cxx.prebuilt"
     break;
 
   case 221: /* store_texture: STORE_TEXTURE '[' string string string ']'  */
@@ -3570,7 +3570,7 @@ yyreduce:
     dna_top_node->get_dna_storage()->store_catalog_string((yyvsp[-3]._string), (yyvsp[-2]._string));
   }
 }
-#line 3574 "parser.cxx"
+#line 3574 "parser.cxx.prebuilt"
     break;
 
   case 222: /* store_font: STORE_FONT '[' string string string ']'  */
@@ -3590,7 +3590,7 @@ yyreduce:
       << "Unable to load font file " << (yyvsp[-1]._string) << "\n";
   }
 }
-#line 3594 "parser.cxx"
+#line 3594 "parser.cxx.prebuilt"
     break;
 
   case 223: /* store_suit_point: STORE_SUIT_POINT '[' integer integer real real real ']'  */
@@ -3603,7 +3603,7 @@ yyreduce:
                                             LPoint3f((yyvsp[-3]._number), (yyvsp[-2]._number), (yyvsp[-1]._number)));
   dna_top_node->get_dna_storage()->store_suit_point(point);
 }
-#line 3607 "parser.cxx"
+#line 3607 "parser.cxx.prebuilt"
     break;
 
   case 224: /* store_suit_point: STORE_SUIT_POINT '[' integer integer real real real integer ']'  */
@@ -3617,7 +3617,7 @@ yyreduce:
                                             (int)(yyvsp[-1]._number));
   dna_top_node->get_dna_storage()->store_suit_point(point);
 }
-#line 3621 "parser.cxx"
+#line 3621 "parser.cxx.prebuilt"
     break;
 
   case 225: /* store_suit_point: STORE_SUIT_POINT '[' integer ',' suit_point_type ',' real real real ']'  */
@@ -3628,7 +3628,7 @@ yyreduce:
                                             LPoint3f((yyvsp[-3]._number), (yyvsp[-2]._number), (yyvsp[-1]._number)));
   dna_top_node->get_dna_storage()->store_suit_point(point);
 }
-#line 3632 "parser.cxx"
+#line 3632 "parser.cxx.prebuilt"
     break;
 
   case 226: /* store_suit_point: STORE_SUIT_POINT '[' integer ',' suit_point_type ',' real real real ',' integer ']'  */
@@ -3640,7 +3640,7 @@ yyreduce:
                                             (int)(yyvsp[-1]._number));
   dna_top_node->get_dna_storage()->store_suit_point(point);
 }
-#line 3644 "parser.cxx"
+#line 3644 "parser.cxx.prebuilt"
     break;
 
   case 227: /* suit_point_type: FRONT_DOOR_POINT_  */
@@ -3648,7 +3648,7 @@ yyreduce:
 {
   (yyval._suit_point_type) = DNASuitPoint::FRONT_DOOR_POINT;
 }
-#line 3652 "parser.cxx"
+#line 3652 "parser.cxx.prebuilt"
     break;
 
   case 228: /* suit_point_type: SIDE_DOOR_POINT_  */
@@ -3656,7 +3656,7 @@ yyreduce:
 {
   (yyval._suit_point_type) = DNASuitPoint::SIDE_DOOR_POINT;
 }
-#line 3660 "parser.cxx"
+#line 3660 "parser.cxx.prebuilt"
     break;
 
   case 229: /* suit_point_type: STREET_POINT_  */
@@ -3664,7 +3664,7 @@ yyreduce:
 {
   (yyval._suit_point_type) = DNASuitPoint::STREET_POINT;
 }
-#line 3668 "parser.cxx"
+#line 3668 "parser.cxx.prebuilt"
     break;
 
   case 230: /* suit_point_type: COGHQ_IN_POINT_  */
@@ -3672,7 +3672,7 @@ yyreduce:
 {
   (yyval._suit_point_type) = DNASuitPoint::COGHQ_IN_POINT;
 }
-#line 3676 "parser.cxx"
+#line 3676 "parser.cxx.prebuilt"
     break;
 
   case 231: /* suit_point_type: COGHQ_OUT_POINT_  */
@@ -3680,7 +3680,7 @@ yyreduce:
 {
   (yyval._suit_point_type) = DNASuitPoint::COGHQ_OUT_POINT;
 }
-#line 3684 "parser.cxx"
+#line 3684 "parser.cxx.prebuilt"
     break;
 
   case 232: /* required_name: empty  */
@@ -3689,7 +3689,7 @@ yyreduce:
   dnayyerror("Name required.");
   (yyval._string) = "";
 }
-#line 3693 "parser.cxx"
+#line 3693 "parser.cxx.prebuilt"
     break;
 
   case 234: /* required_string: empty  */
@@ -3698,7 +3698,7 @@ yyreduce:
   dnayyerror("String required.");
   (yyval._string) = "";
 }
-#line 3702 "parser.cxx"
+#line 3702 "parser.cxx.prebuilt"
     break;
 
   case 236: /* string: NUMBER  */
@@ -3706,7 +3706,7 @@ yyreduce:
 {
   (yyval._string) = (yyvsp[0]._string);
 }
-#line 3710 "parser.cxx"
+#line 3710 "parser.cxx.prebuilt"
     break;
 
   case 239: /* integer: NUMBER  */
@@ -3718,11 +3718,11 @@ yyreduce:
     (yyval._number) = (double)i;
   }
 }
-#line 3722 "parser.cxx"
+#line 3722 "parser.cxx.prebuilt"
     break;
 
 
-#line 3726 "parser.cxx"
+#line 3726 "parser.cxx.prebuilt"
 
       default: break;
     }

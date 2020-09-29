@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_DNAYY_PARSER_HXX_INCLUDED
-# define YY_DNAYY_PARSER_HXX_INCLUDED
+#ifndef YY_DNAYY_PARSER_HXX_PREBUILT_INCLUDED
+# define YY_DNAYY_PARSER_HXX_PREBUILT_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -185,4 +185,4 @@ extern YYSTYPE dnayylval;
 
 int dnayyparse (void);
 
-#endif /* !YY_DNAYY_PARSER_HXX_INCLUDED  */
+#endif /* !YY_DNAYY_PARSER_HXX_PREBUILT_INCLUDED  */

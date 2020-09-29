@@ -1,6 +1,6 @@
-#line 1 "lexer.cxx"
+#line 1 "lexer.cxx.prebuilt"
 
-#line 3 "lexer.cxx"
+#line 3 "lexer.cxx.prebuilt"
 
 #define  YY_INT_ALIGNED short int
 
@@ -932,7 +932,7 @@ char *yytext;
 #line 9 "lexer.lxx"
 #include "lexerDefs.h"
 #include "parserDefs.h"
-#include "parser.hxx"
+#include "parser.hxx.prebuilt"
 
 #include "indent.h"
 #include "pnotify.h"
@@ -1213,8 +1213,8 @@ INLINE void accept() {
   col_number += yyleng;
 }
 
-#line 1216 "lexer.cxx"
-#line 1217 "lexer.cxx"
+#line 1216 "lexer.cxx.prebuilt"
+#line 1217 "lexer.cxx.prebuilt"
 
 #define INITIAL 0
 
@@ -1434,7 +1434,7 @@ YY_DECL
 #line 297 "lexer.lxx"
 
 
-#line 1437 "lexer.cxx"
+#line 1437 "lexer.cxx.prebuilt"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -2027,7 +2027,7 @@ YY_RULE_SETUP
 #line 636 "lexer.lxx"
 ECHO;
 	YY_BREAK
-#line 2030 "lexer.cxx"
+#line 2030 "lexer.cxx.prebuilt"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

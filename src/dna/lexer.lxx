@@ -8,7 +8,7 @@
 %{
 #include "lexerDefs.h"
 #include "parserDefs.h"
-#include "parser.hxx"
+#include "parser.hxx.prebuilt"
 
 #include "indent.h"
 #include "pnotify.h"
