@@ -153,12 +153,15 @@ bool DNAData::read_compressed(const Filename &filename, std::ostream &error) {
     uint8_t minor_ver = (uint8_t)data[1];
     uint8_t very_minor_ver = (uint8_t)data[2];
     data = data.substr(3);
+    
+    // Get our flags.
+    uint8_t flags = data[0];
 
     // Get the stdfloat double mode for the datagram.
-    bool stdfloat_double = (data[0] != 0);
+    bool stdfloat_double = (flags >> 0) & 1U;
     // Is the rest of our data compressed?
-    bool compressed = (data[1] != 0);
-    data = data.substr(2);
+    bool compressed = (flags >> 1) & 1U;
+    data = data.substr(1);
 
     dna_cat.debug() << "CDNA version: " << uint32_t(major_ver) << "." << uint32_t(minor_ver) << "." << uint32_t(very_minor_ver) << std::endl;
     dna_cat.debug() << "Stdfloat Doubles: " << uint32_t(stdfloat_double) << std::endl;
@@ -500,12 +503,17 @@ write(Datagram &datagram, DNAStorage *store) const {
     // We need to save if the Datagram has stdfloat double enabled for reading.
     // Float sizes can vary in Panda3D and it's important to support it.
     bool stdfloat_double = datagram.get_stdfloat_double();
-    datagram.add_bool(stdfloat_double);
-
+    
     // For now, We compress by default. Some files above a certain size should
     // probably require compression in the future.
     bool compress = compress_cdna.get_value();
-    datagram.add_bool(compress);
+    
+    // Set the bits in our bit flags. Each used bit corresponds a option.
+    uint8_t flags = 0; //0b00000000 - This is here for a bit reference.
+    flags |= stdfloat_double << 0;
+    flags |= compress << 1;
+    
+    datagram.add_uint8(flags);
 
     int compression_level = std::min(std::max(cdna_compression_level.get_value(), 0), 9);
 

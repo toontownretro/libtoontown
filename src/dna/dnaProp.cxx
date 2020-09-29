@@ -147,16 +147,21 @@ void DNAProp::write(std::ostream &out, DNAStorage *store, int indent_level) cons
 ////////////////////////////////////////////////////////////////////
 void DNAProp::write(Datagram &datagram, DNAStorage *store) const {
     datagram.add_uint8(TYPECODE_DNAPROP);
-    datagram.add_string(get_name());
-    datagram.add_string(get_code());
     
     // Write if we wrote scale and color, Then include if we have the hpr fix.
     bool write_scale = !_scale.almost_equal(LVecBase3f(1.0, 1.0, 1.0));
     bool write_color = !_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0));
-    datagram.add_bool(write_scale);
-    datagram.add_bool(write_color);
-    datagram.add_bool(temp_hpr_fix);
     
+    // Set the bits in our bit flags. Each used bit corresponds to if
+    // something was written.
+    uint8_t flags = 0; //0b00000000 - This is here for a bit reference.
+    flags |= write_scale << 0;
+    flags |= write_color << 1;
+    flags |= temp_hpr_fix << 2;
+    
+    datagram.add_uint8(flags);
+    datagram.add_string(get_name());
+    datagram.add_string(get_code());
     datagram.add_stdfloat(_pos.get_z());
     datagram.add_stdfloat(_pos.get_y());
     datagram.add_stdfloat(_pos.get_x());
@@ -193,14 +198,15 @@ void DNAProp::write(Datagram &datagram, DNAStorage *store) const {
 //  Description: Sets up the group from the Datagram Iterator.
 ////////////////////////////////////////////////////////////////////
 void DNAProp::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
+    // Read off what was written from the bit flags and
+    // get if there is scale and color written and if the hpr is fixed.
+    uint8_t flags = dgi.get_uint8();
+    bool wrote_scale = (flags >> 0) & 1U;
+    bool wrote_color = (flags >> 1) & 1U;
+    bool is_hpr_fixed = (flags >> 2) & 1U;
+    
     set_name(dgi.get_string());
     set_code(dgi.get_string());
-    
-    // Get if there is scale and color written and if the hpr is fixed.
-    bool wrote_scale = dgi.get_bool();
-    bool wrote_color = dgi.get_bool();
-    bool is_hpr_fixed = dgi.get_bool();
-    
     set_pos(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat()));
     // Just because normally old hpr is scrapped, 
     // Doesn't mean we don't want to convert it still.
