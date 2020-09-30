@@ -45,6 +45,8 @@
 extern int dnayydebug;
 #endif
 
+#include "parserDefs.h"
+
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE

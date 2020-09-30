@@ -110,15 +110,18 @@ set(DNALOADER_FILES
     src/dna/dnaWindow.cxx
     src/dna/dnaWindow.h
     src/dna/dnaWindow.I
-    src/dna/lexer.cxx.prebuilt
-    src/dna/lexerDefs.h
     src/dna/load_dna_file.cxx
     src/dna/load_dna_file.h
     src/dna/loaderFileTypeDNA.cxx
     src/dna/loaderFileTypeDNA.h
+)
+
+set(DNAPARSER_FILES
     src/dna/parser.cxx.prebuilt
     src/dna/parser.hxx.prebuilt
     src/dna/parserDefs.h
+    src/dna/lexer.cxx.prebuilt
+    src/dna/lexerDefs.h
 )
 
 set(PET_FILES
@@ -180,7 +183,7 @@ link_directories(${LIBOTP_DIR}/build/)
 link_directories(${PANDA_DIR}/lib)
 
 # Make sure the parser prebuilt files compile.
-set_source_files_properties(${DNALOADER_FILES} PROPERTIES LANGUAGE CXX)
+set_source_files_properties(${DNAPARSER_FILES} PROPERTIES LANGUAGE CXX)
 
 set(LIBPFX "")
 if(MSVC)
@@ -244,6 +247,7 @@ if(NOT BUILD_STATIC_LIB)
     if(WIN32)
         add_library(libtoontown SHARED
             ${DNALOADER_FILES}
+            ${DNAPARSER_FILES}
             ${SUIT_FILES}
             ${PET_FILES}
             ${SETTINGS_FILES}
@@ -265,6 +269,7 @@ if(NOT BUILD_STATIC_LIB)
     else()
         add_library(toontown MODULE
             ${DNALOADER_FILES}
+            ${DNAPARSER_FILES}
             ${SUIT_FILES}
             ${PET_FILES}
             ${SETTINGS_FILES}
@@ -284,6 +289,7 @@ else()
     if(WIN32)
         add_library(libtoontown STATIC
             ${DNALOADER_FILES}
+            ${DNAPARSER_FILES}
             ${SUIT_FILES}
             ${PET_FILES}
             ${SETTINGS_FILES}
@@ -303,6 +309,7 @@ else()
     else()
         add_library(toontown STATIC
             ${DNALOADER_FILES}
+            ${DNAPARSER_FILES}
             ${SUIT_FILES}
             ${PET_FILES}
             ${SETTINGS_FILES}
@@ -320,6 +327,7 @@ endif()
 
 ### Setup source groups and defines for configurables ###
 source_group("dnaLoader" FILES ${DNALOADER_FILES})
+source_group("dnaParser" FILES ${DNAPARSER_FILES})
 source_group("pets" FILES ${PET_FILES})
 source_group("settings" FILES ${SETTINGS_FILES})
 source_group("suit" FILES ${SUIT_FILES})
