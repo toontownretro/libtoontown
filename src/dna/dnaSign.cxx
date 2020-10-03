@@ -79,9 +79,11 @@ NodePath DNASign::traverse(NodePath &parent, DNAStorage *store, int editing) {
   }
   nassertr(!sign_node_path.is_empty(), parent);
 
+#ifndef DEPTH_FIX
   // Turn off the writing of z-buffer information:
   sign_node_path.set_depth_write(0);
   //sign_node_path.node()->set_name("sign");
+#endif
 
   // The Sign_origin is a special node in the model with a local
   // origin that we position the sign wrt

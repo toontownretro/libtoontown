@@ -161,10 +161,17 @@ void DNAInteractiveProp::write(Datagram &datagram, DNAStorage *store) const {
     bool write_hpr = !_hpr.almost_equal(LVecBase3f::zero());
     bool write_scale = !_scale.almost_equal(LVecBase3f(1.0, 1.0, 1.0));
     bool write_color = !_color.almost_equal(LVecBase4f(1.0, 1.0, 1.0, 1.0));
-    datagram.add_bool(write_pos);
-    datagram.add_bool(write_hpr);
-    datagram.add_bool(write_scale);
-    datagram.add_bool(write_color);
+
+    // Set the bits in our bit flags. Each used bit corresponds to if
+    // something was written.
+    uint8_t flags = 0; //0b00000000 - This is here for a bit reference.
+    flags |= write_pos << 0;
+    flags |= write_hpr << 1;
+    flags |= write_scale << 2;
+    flags |= write_color << 3;
+    flags |= temp_hpr_fix << 4;
+
+    datagram.add_uint8(flags);
     datagram.add_string(get_name());
     datagram.add_string(get_code());
     datagram.add_string(get_anim());
@@ -175,7 +182,6 @@ void DNAInteractiveProp::write(Datagram &datagram, DNAStorage *store) const {
         datagram.add_stdfloat(_pos.get_x());
     }
     if (write_hpr) {
-        datagram.add_bool(temp_hpr_fix);
         datagram.add_stdfloat(_hpr.get_z());
         datagram.add_stdfloat(_hpr.get_y());
         datagram.add_stdfloat(_hpr.get_x());
@@ -210,10 +216,15 @@ void DNAInteractiveProp::write(Datagram &datagram, DNAStorage *store) const {
 //  Description: Sets up the group from the Datagram Iterator.
 ////////////////////////////////////////////////////////////////////
 void DNAInteractiveProp::make_from_dgi(DatagramIterator &dgi, DNAStorage *store) {
-    bool wrote_pos = dgi.get_bool();
-    bool wrote_hpr = dgi.get_bool();
-    bool wrote_scale = dgi.get_bool();
-    bool wrote_color = dgi.get_bool();
+    // Read off what was written from the bit flags and
+    // get if there is scale and color written and if the hpr is fixed.
+    uint8_t flags = dgi.get_uint8();
+    bool wrote_pos = (flags >> 0) & 1U;
+    bool wrote_hpr = (flags >> 1) & 1U;
+    bool wrote_scale = (flags >> 2) & 1U;
+    bool wrote_color = (flags >> 3) & 1U;
+    bool is_hpr_fixed = (flags >> 4) & 1U;
+
     set_name(dgi.get_string());
     set_code(dgi.get_string());
     set_anim(dgi.get_string());
@@ -224,7 +235,6 @@ void DNAInteractiveProp::make_from_dgi(DatagramIterator &dgi, DNAStorage *store)
     if (wrote_hpr) {
         // Just because normally old hpr is scrapped, 
         // Doesn't mean we don't want to convert it still.
-        bool is_hpr_fixed = dgi.get_bool();
         if (temp_hpr_fix && !is_hpr_fixed) {
             set_hpr(old_to_new_hpr(LVecBase3f(dgi.get_stdfloat(), dgi.get_stdfloat(), dgi.get_stdfloat())));
         } else if (!temp_hpr_fix && is_hpr_fixed) {

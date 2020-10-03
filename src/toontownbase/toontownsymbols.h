@@ -27,6 +27,7 @@ FLOATNAME(LVecBase3) new_to_old_hpr(const FLOATNAME(LVecBase3) &new_hpr);
 
 #if PANDA_NUMERIC_VERSION >= 1008000
 #define Colorf LColorf
+#define DEPTH_FIX 1
 #endif
 
 #pragma warning (disable : 4273)

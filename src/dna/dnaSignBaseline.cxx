@@ -497,6 +497,11 @@ void DNASignBaseline::center(LVector3f &pos, LVector3f &hpr) {
 
     pos[0] -= radius*cos_ang;
     pos[2] -= radius*sin_ang;
+    
+#ifdef DEPTH_FIX
+    // Fix for modern Panda's text rendering
+    pos[1] -= 0.05;
+#endif
   }
 }
 
